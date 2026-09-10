@@ -384,6 +384,8 @@ fn load_data() {
         let mut timings = TIMINGS.lock().unwrap();
         timings.clear();
         timings.extend(parsed_data);
+    } else {
+        log("INFO: Did not update data because of lock.");
     }
 }
 

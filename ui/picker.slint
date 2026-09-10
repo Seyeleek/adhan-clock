@@ -65,6 +65,7 @@ export component Picker inherits Rectangle {
                         input-type: search;
                         font-size: root.font-size;
                         text-color: root.text-color;
+                        enabled: expanded && show-search;
                     }
                     Rectangle { width: root.font-size / 3; }
                 }
