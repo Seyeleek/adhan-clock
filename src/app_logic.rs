@@ -10,10 +10,8 @@ use std::{
     panic,
 };
 use chrono::{Local, DateTime, TimeDelta};
-use cached::macros::cached;
 use serde_json::Value;
 use reqwest::blocking;
-use rodio;
 use crate::{FILE_PREFIX, cities::CITIES};
 use backtrace::Backtrace;
 
@@ -27,6 +25,7 @@ static LOG_LOCK: Mutex<()> = Mutex::new(());
 static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
 static COUNTRY: Mutex<String> = Mutex::new(String::new());
 static CITY: Mutex<String> = Mutex::new(String::new());
+static SCHOOL: Mutex<String> = Mutex::new(String::new());
 static WEAKAPP: LazyLock<Mutex<slint::Weak<Clock>>> = LazyLock::new(|| Mutex::new(Default::default()));
 static RAN_BEFORE: Mutex<bool> = Mutex::new(false);
 static DATA_LOCK: Mutex<u32> = Mutex::new(0);
@@ -63,19 +62,28 @@ pub fn main_window() -> Clock {
                 app.invoke_update_current_prayer(current_prayer.into());
             });
         });
+        app.set_school((*SCHOOL.lock().unwrap()).clone().into());
         return app;
     } else {
         thread::spawn(|| log("INFO: Started the application."));
         *ran_before = true;
     }
-    load_location();
+    load_location_school();
+    app.set_school((*SCHOOL.lock().unwrap()).clone().into());
     init_city_country();
     app.on_city_picked(move |new_city| {
         thread::spawn(move || {
-            let mut city = CITY.lock().unwrap();
-            *city = new_city.clone().into();
+            *CITY.lock().unwrap() = new_city.clone().into();
             fs::write(format!("{}city.txt", FILE_PREFIX), new_city).unwrap();
-            drop(city);
+            load_data();
+        });
+    });
+    app.on_school_picked(move |new_school| {
+        thread::spawn(move || {
+            let mut school = SCHOOL.lock().unwrap();
+            *school = new_school.clone().into();
+            fs::write(format!("{}school.txt", FILE_PREFIX), new_school).unwrap();
+            drop(school);
             load_data();
         });
     });
@@ -254,7 +262,7 @@ pub fn main_window() -> Clock {
         let pattern = format!("{}*[!-][!l][!m].json", FILE_PREFIX);
         for file in glob::glob(pattern.as_str()).unwrap() {
             let file = file.unwrap();
-            if let Ok(_) = fs::remove_file(&file) {
+            if fs::remove_file(&file).is_ok() {
                 log(format!("INFO: Removed {}.", file.display()));
             }
         }
@@ -263,50 +271,47 @@ pub fn main_window() -> Clock {
 }
 
 fn get_data() -> (String, String) {
-    let mut year: u64 = format!("{}", Local::now().format("%Y")).parse().unwrap();
-    let this_years_data;
+    let year: i32 = format!("{}", Local::now().format("%Y")).parse().unwrap();
     let country = COUNTRY.lock().unwrap();
     let city = CITY.lock().unwrap();
-    if fs::exists(get_fname(year, &country, &city)).unwrap() {
-        this_years_data = fs::read_to_string(
-            get_fname(year, &country, &city),
-        ).unwrap();
-    } else {
-        this_years_data = blocking::get(&format!(
-            "https://api.aladhan.com/v1/calendar/{}?{}&school=1",
-            year,
-            CITIES[&country][&city],
-        )).unwrap().text().unwrap();
-        fs::write(get_fname(year, &country, &city), this_years_data.clone())
-            .unwrap();
-    }
-    year += 1;
-    let next_years_data;
-    if fs::exists(get_fname(year, &country, &city)).unwrap() {
-        next_years_data = fs::read_to_string(
-            get_fname(year, &country, &city),
-        ).unwrap();
-    } else {
-        next_years_data = blocking::get(&format!(
-            "https://api.aladhan.com/v1/calendar/{}?{}&school=1",
-            year,
-            CITIES[&country][&city],
-        )).unwrap().text().unwrap();
-        fs::write(get_fname(year, &country, &city), next_years_data.clone())
-            .unwrap();
-    }
-    return (this_years_data, next_years_data);
+    let school = match SCHOOL.lock().unwrap().as_str() {
+        "Majority time" => 0,
+        "Hanafi time" => 1,
+        _ => panic!("The school should be either Majority time or Hanafi time"),
+    };
+    return (
+        get_year_data(year, &country, &city, school),
+        get_year_data(year + 1, &country, &city, school),
+    );
 }
 
-#[cached]
-fn get_fname(year: u64, country: &String, city: &String) -> String {
-    return format!("{}{}-{}-{}-1-lm.json", FILE_PREFIX, year, country, city);
+fn get_year_data(year: i32, country: &String, city: &String, school: i32) -> String {
+    let file = format!(
+        "{}{}-{}-{}-{}-lm.json",
+        FILE_PREFIX,
+        year,
+        country,
+        city,
+        school,
+    );
+    if fs::exists(&file).unwrap() {
+        return fs::read_to_string(&file).unwrap();
+    } else {
+        let tmp = blocking::get(&format!(
+            "https://api.aladhan.com/v1/calendar/{}?{}&school={}",
+            year,
+            CITIES[&country][&city],
+            school,
+        )).unwrap().text().unwrap();
+        fs::write(&file, tmp.clone()).unwrap();
+        return tmp;
+    };
 }
 
 fn load_data() {
     let mut data_lock = DATA_LOCK.lock().unwrap();
     *data_lock += 1;
-    let data_id = (*data_lock).clone();
+    let data_id = *data_lock;
     drop(data_lock);
     let today = Local::now();
     let tz = today.format("%z").to_string();
@@ -372,27 +377,24 @@ fn log(message: impl Display) {
     let _ = writeln!(file, "{}: {}", Local::now(), message);
 }
 
-fn load_location() {
-    let mut city_data = "Dallas (Texas)".to_string();
-    let mut country_data = "United States".to_string();
-    let city_file = format!("{}city.txt", FILE_PREFIX);
-    if fs::exists(&city_file).unwrap() {
-        match fs::read_to_string(city_file) {
-            Ok(x) => city_data = x,
-            Err(e) => log(format!("Could not read city file because of {:#?}", e)),
+fn load_location_school() {
+    let to_load = [
+        ("city", "Dallas (Texas)", &CITY),
+        ("country", "United States", &COUNTRY),
+        ("school", "Hanafi time", &SCHOOL),
+    ];
+    for item in to_load {
+        let file = format!("{}{}.txt", FILE_PREFIX, item.0);
+        if fs::exists(&file).unwrap() {
+            match fs::read_to_string(&file) {
+                Ok(x) => *item.2.lock().unwrap() = x,
+                Err(e) => {
+                    *item.2.lock().unwrap() = item.1.into();
+                    log(format!("Could not read {} file because of {:#?}", item.0, e));
+                },
+            }
         }
     }
-    let country_file = format!("{}country.txt", FILE_PREFIX);
-    if fs::exists(&country_file).unwrap() {
-        match fs::read_to_string(country_file) {
-            Ok(x) => country_data = x,
-            Err(e) => log(format!("Could not read country file because of {:#?}", e)),
-        }
-    }
-    let mut country = COUNTRY.lock().unwrap();
-    *country = country_data;
-    let mut city = CITY.lock().unwrap();
-    *city = city_data;
 }
 
 fn init_city_country() {
