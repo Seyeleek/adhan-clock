@@ -1,4 +1,5 @@
 mod app_logic;
+mod cities;
 
 use slint::{ComponentHandle,
     android::{

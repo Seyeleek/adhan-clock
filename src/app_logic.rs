@@ -13,6 +13,7 @@ use chrono::{Local, DateTime, TimeDelta};
 use serde_json::Value;
 use reqwest::blocking;
 use rodio;
+use crate::cities::CITIES;
 
 slint::include_modules!();
 

@@ -1,6 +1,7 @@
 #![windows_subsystem = "windows"]
 
 mod app_logic;
+mod cities;
 
 use slint::ComponentHandle;
 
