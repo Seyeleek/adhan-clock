@@ -14,6 +14,7 @@ use serde_json::Value;
 use reqwest::blocking;
 use rodio;
 use crate::cities::CITIES;
+use backtrace::Backtrace;
 
 slint::include_modules!();
 
@@ -30,7 +31,10 @@ type Timing = (String, DateTime<Local>, usize);
 
 pub fn main_window(file_prefix: &'static str) -> Clock {
     panic::set_hook(Box::new(move |panic_info| {
-        log(file_prefix, format!("ERROR: {panic_info}"));
+        log(
+            file_prefix,
+            format!("ERROR: {}\n{:#?}", panic_info, Backtrace::new()),
+        );
     }));
     let app = Clock::new().unwrap();
     let weakapp = app.as_weak();
