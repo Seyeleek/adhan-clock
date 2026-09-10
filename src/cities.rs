@@ -1,5 +1,10 @@
 use phf::{phf_map, Map};
 
+/// This data was extracted from the SimpleMaps Basic World Cities Database,
+/// found at https://simplemaps.com/data/world-cities. Changes were made (e.g.
+/// all instances of Israel were replaced with Palestine). The original dataset
+/// was licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/.
+
 pub static CITIES: Map<&'static str, Map<&'static str, Map<&'static str, f64>>> = phf_map! {
     "Afghanistan" => phf_map! {
         "Aibak" => phf_map! {
