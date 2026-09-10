@@ -63,8 +63,8 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             drop(city);
             let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
             app.upgrade_in_event_loop(move |app| {
+                app.invoke_update_city(0);
                 app.set_cities(cities.as_slice().into());
-                app.set_city(0);
             }).unwrap();
             load_data(file_prefix);
         });

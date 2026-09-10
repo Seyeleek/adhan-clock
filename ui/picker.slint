@@ -16,6 +16,10 @@ export component Picker inherits Rectangle {
 
     callback picked(string);
 
+    public function update-current(current-item: int) {
+        list.set-current-item(current-item);
+    }
+
     Text {
         text: entries[current].text;
         color: text-color;

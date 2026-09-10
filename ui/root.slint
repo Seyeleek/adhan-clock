@@ -28,6 +28,10 @@ export component Clock inherits Window {
     callback city_picked <=> city_picker.picked;
     callback country_picked <=> country_picker.picked;
 
+    public function update-city(new-city: int) {
+        city_picker.update-current(new-city);
+    }
+
     default-font-family: "Ubuntu Condensed";
     title: "Adhan Clock";
     icon: @image-url("../resources/drawable/icon.png");
