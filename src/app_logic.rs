@@ -12,7 +12,7 @@ use std::{
 use chrono::{Local, DateTime, TimeDelta};
 use serde_json::Value;
 use reqwest::blocking;
-use crate::{FILE_PREFIX, cities::CITIES};
+use crate::{FILE_PREFIX, SAFELY_PRUNE, cities::CITIES};
 use backtrace::Backtrace;
 
 slint::include_modules!();
@@ -242,7 +242,6 @@ pub fn main_window() -> Clock {
                 sink_handle.mixer(),
                 Cursor::new(sound),
             ).unwrap().sleep_until_end();
-            thread::sleep(SLEEP_TIME);
             ensure_run_in_event_loop(move |app| {
                 app.set_adhan_playing(false);
             });
@@ -258,15 +257,17 @@ pub fn main_window() -> Clock {
             });
         }
     });
-    thread::spawn(|| {
-        let pattern = format!("{}*[!-][!l][!m].json", FILE_PREFIX);
-        for file in glob::glob(pattern.as_str()).unwrap() {
-            let file = file.unwrap();
-            if fs::remove_file(&file).is_ok() {
-                log(format!("INFO: Removed {}.", file.display()));
+    if SAFELY_PRUNE {
+        thread::spawn(|| {
+            let pattern = format!("{}*[!-][!l][!m].json", FILE_PREFIX);
+            for file in glob::glob(pattern.as_str()).unwrap() {
+                let file = file.unwrap();
+                if fs::remove_file(&file).is_ok() {
+                    log(format!("INFO: Removed {}.", file.display()));
+                }
             }
-        }
-    });
+        });
+    }
     return app;
 }
 
@@ -385,15 +386,14 @@ fn load_location_school() {
     ];
     for item in to_load {
         let file = format!("{}{}.txt", FILE_PREFIX, item.0);
+        let mut value = item.1.into();
         if fs::exists(&file).unwrap() {
             match fs::read_to_string(&file) {
-                Ok(x) => *item.2.lock().unwrap() = x,
-                Err(e) => {
-                    *item.2.lock().unwrap() = item.1.into();
-                    log(format!("Could not read {} file because of {:#?}", item.0, e));
-                },
+                Ok(x) => value = x,
+                Err(e) => log(format!("Could not read {} file because of {:#?}", item.0, e)),
             }
         }
+        *item.2.lock().unwrap() = value.into();
     }
 }
 
