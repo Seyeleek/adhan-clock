@@ -29,6 +29,13 @@ export component Picker inherits Rectangle {
         list.bring-into-view(item);
     }
 
+    changed expanded => {
+        if show-search {
+            if expanded {search-box.focus();}
+            if !expanded {search-box.clear-focus();}
+        }
+    }
+
     Text {
         text: entries[list.current-item].text;
         color: text-color;
@@ -67,7 +74,7 @@ export component Picker inherits Rectangle {
                         input-type: search;
                         font-size: root.font-size;
                         text-color: root.text-color;
-                        enabled: expanded && show-search;
+                        enabled: show-search;
                     }
                     Rectangle { width: root.font-size / 3; }
                 }
