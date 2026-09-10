@@ -18,5 +18,5 @@ fn android_main(app: AndroidApp) {
         WMFlags::empty(),
     );
     slint::android::init(app).unwrap();
-    app_logic::main_window(file_prefix).run().unwrap();
+    app_logic::main_window().run().unwrap();
 }
