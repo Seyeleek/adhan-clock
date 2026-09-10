@@ -4,6 +4,7 @@ use std::{
     time::Duration,
     fs::{OpenOptions, self},
     sync::{mpsc, Mutex, Arc, LazyLock},
+    cell::Cell,
     collections::VecDeque,
     io::{Cursor, Write},
     fmt::Display,
@@ -27,7 +28,10 @@ static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
 static COUNTRY: Mutex<String> = Mutex::new(String::new());
 static CITY: Mutex<String> = Mutex::new(String::new());
 static WEAKAPP: LazyLock<Mutex<slint::Weak<Clock>>> = LazyLock::new(|| Mutex::new(Default::default()));
-static APP_ERROR: Mutex<bool> = Mutex::new(false);
+
+thread_local! {
+    static MAIN_THREAD: Cell<thread::ThreadId> = thread::current().id().into();
+}
 
 type Timing = (String, DateTime<Local>, usize);
 
@@ -223,10 +227,9 @@ pub fn main_window() -> (Clock, Timer) {
     let app_clone = app.clone_strong();
     let timer = Timer::default();
     timer.start(TimerMode::Repeated, Duration::from_millis(600), move || {
-        let mut app_error = APP_ERROR.lock().unwrap();
-        if *app_error {
+        let current_id = thread::current().id();
+        if MAIN_THREAD.replace(current_id) != current_id {
             *WEAKAPP.lock().unwrap() = app_clone.as_weak();
-            *app_error = false;
             thread::spawn(|| log("INFO: Replaced WEAKAPP."));
         }
     });
@@ -388,7 +391,6 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
                 Some(x) => x,
                 None => {
                     *res_el.lock().unwrap() = None;
-                    *APP_ERROR.lock().unwrap() = true;
                     return;
                 }
             };
