@@ -7,7 +7,7 @@ use std::{
     sync::mpsc,
     collections::VecDeque,
     io::{Cursor, Write},
-    fmt::Display,
+    fmt::{Display, Debug},
 };
 use chrono::{Local, DateTime, TimeDelta};
 use serde_json::Value;
@@ -21,16 +21,16 @@ const FAJR_ADHAN: &[u8] = include_bytes!("../fajr-adhan.ogg").as_slice();
 const SLEEP_TIME: Duration = Duration::from_millis(500);
 const FIFTEEN_MINS: Duration = Duration::from_mins(15);
 
-trait LogError<T: Display, E> {
+trait LogError<T, E> {
     fn unwrap_or_log(self, file_prefix: &'static str) -> T;
 }
 
-impl LogError for Result<T, E> {
+impl<T, E: Debug> LogError<T, E> for Result<T, E> {
     fn unwrap_or_log(self, file_prefix: &'static str) -> T {
         match self {
             Ok(x) => return x,
             Err(e) => {
-                log(file_prefix, e);
+                log(file_prefix, format!("Tried to unwrap an 'Err' value: {:?}", e));
                 panic!();
             },
         }
@@ -63,7 +63,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 let app = app.unwrap();
                 app.set_time(time.into());
                 app.set_date(date.into());
-            }).unwrap();
+            }).unwrap_or_log(file_prefix);
             thread::sleep(SLEEP_TIME);
         }
     });
@@ -85,7 +85,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             let app = app.unwrap();
             app.set_prayer_times(prayer_times.as_slice().into());
             app.set_current_prayer(current_prayer.into());
-        }).unwrap();
+        }).unwrap_or_log(file_prefix);
         let mut tz = Local::now().format("%z").to_string();
         loop {
             let time = time_rx.recv().unwrap();
@@ -106,7 +106,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     let app = app.unwrap();
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
-                }).unwrap();
+                }).unwrap_or_log(file_prefix);
                 tz = new_tz;
             }
             let next_prayer = &timings[0];
@@ -122,7 +122,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
                 app.set_next_prayer(next_prayer.into());
-            }).unwrap();
+            }).unwrap_or_log(file_prefix);
             if time >= timings[0].1 {
                 let adhan = timings.pop_front().unwrap().0;
                 log(file_prefix, format!("INFO: {} sent", adhan));
@@ -142,7 +142,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
                     app.set_adhan_playing(true.into());
-                }).unwrap();
+                }).unwrap_or_log(file_prefix);
                 if timings.len() <= 100 {
                     timings = load_data(file_prefix);
                 }
@@ -177,7 +177,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
                 app.set_adhan_playing(false.into());
-            }).unwrap();
+            }).unwrap_or_log(file_prefix);
             log(file_prefix, "INFO: Sound ended");
         }
     });
@@ -190,7 +190,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
                 app.set_adhan_playing(false.into());
-            }).unwrap();
+            }).unwrap_or_log(file_prefix);
         }
     });
     return app;
