@@ -60,9 +60,8 @@ pub fn main_window() -> Clock {
             let mut country = COUNTRY.lock().unwrap();
             *country = new_country.clone().into();
             fs::write(format!("{}country.txt", FILE_PREFIX), new_country).unwrap();
-            let mut cities: Vec<_> = CITIES[country.as_str()].keys().collect();
+            let cities: Vec<_> = CITIES[country.as_str()].keys().collect();
             drop(country);
-            cities.sort();
             let mut city = CITY.lock().unwrap();
             *city = (*cities[0]).into();
             fs::write(format!("{}city.txt", FILE_PREFIX), (*city).clone()).unwrap();
@@ -398,12 +397,10 @@ fn load_location_school() {
 }
 
 fn init_city_country() {
-    let mut countries: Vec<_> = CITIES.keys().collect();
-    countries.sort();
+    let countries: Vec<_> = CITIES.keys().collect();
     let country = COUNTRY.lock().unwrap();
     let country_pos = countries.binary_search(&&(*country).as_str()).unwrap();
-    let mut cities: Vec<_> = CITIES[&*country].keys().collect();
-    cities.sort();
+    let cities: Vec<_> = CITIES[&*country].keys().collect();
     let city = CITY.lock().unwrap();
     let city_pos = cities.binary_search(&&(*city).as_str()).unwrap();
     let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
