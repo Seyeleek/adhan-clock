@@ -23,6 +23,9 @@ const SLEEP_TIME: Duration = Duration::from_millis(500);
 const FIFTEEN_MINS: Duration = Duration::from_mins(15);
 
 static LOG_LOCK: Mutex<()> = Mutex::new(());
+static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
+
+type Timing = (String, DateTime<Local>, usize);
 
 pub fn main_window(file_prefix: &'static str) -> Clock {
     panic::set_hook(Box::new(move |panic_info| {
@@ -59,12 +62,14 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
     });
     let weakapp = app.as_weak();
     thread::spawn(move || {
-        let mut timings = load_data(file_prefix);
+        load_data(file_prefix);
+        let timings = TIMINGS.lock().unwrap();
         let current_prayer = timings[5].0.clone();
         let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
         for time in timings.range(0..6) {
             current_times[time.2] = time.clone();
         }
+        drop(timings);
         let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
             prayer: x.0.clone().into(),
             time: x.1.format("%I:%M").to_string().into(),
@@ -79,9 +84,12 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
         let mut tz = Local::now().format("%z").to_string();
         loop {
             let time = time_rx.recv().unwrap();
+            let mut timings = TIMINGS.lock().unwrap();
             let new_tz = time.format("%z").to_string();
             if tz != new_tz {
-                timings = load_data(file_prefix);
+                drop(timings);
+                load_data(file_prefix);
+                timings = TIMINGS.lock().unwrap();
                 let current_prayer = timings[5].0.clone();
                 for time in timings.range(0..6) {
                     current_times[time.2] = time.clone();
@@ -134,7 +142,9 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     app.set_adhan_playing(true);
                 }).unwrap();
                 if timings.len() <= 100 {
-                    timings = load_data(file_prefix);
+                    drop(timings);
+                    load_data(file_prefix);
+                    timings = TIMINGS.lock().unwrap();
                 }
             }
         }
@@ -214,7 +224,7 @@ fn get_data(file_prefix: &'static str) -> (String, String) {
     return (this_years_data, next_years_data);
 }
 
-fn load_data(file_prefix: &'static str) -> VecDeque<(String, DateTime<Local>, usize)> {
+fn load_data(file_prefix: &'static str) {
     let today = Local::now();
     let tz = today.format("%z").to_string();
     let (this_year, next_year) = get_data(file_prefix);
@@ -259,7 +269,9 @@ fn load_data(file_prefix: &'static str) -> VecDeque<(String, DateTime<Local>, us
     while parsed_data[0].1 < today {
         parsed_data.pop_front();
     }
-    return parsed_data;
+    let mut timings = TIMINGS.lock().unwrap();
+    timings.clear();
+    timings.extend(parsed_data);
 }
 
 fn log(file_prefix: &'static str, message: impl Display) {
