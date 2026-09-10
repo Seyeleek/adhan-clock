@@ -13,7 +13,7 @@ use chrono::{Local, DateTime, TimeDelta};
 use serde_json::Value;
 use reqwest::blocking;
 use rodio;
-use crate::cities::CITIES;
+use crate::cities::{CITIES, FILE_PREFIX};
 use backtrace::Backtrace;
 
 slint::include_modules!();
@@ -29,22 +29,21 @@ static CITY: Mutex<String> = Mutex::new(String::new());
 
 type Timing = (String, DateTime<Local>, usize);
 
-pub fn main_window(file_prefix: &'static str) -> Clock {
+pub fn main_window() -> Clock {
     panic::set_hook(Box::new(move |panic_info| {
         log(
-            file_prefix,
             format!("ERROR: {}\n{:#?}", panic_info, Backtrace::new()),
         );
     }));
-    load_location(file_prefix);
+    load_location();
     let app = Clock::new().unwrap();
     app.on_city_picked(move |new_city| {
         thread::spawn(move || {
             let mut city = CITY.lock().unwrap();
             *city = new_city.clone().into();
-            fs::write(format!("{}city.txt", file_prefix), new_city).unwrap();
+            fs::write(format!("{}city.txt", FILE_PREFIX), new_city).unwrap();
             drop(city);
-            load_data(file_prefix);
+            load_data();
         });
     });
     let weakapp = app.as_weak();
@@ -53,20 +52,20 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
         thread::spawn(move || {
             let mut country = COUNTRY.lock().unwrap();
             *country = new_country.clone().into();
-            fs::write(format!("{}country.txt", file_prefix), new_country).unwrap();
+            fs::write(format!("{}country.txt", FILE_PREFIX), new_country).unwrap();
             let mut cities: Vec<_> = CITIES[country.as_str()].keys().collect();
             drop(country);
             cities.sort();
             let mut city = CITY.lock().unwrap();
             *city = (*cities[0]).into();
-            fs::write(format!("{}city.txt", file_prefix), (*city).clone()).unwrap();
+            fs::write(format!("{}city.txt", FILE_PREFIX), (*city).clone()).unwrap();
             drop(city);
             let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
-            ensure_run_in_event_loop(file_prefix, app, move |app| {
+            ensure_run_in_event_loop(app, move |app| {
                 app.set_cities(cities.as_slice().into());
                 app.invoke_update_city(0);
             });
-            load_data(file_prefix);
+            load_data();
         });
     });
     let weakapp = app.as_weak();
@@ -99,7 +98,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
     });
     let weakapp = app.as_weak();
     thread::spawn(move || {
-        load_data(file_prefix);
+        load_data();
         let timings = TIMINGS.lock().unwrap();
         let current_prayer = timings[5].0.clone();
         let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
@@ -113,7 +112,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             ampm: x.1.format("%p").to_string().into(),
         }).collect();
         let app = weakapp.clone();
-        ensure_run_in_event_loop(file_prefix, app, move |app| {
+        ensure_run_in_event_loop(app, move |app| {
             app.invoke_update_prayer_times(prayer_times.as_slice().into());
             app.invoke_update_current_prayer(current_prayer.into());
         });
@@ -124,7 +123,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             let new_tz = time.format("%z").to_string();
             if tz != new_tz {
                 drop(timings);
-                load_data(file_prefix);
+                load_data();
                 timings = TIMINGS.lock().unwrap();
                 let current_prayer = timings[5].0.clone();
                 for time in timings.range(0..6) {
@@ -136,7 +135,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                ensure_run_in_event_loop(file_prefix, app, move |app| {
+                ensure_run_in_event_loop(app, move |app| {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
                 });
@@ -152,7 +151,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             );
             let next_prayer = format!("{} in\n{}", next_prayer.0, time_left);
             let app = weakapp.clone();
-            ensure_run_in_event_loop(file_prefix, app, move |app| {
+            ensure_run_in_event_loop(app, move |app| {
                 app.set_next_prayer(next_prayer.into());
             });
             if timings[0] != current_times[timings[0].2] {
@@ -166,14 +165,14 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                ensure_run_in_event_loop(file_prefix, app, move |app| {
+                ensure_run_in_event_loop(app, move |app| {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
                 });
             }
             if time >= timings[0].1 {
                 let adhan = timings.pop_front().unwrap().0;
-                log(file_prefix, format!("INFO: {} sent", adhan));
+                log(format!("INFO: {} sent", adhan));
                 adhan_tx.send(adhan).unwrap();
                 let current_prayer = timings[5].0.clone();
                 for time in timings.range(0..6) {
@@ -185,14 +184,14 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                ensure_run_in_event_loop(file_prefix, app, move |app| {
+                ensure_run_in_event_loop(app, move |app| {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
                     app.set_adhan_playing(true);
                 });
                 if timings.len() <= 100 {
                     drop(timings);
-                    load_data(file_prefix);
+                    load_data();
                     timings = TIMINGS.lock().unwrap();
                 }
             }
@@ -201,9 +200,9 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
     let weakapp = app.as_weak();
     thread::spawn(move || {
         loop {
-            log(file_prefix, "INFO: Adhan loop advanced");
+            log("INFO: Adhan loop advanced");
             let adhan = adhan_rx.recv().unwrap();
-            log(file_prefix, format!("INFO: {} time", adhan));
+            log(format!("INFO: {} time", adhan));
             if adhan == "Sunrise" {
                 srise_tx.send(true).unwrap();
                 continue;
@@ -211,16 +210,16 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             let sound = if adhan == "Fajr" {FAJR_ADHAN} else {ADHAN};
             let sink_handle = rodio::DeviceSinkBuilder::open_default_sink()
                 .unwrap();
-            log(file_prefix, "INFO: Sound started");
+            log("INFO: Sound started");
             rodio::play(
                 sink_handle.mixer(),
                 Cursor::new(sound),
             ).unwrap().sleep_until_end();
             let app = weakapp.clone();
-            ensure_run_in_event_loop(file_prefix, app, move |app| {
+            ensure_run_in_event_loop(app, move |app| {
                 app.set_adhan_playing(false);
             });
-            log(file_prefix, "INFO: Sound ended");
+            log("INFO: Sound ended");
         }
     });
     let weakapp = app.as_weak();
@@ -229,7 +228,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             srise_rx.recv().unwrap();
             thread::sleep(Duration::from_mins(15));
             let app = weakapp.clone();
-            ensure_run_in_event_loop(file_prefix, app, move |app| {
+            ensure_run_in_event_loop(app, move |app| {
                 app.set_adhan_playing(false);
             });
         }
@@ -237,14 +236,14 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
     return app;
 }
 
-fn get_data(file_prefix: &'static str) -> (String, String) {
+fn get_data() -> (String, String) {
     let mut year: u64 = format!("{}", Local::now().format("%Y")).parse().unwrap();
     let this_years_data;
     let country = COUNTRY.lock().unwrap();
     let city = CITY.lock().unwrap();
-    if fs::exists(format!("{}{}-{}-{}.json", file_prefix, year, country, city)).unwrap() {
+    if fs::exists(format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city)).unwrap() {
         this_years_data = fs::read_to_string(
-            format!("{}{}-{}-{}.json", file_prefix, year, country, city),
+            format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city),
         ).unwrap();
     } else {
         this_years_data = blocking::get(&format!(
@@ -253,15 +252,15 @@ fn get_data(file_prefix: &'static str) -> (String, String) {
             CITIES[&country][&city],
         )).unwrap().text().unwrap();
         fs::write(
-            format!("{}{}-{}-{}.json", file_prefix, year, country, city),
+            format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city),
             this_years_data.clone(),
         ).unwrap();
     }
     year += 1;
     let next_years_data;
-    if fs::exists(format!("{}{}-{}-{}.json", file_prefix, year, country, city)).unwrap() {
+    if fs::exists(format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city)).unwrap() {
         next_years_data = fs::read_to_string(
-            format!("{}{}-{}-{}.json", file_prefix, year, country, city),
+            format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city),
         ).unwrap();
     } else {
         next_years_data = blocking::get(&format!(
@@ -270,17 +269,17 @@ fn get_data(file_prefix: &'static str) -> (String, String) {
             CITIES[&country][&city],
         )).unwrap().text().unwrap();
         fs::write(
-            format!("{}{}-{}-{}.json", file_prefix, year, country, city),
+            format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city),
             next_years_data.clone(),
         ).unwrap();
     }
     return (this_years_data, next_years_data);
 }
 
-fn load_data(file_prefix: &'static str) {
+fn load_data() {
     let today = Local::now();
     let tz = today.format("%z").to_string();
-    let (this_year, next_year) = get_data(file_prefix);
+    let (this_year, next_year) = get_data();
     let this_year = serde_json::from_str::<Value>(&this_year).unwrap()["data"].take();
     let next_year = serde_json::from_str::<Value>(&next_year).unwrap()["data"].take();
     let mut this_year_parsed = Vec::new();
@@ -327,11 +326,11 @@ fn load_data(file_prefix: &'static str) {
     timings.extend(parsed_data);
 }
 
-fn log(file_prefix: &'static str, message: impl Display) {
+fn log(message: impl Display) {
     let _lock = LOG_LOCK.lock();
     let mut file;
     match OpenOptions::new().append(true).create(true).open(
-        format!("{}log.txt", file_prefix)
+        format!("{}log.txt", FILE_PREFIX)
     ) {
         Ok(x) => file = x,
         Err(_) => return,
@@ -339,21 +338,21 @@ fn log(file_prefix: &'static str, message: impl Display) {
     let _ = writeln!(file, "{}: {}", Local::now(), message);
 }
 
-fn load_location(file_prefix: &'static str) {
+fn load_location() {
     let mut city_data = "Dallas (Texas)".to_string();
     let mut country_data = "United States".to_string();
-    let city_file = format!("{}city.txt", file_prefix);
+    let city_file = format!("{}city.txt", FILE_PREFIX);
     if fs::exists(&city_file).unwrap() {
         match fs::read_to_string(city_file) {
             Ok(x) => city_data = x,
-            Err(e) => log(file_prefix, format!("Could not read city file because of {:#?}", e)),
+            Err(e) => log(format!("Could not read city file because of {:#?}", e)),
         }
     }
-    let country_file = format!("{}country.txt", file_prefix);
+    let country_file = format!("{}country.txt", FILE_PREFIX);
     if fs::exists(&country_file).unwrap() {
         match fs::read_to_string(country_file) {
             Ok(x) => country_data = x,
-            Err(e) => log(file_prefix, format!("Could not read country file because of {:#?}", e)),
+            Err(e) => log(format!("Could not read country file because of {:#?}", e)),
         }
     }
     let mut country = COUNTRY.lock().unwrap();
@@ -380,7 +379,7 @@ fn init_city_country(weakapp: slint::Weak<Clock>) {
     app.set_countries(countries.as_slice().into());
 }
 
-fn ensure_run_in_event_loop<T, U>(file_prefix: &'static str, app: slint::Weak<T>, func: U)
+fn ensure_run_in_event_loop<T, U>(app: slint::Weak<T>, func: U)
 where T: slint::StrongHandle + 'static, U: FnOnce(T) + Send + Clone + 'static {
     loop {
         let result = Arc::new(Mutex::new(Some(())));
@@ -401,7 +400,7 @@ where T: slint::StrongHandle + 'static, U: FnOnce(T) + Send + Clone + 'static {
             Some(_) => return,
             None => {
                 thread::sleep(SLEEP_TIME);
-                log(file_prefix, format!("INFO: Graphical update failed, retrying."));
+                log(format!("INFO: Graphical update failed, retrying."));
             },
         }
     }
