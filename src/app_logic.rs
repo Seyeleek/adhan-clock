@@ -2,8 +2,7 @@ use slint;
 use std::{
     thread,
     time::Duration,
-    fs,
-    fs::OpenOptions,
+    fs::{OpenOptions, self},
     sync::mpsc,
     collections::VecDeque,
     io::{Cursor, Write},
