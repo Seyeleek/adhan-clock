@@ -1,6 +1,6 @@
 [package]
 name = "adhan-clock"
-version = "3.3.7"
+version = "3.4.0"
 edition = "2024"
 build = "build.rs"
 
