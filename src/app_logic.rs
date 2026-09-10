@@ -178,7 +178,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
     thread::spawn(move || {
         loop {
             srise_rx.recv().unwrap();
-            thread::sleep(Duration::mins(15));
+            thread::sleep(Duration::from_mins(15));
             let app = weakapp.clone();
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();

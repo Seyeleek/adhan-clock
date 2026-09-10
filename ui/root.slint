@@ -74,6 +74,11 @@ export component Clock inherits Window {
             font-size: calc-px * 107;
             horizontal-alignment: center;
         }
+        Image {
+            width: min(root.width * 3%, root.height * 5%);
+            height: min(root.width * 3%, root.height * 5%);
+            source: @image-url("../gear.svg");
+        }
     }
     for time[i] in prayer-times: Rectangle {
         width: root.width * 79% / 6;
