@@ -15,9 +15,9 @@ export component Clock inherits Window {
     in property<string> date;
     in property<string> time;
     in property<string> next-prayer;
-    in property<string> current-prayer;
+    in-out property<string> current-prayer;
     in property<bool> adhan-playing: false;
-    in property<[PrayerTime]> prayer-times;
+    in-out property<[PrayerTime]> prayer-times;
     in property<length> calc-px: min(root.width / 1280, root.height / 600);
     in property<length> border-radius: 10 * calc-px;
     in property<int> city;
@@ -30,6 +30,12 @@ export component Clock inherits Window {
 
     public function update-city(new-city: int) {
         city_picker.update-current(new-city);
+    }
+    public function update-prayer-times(new: [PrayerTime]) {
+        prayer-times = new;
+    }
+    public function update-current-prayer(new: string) {
+        current-prayer = new;
     }
 
     default-font-family: "Ubuntu Condensed";

@@ -114,8 +114,8 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
         }).collect();
         let app = weakapp.clone();
         ensure_run_in_event_loop(file_prefix, app, move |app| {
-            app.set_prayer_times(prayer_times.as_slice().into());
-            app.set_current_prayer(current_prayer.into());
+            app.invoke_update_prayer_times(prayer_times.as_slice().into());
+            app.invoke_update_current_prayer(current_prayer.into());
         });
         let mut tz = Local::now().format("%z").to_string();
         loop {
@@ -137,8 +137,8 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 }).collect();
                 let app = weakapp.clone();
                 ensure_run_in_event_loop(file_prefix, app, move |app| {
-                    app.set_prayer_times(prayer_times.as_slice().into());
-                    app.set_current_prayer(current_prayer.into());
+                    app.invoke_update_prayer_times(prayer_times.as_slice().into());
+                    app.invoke_update_current_prayer(current_prayer.into());
                 });
                 tz = new_tz;
             }
@@ -167,8 +167,8 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 }).collect();
                 let app = weakapp.clone();
                 ensure_run_in_event_loop(file_prefix, app, move |app| {
-                    app.set_prayer_times(prayer_times.as_slice().into());
-                    app.set_current_prayer(current_prayer.into());
+                    app.invoke_update_prayer_times(prayer_times.as_slice().into());
+                    app.invoke_update_current_prayer(current_prayer.into());
                 });
             }
             if time >= timings[0].1 {
@@ -186,8 +186,8 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 }).collect();
                 let app = weakapp.clone();
                 ensure_run_in_event_loop(file_prefix, app, move |app| {
-                    app.set_prayer_times(prayer_times.as_slice().into());
-                    app.set_current_prayer(current_prayer.into());
+                    app.invoke_update_prayer_times(prayer_times.as_slice().into());
+                    app.invoke_update_current_prayer(current_prayer.into());
                     app.set_adhan_playing(true);
                 });
                 if timings.len() <= 100 {
