@@ -1,0 +1,52 @@
+export component Picker inherits Rectangle {
+    out property<bool> expanded: false;
+    in-out property<int> current: 0;
+    in property<color> text-color;
+    in property<[string]> entries;
+    in property<length> full-height;
+    in property<length> font-size;
+    in property<color> background-color;
+
+    callback picked(int);
+
+    Text {
+        text: entries[current];
+        color: text-color;
+        font-size: parent.font-size;
+        
+        TouchArea {
+            clicked => {
+                expanded = true;
+            }
+        }
+    }
+    if expanded: Rectangle {
+        height: full-height;
+        width: self.preferred-width;
+        x: 0;
+        y: 0;
+        background: background-color;
+         
+        Flickable {
+            flicked => {
+                debug(self.viewport-y, full-height - self.viewport-height);
+            }
+
+            VerticalLayout {
+                for i in 100: Text {
+                    text: entries[i];
+                    color: text-color;
+                    font-size: root.font-size;
+
+                    TouchArea {
+                        clicked => {
+                            current = i;
+                            expanded = false;
+                            picked(current);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

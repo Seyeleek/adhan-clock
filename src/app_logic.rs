@@ -1,4 +1,4 @@
-use slint;
+use slint::language::StandardListViewItem;
 use std::{
     thread,
     time::Duration,
@@ -25,7 +25,7 @@ const SLEEP_TIME: Duration = Duration::from_millis(500);
 static LOG_LOCK: Mutex<()> = Mutex::new(());
 static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
 static COUNTRY: Mutex<&'static str> = Mutex::new("United States");
-static CITY: Mutex<&'static str> = Mutex::new("Dallas (Texas)");
+static CITY: Mutex<&'static str> = Mutex::new("Damascus (Oregon)");
 
 type Timing = (String, DateTime<Local>, usize);
 
@@ -37,6 +37,15 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
         );
     }));
     let app = Clock::new().unwrap();
+    let country = COUNTRY.lock().unwrap();
+    let mut cities: Vec<_> = CITIES[&country].keys().collect();
+    app.set_country((*country).into());
+    cities.sort();
+    let city = CITY.lock().unwrap();
+    let city_pos = cities.binary_search(&&*city).unwrap();
+    app.set_city(city_pos as i32);
+    let list_items: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
+    app.set_cities(list_items.as_slice().into());
     let weakapp = app.as_weak();
     let (time_tx, time_rx) = mpsc::channel();
     let (adhan_tx, adhan_rx) = mpsc::channel();
@@ -126,6 +135,23 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 let app = app.unwrap();
                 app.set_next_prayer(next_prayer.into());
             }).unwrap();
+            if timings[0] != current_times[timings[0].2] {
+                let current_prayer = timings[5].0.clone();
+                for time in timings.range(0..6) {
+                    current_times[time.2] = time.clone();
+                }
+                let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
+                    prayer: x.0.clone().into(),
+                    time: x.1.format("%I:%M").to_string().into(),
+                    ampm: x.1.format("%p").to_string().into(),
+                }).collect();
+                let app = weakapp.clone();
+                slint::invoke_from_event_loop(move || {
+                    let app = app.unwrap();
+                    app.set_prayer_times(prayer_times.as_slice().into());
+                    app.set_current_prayer(current_prayer.into());
+                }).unwrap();
+            }
             if time >= timings[0].1 {
                 let adhan = timings.pop_front().unwrap().0;
                 log(file_prefix, format!("INFO: {} sent", adhan));
