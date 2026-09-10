@@ -156,7 +156,7 @@ export component Clock inherits Window {
             city_picker := Picker {
                 full-height: root.height * 95% - root.height * 280% / 4;
                 full-width: root.width * 60%;
-                picker-x: 0 - self.x + root.width * 30% - self.width * 2;
+                picker-x: 0 - self.x + root.width * 17%;
                 text-color: Palette.fg;
                 font-size: min(root.height * 3%, root.width * 5%);
                 background-color: Palette.bg;
@@ -177,7 +177,7 @@ export component Clock inherits Window {
             country_picker := Picker {
                 full-height: root.height * 95% - root.height * 280% / 4;
                 full-width: root.width * 60%;
-                picker-x: 0 - self.x + root.width * 30% - self.width;
+                picker-x: 0 - self.x + root.width * 17%;
                 text-color: Palette.fg;
                 font-size: min(root.height * 3%, root.width * 5%);
                 background-color: Palette.bg;
@@ -187,6 +187,9 @@ export component Clock inherits Window {
                 picker-drop-shadow-color: #000;
                 picker-drop-shadow-blur: 2 * border-radius;
                 visible: !city_picker.expanded;
+                init => {
+                    debug(0 - self.x);
+                }
             }
         }
     }
