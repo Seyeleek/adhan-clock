@@ -3,7 +3,7 @@ use std::{
     thread,
     time::Duration,
     fs::{OpenOptions, self},
-    sync::{mpsc, Mutex},
+    sync::{mpsc, Mutex, Arc},
     collections::VecDeque,
     io::{Cursor, Write},
     fmt::Display,
@@ -383,12 +383,26 @@ fn init_city_country(weakapp: slint::Weak<Clock>) {
 fn ensure_run_in_event_loop<T, U>(file_prefix: &'static str, app: slint::Weak<T>, func: U)
 where T: slint::StrongHandle + 'static, U: FnOnce(T) + Send + Clone + 'static {
     loop {
-        match app.upgrade_in_event_loop(func.clone()) {
-            Ok(_) => return,
-            Err(e) => {
-                log(file_prefix, format!("ERROR: {:#?}", e));
+        let result = Arc::new(Mutex::new(Some(())));
+        let func = func.clone();
+        let app = app.clone();
+        let res_el = Arc::clone(&result);
+        slint::invoke_from_event_loop(move || {
+            let app = match app.upgrade() {
+                Some(x) => x,
+                None => {
+                    *res_el.lock().unwrap() = None;
+                    return;
+                }
+            };
+            func(app);
+        }).unwrap();
+        match *result.lock().unwrap() {
+            Some(_) => return,
+            None => {
                 thread::sleep(SLEEP_TIME);
+                log(file_prefix, format!("INFO: Graphical update failed, retrying."));
             },
-        };
+        }
     }
 }
