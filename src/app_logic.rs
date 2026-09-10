@@ -3,7 +3,7 @@ use std::{
     thread,
     time::Duration,
     fs::{OpenOptions, self},
-    sync::mpsc,
+    sync::{mpsc, Mutex},
     collections::VecDeque,
     io::{Cursor, Write},
     fmt::{Display, Debug},
@@ -19,6 +19,8 @@ const ADHAN: &[u8] = include_bytes!("../adhan.ogg").as_slice();
 const FAJR_ADHAN: &[u8] = include_bytes!("../fajr-adhan.ogg").as_slice();
 const SLEEP_TIME: Duration = Duration::from_millis(500);
 const FIFTEEN_MINS: Duration = Duration::from_mins(15);
+
+static LOG_LOCK: Mutex<()> = Mutex::new(());
 
 pub trait LogError<T, E> {
     fn unwrap_or_log(self, file_prefix: &'static str) -> T;
@@ -53,7 +55,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 thread::sleep(SLEEP_TIME);
                 continue;
             }
-            prev_time = current_time.clone();
+            prev_time = current_time;
             time_tx.send(current_time).unwrap();
             let time = current_time.format("%I:%M:%S %p").to_string();
             let date = current_time.format("%a %m-%d-%Y").to_string();
@@ -70,7 +72,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
     thread::spawn(move || {
         let mut timings = load_data(file_prefix);
         let current_prayer = timings[5].0.clone();
-        let mut current_times: Vec<_> = timings.range(0..6).map(|x| x.clone()).collect();
+        let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
         for time in timings.range(0..6) {
             current_times[time.2] = time.clone();
         }
@@ -140,7 +142,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     let app = app.unwrap();
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
-                    app.set_adhan_playing(true.into());
+                    app.set_adhan_playing(true);
                 }).unwrap_or_log(file_prefix);
                 if timings.len() <= 100 {
                     timings = load_data(file_prefix);
@@ -159,14 +161,13 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 continue;
             }
             let sound = if adhan == "Fajr" {FAJR_ADHAN} else {ADHAN};
-            let sink_handle;
-            match rodio::DeviceSinkBuilder::open_default_sink() {
-                Ok(x) => sink_handle = x,
+            let sink_handle = match rodio::DeviceSinkBuilder::open_default_sink() {
+                Ok(x) => x,
                 Err(e) => {
                     log(file_prefix, format!("ERROR: {:?}", e));
                     panic!();
                 }
-            }
+            };
             log(file_prefix, "INFO: Sound started");
             rodio::play(
                 &sink_handle.mixer(),
@@ -175,7 +176,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             let app = weakapp.clone();
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
-                app.set_adhan_playing(false.into());
+                app.set_adhan_playing(false);
             }).unwrap_or_log(file_prefix);
             log(file_prefix, "INFO: Sound ended");
         }
@@ -188,7 +189,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             let app = weakapp.clone();
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
-                app.set_adhan_playing(false.into());
+                app.set_adhan_playing(false);
             }).unwrap_or_log(file_prefix);
         }
     });
@@ -278,6 +279,7 @@ fn load_data(file_prefix: &'static str) -> VecDeque<(String, DateTime<Local>, us
 }
 
 fn log(file_prefix: &'static str, message: impl Display) {
+    let _lock = LOG_LOCK.lock();
     let mut file;
     match OpenOptions::new().append(true).create(true).open(
         format!("{}log.txt", file_prefix)

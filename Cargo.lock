@@ -109,7 +109,7 @@ dependencies = [
 
 [[package]]
 name = "adhan-clock"
-version = "2.3.4"
+version = "2.3.5"
 dependencies = [
  "chrono",
  "reqwest",
