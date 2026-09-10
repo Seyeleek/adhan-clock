@@ -39,38 +39,6 @@ pub fn main_window() -> Clock {
         );
     }));
     let app = Clock::new().unwrap();
-    *WEAKAPP.lock().unwrap() = app.as_weak();
-    let mut ran_before = RAN_BEFORE.lock().unwrap();
-    if *ran_before {
-        thread::spawn(|| log("INFO: Tried to run the app a second time."));
-        thread::spawn(|| {
-            init_city_country();
-            let timings = TIMINGS.lock().unwrap();
-            let current_prayer = timings[5].0.clone();
-            let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
-            for time in timings.range(0..6) {
-                current_times[time.2] = time.clone();
-            }
-            drop(timings);
-            let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
-                prayer: x.0.clone().into(),
-                time: x.1.format("%I:%M").to_string().into(),
-                ampm: x.1.format("%p").to_string().into(),
-            }).collect();
-            ensure_run_in_event_loop(move |app| {
-                app.invoke_update_prayer_times(prayer_times.as_slice().into());
-                app.invoke_update_current_prayer(current_prayer.into());
-            });
-        });
-        app.set_school((*SCHOOL.lock().unwrap()).clone().into());
-        return app;
-    } else {
-        thread::spawn(|| log("INFO: Started the application."));
-        *ran_before = true;
-    }
-    load_location_school();
-    app.set_school((*SCHOOL.lock().unwrap()).clone().into());
-    init_city_country();
     app.on_city_picked(move |new_city| {
         thread::spawn(move || {
             *CITY.lock().unwrap() = new_city.clone().into();
@@ -107,6 +75,38 @@ pub fn main_window() -> Clock {
             load_data();
         });
     });
+    *WEAKAPP.lock().unwrap() = app.as_weak();
+    let mut ran_before = RAN_BEFORE.lock().unwrap();
+    if *ran_before {
+        thread::spawn(|| log("INFO: Tried to run the app a second time."));
+        thread::spawn(|| {
+            init_city_country();
+            let timings = TIMINGS.lock().unwrap();
+            let current_prayer = timings[5].0.clone();
+            let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
+            for time in timings.range(0..6) {
+                current_times[time.2] = time.clone();
+            }
+            drop(timings);
+            let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
+                prayer: x.0.clone().into(),
+                time: x.1.format("%I:%M").to_string().into(),
+                ampm: x.1.format("%p").to_string().into(),
+            }).collect();
+            ensure_run_in_event_loop(move |app| {
+                app.invoke_update_prayer_times(prayer_times.as_slice().into());
+                app.invoke_update_current_prayer(current_prayer.into());
+            });
+        });
+        app.set_school((*SCHOOL.lock().unwrap()).clone().into());
+        return app;
+    } else {
+        thread::spawn(|| log("INFO: Started the application."));
+        *ran_before = true;
+    }
+    load_location_school();
+    app.set_school((*SCHOOL.lock().unwrap()).clone().into());
+    init_city_country();
     let (time_tx, time_rx) = mpsc::channel();
     let (adhan_tx, adhan_rx) = mpsc::channel();
     let (srise_tx, srise_rx) = mpsc::channel();
