@@ -3,7 +3,7 @@ use std::{
     thread,
     time::Duration,
     fs::{OpenOptions, self},
-    sync::{mpsc, Mutex, Arc, LazyLock},
+    sync::{mpsc, Mutex, Arc, LazyLock, OnceLock},
     collections::VecDeque,
     io::{Cursor, Write},
     fmt::Display,
@@ -31,6 +31,7 @@ static SCHOOL: Mutex<String> = Mutex::new(String::new());
 static WEAKAPP: LazyLock<Mutex<slint::Weak<Clock>>> = LazyLock::new(|| Mutex::new(Default::default()));
 static RAN_BEFORE: Mutex<bool> = Mutex::new(false);
 static DATA_LOCK: Mutex<u32> = Mutex::new(0);
+static UPDATE_TX: OnceLock<mpsc::Sender<()>> = OnceLock::new();
 
 type Timing = (String, DateTime<Local>, usize);
 
@@ -125,6 +126,8 @@ pub fn main_window() -> Clock {
         thread::spawn(|| log("INFO: Started the application."));
         *ran_before = true;
     }
+    let (update_tx, update_rx) = mpsc::channel();
+    let _ = UPDATE_TX.set(update_tx);
     load_location_school();
     app.set_school((*SCHOOL.lock().unwrap()).clone().into());
     init_city_country();
@@ -205,7 +208,7 @@ pub fn main_window() -> Clock {
                 app.set_time(time_fmt.into());
                 app.set_date(date.into());
             });
-            if timings[0] != current_times[timings[0].2] {
+            if update_rx.try_recv().is_ok() {
                 let current_prayer = timings[5].0.clone();
                 for time in timings.range(0..6) {
                     current_times[time.2] = time.clone();
@@ -219,6 +222,7 @@ pub fn main_window() -> Clock {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
                 });
+                log("INFO: Updated because new data was loaded.");
             }
             if time >= timings[0].1 {
                 let adhan = timings.pop_front().unwrap().0;
@@ -384,6 +388,7 @@ fn load_data() {
         let mut timings = TIMINGS.lock().unwrap();
         timings.clear();
         timings.extend(parsed_data);
+        UPDATE_TX.wait().send(()).unwrap();
     } else {
         log("INFO: Did not update data because of lock.");
     }
