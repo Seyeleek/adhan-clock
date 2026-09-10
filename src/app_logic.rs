@@ -27,6 +27,7 @@ static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
 static COUNTRY: Mutex<String> = Mutex::new(String::new());
 static CITY: Mutex<String> = Mutex::new(String::new());
 static WEAKAPP: LazyLock<Mutex<slint::Weak<Clock>>> = LazyLock::new(|| Mutex::new(Default::default()));
+static RAN_BEFORE: Mutex<bool> = Mutex::new(false);
 
 type Timing = (String, DateTime<Local>, usize);
 
@@ -36,9 +37,33 @@ pub fn main_window() -> Clock {
             format!("ERROR: {}\n{:#?}", panic_info, Backtrace::new()),
         );
     }));
-    load_location();
     let app = Clock::new().unwrap();
     *WEAKAPP.lock().unwrap() = app.as_weak();
+    let mut ran_before = RAN_BEFORE.lock().unwrap();
+    if *ran_before {
+        thread::spawn(|| log("INFO: Tried to run the app a second time."));
+        init_city_country();
+        let timings = TIMINGS.lock().unwrap();
+        let current_prayer = timings[5].0.clone();
+        let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
+        for time in timings.range(0..6) {
+            current_times[time.2] = time.clone();
+        }
+        drop(timings);
+        let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
+            prayer: x.0.clone().into(),
+            time: x.1.format("%I:%M").to_string().into(),
+            ampm: x.1.format("%p").to_string().into(),
+        }).collect();
+        app.invoke_update_prayer_times(prayer_times.as_slice().into());
+        app.invoke_update_current_prayer(current_prayer.into());
+        return app;
+    } else {
+        thread::spawn(|| log("INFO: Started the application."));
+        *ran_before = true;
+    }
+    load_location();
+    init_city_country();
     app.on_city_picked(move |new_city| {
         thread::spawn(move || {
             let mut city = CITY.lock().unwrap();
@@ -68,7 +93,6 @@ pub fn main_window() -> Clock {
             load_data();
         });
     });
-    init_city_country();
     let (time_tx, time_rx) = mpsc::channel();
     let (adhan_tx, adhan_rx) = mpsc::channel();
     let (srise_tx, srise_rx) = mpsc::channel();
@@ -386,7 +410,7 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
             Some(_) => return,
             None => {
                 thread::sleep(SLEEP_TIME);
-                log("INFO: Graphical update failed, retrying.");
+                thread::spawn(|| log("INFO: Graphical update failed, retrying."));
             },
         }
     }
