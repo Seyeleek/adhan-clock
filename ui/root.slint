@@ -1,6 +1,6 @@
 import "./ubuntu-condensed.ttf";
 import { Picker } from "picker.slint";
-import { StandardListView, VerticalBox } from "std-widgets.slint";
+import { StandardListView } from "listview.slint";
 
 global Palette {
     in property<color> bg: #002b36;
@@ -22,9 +22,11 @@ export component Clock inherits Window {
     in property<length> border-radius: 10 * calc-px;
     in property<int> city;
     in property<[StandardListViewItem]> cities;
-    in property<string> country;
+    in property<int> country;
+    in property<[StandardListViewItem]> countries;
 
-    //callback city_picked <=> city_picker.picked;
+    callback city_picked <=> city_picker.picked;
+    callback country_picked <=> country_picker.picked;
 
     default-font-family: "Ubuntu Condensed";
     title: "Adhan Clock";
@@ -127,6 +129,12 @@ export component Clock inherits Window {
             Rectangle {vertical-stretch: 1;}
         }
     }
+    TouchArea {
+        clicked => {
+            city-picker.expanded = false;
+            country-picker.expanded = false;
+        }
+    }
     Rectangle {
         width: root.width * 94%;
         height: root.height * 5%;
@@ -143,36 +151,40 @@ export component Clock inherits Window {
                 text: "Displaying times for ";
                 color: Palette.fg;
                 font-size: calc-px * 25;
+                vertical-alignment: center;
             }
-            /*
             city_picker := Picker {
                 z: 3;
-                full-height: root.height * 15%;
+                full-height: root.height * 95% - root.height * 280% / 4;
+                full-width: root.width * 94% - self.x;
                 text-color: Palette.fg;
                 font-size: calc-px * 25;
                 background-color: Palette.bg;
                 current: city;
                 entries: cities;
-            }
-            */
-            Rectangle {
-                width: 100px;
-                height: root.height * 15%;
-                background: Palette.bg;
-
-                StandardListView {
-                    model: cities;
-                }
+                picker-border-radius: border-radius;
+                picker-drop-shadow-color: #000;
+                picker-drop-shadow-blur: 2 * border-radius;
             }
             Text {
                 z: 1;
                 text: ", ";
-            }
-            Text {
-                z: 2;
-                text: country;
                 color: Palette.fg;
                 font-size: calc-px * 25;
+                vertical-alignment: center;
+            }
+            country_picker := Picker {
+                z: 2;
+                full-height: root.height * 95% - root.height * 280% / 4;
+                full-width: root.width * 94% - self.x;
+                text-color: Palette.fg;
+                font-size: calc-px * 25;
+                background-color: Palette.bg;
+                current: country;
+                entries: countries;
+                picker-border-radius: border-radius;
+                picker-drop-shadow-color: #000;
+                picker-drop-shadow-blur: 2 * border-radius;
             }
         }
     }

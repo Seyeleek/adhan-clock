@@ -1,17 +1,25 @@
 // Copyright © SixtyFPS GmbH <info@slint.dev>
 // SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0
 
-import { ListItem, ScrollView } from "std-widgets-impl.slint";
+import { ScrollView } from "scrollview.slint";
+import { ListItem } from "components.slint";
 
 export component ListView inherits ScrollView {
     @children
     accessible-role: list;
     accessible-orientation: Orientation.vertical;
+    vertical-scrollbar-policy: always-off;
+    horizontal-scrollbar-policy: always-off;
 }
 
 component StandardListViewBase inherits ListView {
     in property <[StandardListViewItem]> model;
     in-out property <int> current-item: -1;
+    in property <color> text-color;
+    in property <color> selected-color;
+    in property <color> selected-bg;
+    in property <color> background;
+    in property <length> font-size;
 
     callback current-item-changed(current-item: int);
     callback item-pointer-event(item: int, event: PointerEvent, position: Point);
@@ -28,7 +36,7 @@ component StandardListViewBase inherits ListView {
         current-item-changed(current-item);
     }
 
-    private property <length> item-height: self.content-height / self.model.length;
+    private property <length> item-height: self.viewport-height / self.model.length;
     private property <int> into-view-item: 0;
     private property <length> into-view-item-y: root.item-y(root.into-view-item);
     private property <length> current-item-y: root.item-y(root.focus-item);
@@ -39,22 +47,22 @@ component StandardListViewBase inherits ListView {
     accessible-item-count: root.model.length;
 
     pure function first-visible-item() -> int {
-        return min(root.model.length - 1, max(0, round(-root.content-y / root.item-height)));
+        return min(root.model.length - 1, max(0, round(-root.viewport-y / root.item-height)));
     }
 
     pure function last-visible-item() -> int {
-        return min(root.model.length - 1, max(0, round((-root.content-y + root.height - root.item-height) / root.item-height)));
+        return min(root.model.length - 1, max(0, round((-root.viewport-y + root.height - root.item-height) / root.item-height)));
     }
 
     pure function item-y(index: int) -> length {
-        return root.content-y + index * root.item-height;
+        return root.viewport-y + index * root.item-height;
     }
 
     pure function item-at-y(y: length) -> int {
         return min(root.model.length - 1, max(0, round(y / root.item-height)));
     }
 
-    function bring-into-view(index: int) {
+    public function bring-into-view(index: int) {
         if (index < 0 || index >= model.length) {
             return;
         }
@@ -62,11 +70,11 @@ component StandardListViewBase inherits ListView {
         into-view-item = index;
 
         if (into-view-item-y < 0) {
-            self.content-y += 0 - into-view-item-y;
+            self.viewport-y += 0 - into-view-item-y + item-height;
         }
 
         if (into-view-item-y + item-height > self.visible-height) {
-            self.content-y -= into-view-item-y + item-height - self.visible-height;
+            self.viewport-y -= into-view-item-y + 2 * item-height - self.visible-height;
         }
     }
 
@@ -142,6 +150,12 @@ component StandardListViewBase inherits ListView {
         pressed-x: i-touch-area.pressed-x;
         pressed-y: i-touch-area.pressed-y;
         accessible-action-default => { i-touch-area.clicked(); }
+
+        text-color: root.text-color;
+        selected-color: root.selected-color;
+        selected-bg: root.selected-bg;
+        background: root.background;
+        font-size: root.font-size;
 
         i-touch-area := TouchArea {
             clicked => {

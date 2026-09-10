@@ -1,51 +1,57 @@
+import { StandardListView } from "listview.slint";
+
 export component Picker inherits Rectangle {
-    out property<bool> expanded: false;
+    in-out property<bool> expanded: false;
     in-out property<int> current: 0;
     in property<color> text-color;
-    in property<[string]> entries;
+    in property<[StandardListViewItem]> entries;
     in property<length> full-height;
+    in property<length> full-width;
     in property<length> font-size;
     in property<color> background-color;
+    in property<length> picker-border-radius;
+    in property<length> picker-drop-shadow-blur;
+    in property<color> picker-drop-shadow-color;
 
-    callback picked(int);
+    callback picked(string);
 
     Text {
-        text: entries[current];
+        text: entries[current].text;
         color: text-color;
         font-size: parent.font-size;
         
         TouchArea {
             clicked => {
                 expanded = true;
+                list.bring-into-view(current);
             }
         }
     }
-    if expanded: Rectangle {
-        height: full-height;
-        width: self.preferred-width;
+    list-rec := Rectangle {
+        height: expanded ? full-height : 0px;
+        width: expanded ? full-width : 0px;
         x: 0;
         y: 0;
         background: background-color;
-         
-        Flickable {
-            flicked => {
-                debug(self.viewport-y, full-height - self.viewport-height);
-            }
+        border-radius: root.picker-border-radius;
+        drop-shadow-color: root.picker-drop-shadow-color;
+        drop-shadow-blur: root.picker-drop-shadow-blur;
 
-            VerticalLayout {
-                for i in 100: Text {
-                    text: entries[i];
-                    color: text-color;
-                    font-size: root.font-size;
+        list := StandardListView {
+            width: parent.width;
+            height: parent.height;
+            text-color: root.text-color;
+            font-size: root.font-size;
+            selected-color: root.background-color;
+            selected-bg: self.text-color;
+            background: background-color;
+            model: entries;
+            current-item: current;
 
-                    TouchArea {
-                        clicked => {
-                            current = i;
-                            expanded = false;
-                            picked(current);
-                        }
-                    }
-                }
+            current-item-changed(current-item) => {
+                current = current-item;
+                expanded = false;
+                picked(entries[current].text);
             }
         }
     }

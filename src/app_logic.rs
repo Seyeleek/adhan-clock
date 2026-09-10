@@ -24,8 +24,8 @@ const SLEEP_TIME: Duration = Duration::from_millis(500);
 
 static LOG_LOCK: Mutex<()> = Mutex::new(());
 static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
-static COUNTRY: Mutex<&'static str> = Mutex::new("United States");
-static CITY: Mutex<&'static str> = Mutex::new("Damascus (Oregon)");
+static COUNTRY: Mutex<String> = Mutex::new(String::new());
+static CITY: Mutex<String> = Mutex::new(String::new());
 
 type Timing = (String, DateTime<Local>, usize);
 
@@ -36,16 +36,42 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             format!("ERROR: {}\n{:#?}", panic_info, Backtrace::new()),
         );
     }));
+    load_location(file_prefix);
     let app = Clock::new().unwrap();
-    let country = COUNTRY.lock().unwrap();
-    let mut cities: Vec<_> = CITIES[&country].keys().collect();
-    app.set_country((*country).into());
-    cities.sort();
-    let city = CITY.lock().unwrap();
-    let city_pos = cities.binary_search(&&*city).unwrap();
-    app.set_city(city_pos as i32);
-    let list_items: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
-    app.set_cities(list_items.as_slice().into());
+    app.on_city_picked(move |new_city| {
+        thread::spawn(move || {
+            let mut city = CITY.lock().unwrap();
+            *city = new_city.clone().into();
+            fs::write(format!("{}city.txt", file_prefix), new_city).unwrap();
+            drop(city);
+            load_data(file_prefix);
+        });
+    });
+    let weakapp = app.as_weak();
+    app.on_country_picked(move |new_country| {
+        let app = weakapp.clone();
+        thread::spawn(move || {
+            let mut country = COUNTRY.lock().unwrap();
+            *country = new_country.clone().into();
+            fs::write(format!("{}country.txt", file_prefix), new_country).unwrap();
+            let mut cities: Vec<_> = CITIES[country.as_str()].keys().collect();
+            drop(country);
+            cities.sort();
+            let mut city = CITY.lock().unwrap();
+            *city = (*cities[0]).into();
+            fs::write(format!("{}city.txt", file_prefix), (*city).clone()).unwrap();
+            drop(city);
+            let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
+            slint::invoke_from_event_loop(move || {
+                let app = app.unwrap();
+                app.set_cities(cities.as_slice().into());
+                app.set_city(0);
+            }).unwrap();
+            load_data(file_prefix);
+        });
+    });
+    let weakapp = app.as_weak();
+    init_city_country(weakapp);
     let weakapp = app.as_weak();
     let (time_tx, time_rx) = mpsc::channel();
     let (adhan_tx, adhan_rx) = mpsc::channel();
@@ -321,4 +347,45 @@ fn log(file_prefix: &'static str, message: impl Display) {
         Err(_) => return,
     };
     let _ = writeln!(file, "{}: {}", Local::now(), message);
+}
+
+fn load_location(file_prefix: &'static str) {
+    let mut city_data = "Dallas (Texas)".to_string();
+    let mut country_data = "United States".to_string();
+    let city_file = format!("{}city.txt", file_prefix);
+    if fs::exists(&city_file).unwrap() {
+        match fs::read_to_string(city_file) {
+            Ok(x) => city_data = x,
+            Err(e) => log(file_prefix, format!("Could not read city file because of {:#?}", e)),
+        }
+    }
+    let country_file = format!("{}country.txt", file_prefix);
+    if fs::exists(&country_file).unwrap() {
+        match fs::read_to_string(country_file) {
+            Ok(x) => country_data = x,
+            Err(e) => log(file_prefix, format!("Could not read country file because of {:#?}", e)),
+        }
+    }
+    let mut country = COUNTRY.lock().unwrap();
+    *country = country_data;
+    let mut city = CITY.lock().unwrap();
+    *city = city_data;
+}
+
+fn init_city_country(weakapp: slint::Weak<Clock>) {
+    let mut countries: Vec<_> = CITIES.keys().collect();
+    countries.sort();
+    let country = COUNTRY.lock().unwrap();
+    let country_pos = countries.binary_search(&&(*country).as_str()).unwrap();
+    let mut cities: Vec<_> = CITIES[&*country].keys().collect();
+    cities.sort();
+    let city = CITY.lock().unwrap();
+    let city_pos = cities.binary_search(&&(*city).as_str()).unwrap();
+    let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
+    let countries: Vec<StandardListViewItem> = countries.iter().map(|&&x| x.into()).collect();
+    let app = weakapp.unwrap();
+    app.set_city(city_pos as i32);
+    app.set_country(country_pos as i32);
+    app.set_cities(cities.as_slice().into());
+    app.set_countries(countries.as_slice().into());
 }

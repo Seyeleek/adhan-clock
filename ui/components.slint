@@ -1,7 +1,7 @@
 // Copyright © SixtyFPS GmbH <info@slint.dev>
 // SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0
 
-import { Icons, CosmicPalette, CosmicFontSettings, CosmicSizeSettings } from "styling.slint";
+import { Icons, CosmicFontSettings, CosmicSizeSettings } from "styling.slint";
 
 export component StateLayerBase {
     in property <length> border-radius <=> overlay.border-radius;
@@ -22,18 +22,18 @@ export component StateLayerBase {
         height: root.height + root.focus-border-margin * 2;
         border-width: 1px;
         border-radius: root.border-radius + root.focus-border-margin;
-        border-color: CosmicPalette.state-focus;
+        border-color: #000;
     }
 
     states [
         pressed when root.pressed : {
-            overlay.background: CosmicPalette.state-pressed;
+            overlay.background: #0000;
         }
         hover when root.has-hover : {
-            overlay.background: CosmicPalette.state-hover;
+            overlay.background: #0000;
         }
         checked when root.checked : {
-            overlay.background: CosmicPalette.state-selected;
+            overlay.background: #0000;
         }
     ]
 }
@@ -74,20 +74,6 @@ export component StateLayer inherits TouchArea {
    }
 }
 
-export component MenuBorder inherits Rectangle {
-    border-radius: 8px;
-    background: CosmicPalette.alternate-background;
-    drop-shadow-blur: 16px;
-    drop-shadow-offset-y: 4px;
-    drop-shadow-color: CosmicPalette.shadow;
-
-    Rectangle {
-        border-width: 1px;
-        border-radius: parent.border-radius;
-        border-color: CosmicPalette.control-divider;
-    }
-}
-
 export component ListItem {
     in property <bool> is-selected;
     in property <StandardListViewItem> item;
@@ -98,8 +84,14 @@ export component ListItem {
     in property <length> pressed-x;
     in property <length> pressed-y;
 
+    in property <color> text-color;
+    in property <color> selected-color;
+    in property <color> selected-bg;
+    in property <color> background;
+    in property <length> font-size;
+
     min-width: layout.min-width;
-    min-height: max(CosmicSizeSettings.item-height, layout.min-height);
+    min-height: layout.min-height;
     vertical-stretch: 0;
     horizontal-stretch: 1;
     accessible-role: list-item;
@@ -110,7 +102,8 @@ export component ListItem {
 
     states [
         is-selected when root.is-selected : {
-           text.color: CosmicPalette.accent-text;
+           text.color: selected-color;
+           text-container.background: selected-bg;
         }
     ]
 
@@ -131,23 +124,19 @@ export component ListItem {
                 padding-right: 16px;
                 spacing: 8px;
 
-                text := Text {
-                    text: root.item.text;
-                    color: CosmicPalette.control-foreground;
-                    vertical-alignment: center;
-                    horizontal-alignment: left;
-                    overflow: elide;
-                    accessible-role: none;
-                }
+                text-container := Rectangle {
+                    background: root.background;
 
-                Image {
-                    width: 16px;
-                    height: 16px;
-                    y: (parent.height - self.height) / 2;
-                    visible: root.is-selected;
-                    colorize: text.color;
-                    source: Icons.check-mark;
-                    accessible-role: none;
+                    text := Text {
+                        width: parent.width;
+                        text: root.item.text;
+                        color: pressed ? #002b36 : text-color;
+                        font-size: font-size;
+                        vertical-alignment: center;
+                        horizontal-alignment: left;
+                        overflow: elide;
+                        accessible-role: none;
+                    }
                 }
             }
 

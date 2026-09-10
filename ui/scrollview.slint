@@ -1,7 +1,6 @@
 // Copyright © SixtyFPS GmbH <info@slint.dev>
 // SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0
 
-import { CosmicPalette, Icons } from "styling.slint";
 import { StateLayerBase } from "components.slint";
 
 export component ScrollBar {
@@ -12,6 +11,9 @@ export component ScrollBar {
     in-out property <length> page-size;
     in-out property <length> value;
     in property <ScrollBarPolicy> policy: ScrollBarPolicy.as-needed;
+
+    in property <color> scrollbar-color: white;
+    in property <color> thumb-color: gray;
 
     callback scrolled();
 
@@ -24,7 +26,7 @@ export component ScrollBar {
 
     Rectangle {
         border-radius: thumb.border-radius;
-        background: CosmicPalette.neutral-5-background;
+        background: scrollbar-color;
         clip: true;
 
         thumb := Rectangle {
@@ -33,7 +35,7 @@ export component ScrollBar {
             x: !root.horizontal ? (parent.width - self.width) / 2 : root.offset + (root.track-size - thumb.width) * (-root.value / root.maximum);
             y: root.horizontal ? (parent.height - self.height) / 2 : root.offset + (root.track-size - thumb.height) * (-root.value / root.maximum);
             border-radius: (root.horizontal ? self.height : self.width) / 2;
-            background: CosmicPalette.neutral-6-background;
+            background: thumb-color;
 
             StateLayerBase {
                 width: 100%;
@@ -98,17 +100,16 @@ export component ScrollView {
     in property <bool> enabled: true;
     out property <length> visible-width <=> flickable.width;
     out property <length> visible-height <=> flickable.height;
-    @shadowable in-out property <length> content-width <=> flickable.content-width;
-    @shadowable in-out property <length> content-height <=> flickable.content-height;
-    @shadowable in-out property <length> content-x <=> flickable.content-x;
-    @shadowable in-out property <length> content-y <=> flickable.content-y;
-    @deprecated in-out property <length> viewport-width <=> content-width;
-    @deprecated in-out property <length> viewport-height <=> content-height;
-    @deprecated in-out property <length> viewport-x <=> content-x;
-    @deprecated in-out property <length> viewport-y <=> content-y;
+    in-out property <length> viewport-width <=> flickable.viewport-width;
+    in-out property <length> viewport-height <=> flickable.viewport-height;
+    in-out property <length> viewport-x <=> flickable.viewport-x;
+    in-out property <length> viewport-y <=> flickable.viewport-y;
     in property <ScrollBarPolicy> vertical-scrollbar-policy <=> vertical-bar.policy;
     in property <ScrollBarPolicy> horizontal-scrollbar-policy <=> horizontal-bar.policy;
-    in property <bool> mouse-drag-pan-enabled <=> flickable.mouse-drag-pan-enabled;
+    in property <bool> mouse-drag-pan-enabled <=> flickable.interactive;
+
+    in property <color> scrollbar-color: white;
+    in property <color> thumb-color: gray;
 
     // FIXME: remove. This property is currently set by the ListView and is used by the native style to draw the scrollbar differently when it has focus
     in-out property <bool> has-focus;
@@ -123,9 +124,9 @@ export component ScrollView {
     preferred-width: 100%;
 
     flickable := Flickable {
-        mouse-drag-pan-enabled: false;
-        content-y <=> vertical-bar.value;
-        content-x <=> horizontal-bar.value;
+        interactive: false;
+        viewport-y <=> vertical-bar.value;
+        viewport-x <=> horizontal-bar.value;
         width: 100%;
         height: 100%;
 
@@ -139,8 +140,10 @@ export component ScrollView {
         width: 8px;
         height: horizontal-bar.visible ? parent.height - horizontal-bar.height : parent.height;
         horizontal: false;
-        maximum:  flickable.content-height - flickable.height;
+        maximum:  flickable.viewport-height - flickable.height;
         page-size:  flickable.height;
+        scrollbar-color: root.scrollbar-color;
+        thumb-color: root.scrollbar-color;
 
         scrolled => {root.scrolled()}
     }
@@ -152,8 +155,10 @@ export component ScrollView {
         y: parent.height - self.height;
         x: 0;
         horizontal: true;
-        maximum:  flickable.content-width - flickable.width;
+        maximum:  flickable.viewport-width - flickable.width;
         page-size:  flickable.width;
+        scrollbar-color: root.scrollbar-color;
+        thumb-color: root.scrollbar-color;
 
         scrolled => {root.scrolled()}
     }
