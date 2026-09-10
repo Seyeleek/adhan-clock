@@ -20,4 +20,4 @@ phf = { version = "0.14.0", features = ["macros"] }
 backtrace = "0.3.76"
 
 [build-dependencies]
-slint-build = "1.16.1"
+slint-build = "1.17.1"
