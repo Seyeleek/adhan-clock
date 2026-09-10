@@ -2,7 +2,7 @@
 
 [package]
 name = "adhan-clock"
-version = "3.7.0"
+version = "4.0.0"
 edition = "2024"
 build = "build.rs"
 license = "GPL-3.0-only"
@@ -30,7 +30,7 @@ i-slint-backend-android-activity = { path = "./i-slint-backend-android-activity"
 slint-build = "1.17.1"
 
 [package.metadata.android]
-package = "com.example.adhan_clock"
+package = "io.github.Seyeleek.adhan_clock"
 build_targets = ["aarch64-linux-android"]
 resources = "resources/"
 
