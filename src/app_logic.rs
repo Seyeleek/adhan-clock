@@ -24,9 +24,9 @@ const SLEEP_TIME: Duration = Duration::from_millis(500);
 static LOG_LOCK: Mutex<()> = Mutex::new(());
 static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
 static COUNTRY: Mutex<String> = Mutex::new(String::new());
-static COUNTRIES: LazyLock<Vec<&str>> = LazyLock::new(|| CITIES.keys().map(|x| *x).collect());
+static COUNTRIES: LazyLock<Vec<String>> = LazyLock::new(|| CITIES.keys().map(|x| x.to_lowercase()).collect());
 static CITY: Mutex<String> = Mutex::new(String::new());
-static COUNTRY_CITIES: Mutex<Vec<&str>> = Mutex::new(Vec::new());
+static COUNTRY_CITIES: Mutex<Vec<String>> = Mutex::new(Vec::new());
 static SCHOOL: Mutex<String> = Mutex::new(String::new());
 static WEAKAPP: LazyLock<Mutex<slint::Weak<Clock>>> = LazyLock::new(|| Mutex::new(Default::default()));
 static RAN_BEFORE: Mutex<bool> = Mutex::new(false);
@@ -41,6 +41,7 @@ pub fn main_window() -> Clock {
         );
     }));
     let app = Clock::new().unwrap();
+    *WEAKAPP.lock().unwrap() = app.as_weak();
     app.on_city_picked(move |new_city| {
         thread::spawn(move || {
             *CITY.lock().unwrap() = new_city.clone().into();
@@ -62,14 +63,15 @@ pub fn main_window() -> Clock {
             let mut country = COUNTRY.lock().unwrap();
             *country = new_country.clone().into();
             fs::write(format!("{}country.txt", FILE_PREFIX), new_country).unwrap();
-            let cities: Vec<_> = CITIES[country.as_str()].keys().collect();
+            let cities = CITIES[&country].keys();
             drop(country);
-            *COUNTRY_CITIES.lock().unwrap() = cities.clone();
+            *COUNTRY_CITIES.lock().unwrap() = cities.clone().map(|x| x.to_lowercase()).collect();
+            let cities: Vec<_> = cities.map(|&x| x).collect();
             let mut city = CITY.lock().unwrap();
             *city = (*cities[0]).into();
             fs::write(format!("{}city.txt", FILE_PREFIX), (*city).clone()).unwrap();
             drop(city);
-            let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
+            let cities: Vec<StandardListViewItem> = cities.iter().map(|&x| x.into()).collect();
             ensure_run_in_event_loop(move |app| {
                 app.set_cities(cities.as_slice().into());
                 app.invoke_update_city(0);
@@ -77,7 +79,24 @@ pub fn main_window() -> Clock {
             load_data();
         });
     });
-    *WEAKAPP.lock().unwrap() = app.as_weak();
+    let weakapp = app.as_weak();
+    app.on_search_country(move |country_name| {
+        if country_name == "" { return; }
+        let pos = match COUNTRIES.binary_search(&country_name.to_lowercase()) {
+            Ok(x) => x as i32,
+            Err(x) => x as i32,
+        };
+        weakapp.upgrade().unwrap().invoke_show_country(pos);
+    });
+    let weakapp = app.as_weak();
+    app.on_search_city(move |city_name| {
+        if city_name == "" { return; }
+        let pos = match COUNTRY_CITIES.lock().unwrap().binary_search(&city_name.to_lowercase()) {
+            Ok(x) => x as i32,
+            Err(x) => x as i32,
+        };
+        weakapp.upgrade().unwrap().invoke_show_city(pos);
+    });
     let mut ran_before = RAN_BEFORE.lock().unwrap();
     if *ran_before {
         thread::spawn(|| log("INFO: Tried to run the app a second time."));
@@ -262,7 +281,7 @@ pub fn main_window() -> Clock {
     if SAFELY_PRUNE {
         thread::spawn(|| {
             let pattern = format!("{}*[!-][!l][!m].json", FILE_PREFIX);
-            for file in glob::glob(pattern.as_str()).unwrap() {
+            for file in glob::glob(&pattern).unwrap() {
                 let file = file.unwrap();
                 if fs::remove_file(&file).is_ok() {
                     log(format!("INFO: Removed {}.", file.display()));
@@ -400,14 +419,16 @@ fn load_location_school() {
 }
 
 fn init_city_country() {
+    let countries: Vec<_> = CITIES.keys().map(|&x| x).collect();
     let country = COUNTRY.lock().unwrap();
-    let country_pos = COUNTRIES.binary_search(&(country.as_str())).unwrap();
-    let cities: Vec<_> = CITIES[&*country].keys().map(|x| *x).collect();
-    *COUNTRY_CITIES.lock().unwrap() = cities.clone();
+    let country_pos = countries.binary_search(&country.as_str()).unwrap();
+    let cities = CITIES[&*country].keys();
+    *COUNTRY_CITIES.lock().unwrap() = cities.clone().map(|x| x.to_lowercase()).collect();
+    let cities: Vec<_> = cities.map(|&x| x).collect();
     let city = CITY.lock().unwrap();
-    let city_pos = cities.binary_search(&(city.as_str())).unwrap();
+    let city_pos = cities.binary_search(&city.as_str()).unwrap();
     let cities: Vec<StandardListViewItem> = cities.iter().map(|&x| x.into()).collect();
-    let countries: Vec<StandardListViewItem> = COUNTRIES.iter().map(|&x| x.into()).collect();
+    let countries: Vec<StandardListViewItem> = countries.iter().map(|&x| x.into()).collect();
     ensure_run_in_event_loop(move |app| {
         app.set_city(city_pos as i32);
         app.set_country(country_pos as i32);

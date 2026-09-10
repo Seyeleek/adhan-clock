@@ -1,4 +1,5 @@
 import { StandardListView } from "listview.slint";
+import { LineEdit } from "lineedit.slint";
 
 export component Picker inherits Rectangle {
     in-out property<bool> expanded: false;
@@ -13,11 +14,17 @@ export component Picker inherits Rectangle {
     in property<length> picker-drop-shadow-blur;
     in property<color> picker-drop-shadow-color;
     in property<length> picker-x;
+    in property<bool> show-search: true;
 
     callback picked(string);
+    callback searched <=> search-box.edited;
 
     public function update-current(current-item: int) {
         list.current-item = current-item;
+    }
+
+    public function bring-into-view(item: int) {
+        list.bring-into-view(item);
     }
 
     Text {
@@ -33,9 +40,10 @@ export component Picker inherits Rectangle {
         }
     }
     Rectangle {
+        visible: expanded;
         z: 4;
-        height: expanded ? full-height : 0px;
-        width: expanded ? full-width : 0px;
+        height: full-height;
+        width: full-width;
         y: 0;
         x: picker-x;
         background: background-color;
@@ -43,21 +51,40 @@ export component Picker inherits Rectangle {
         drop-shadow-color: root.picker-drop-shadow-color;
         drop-shadow-blur: root.picker-drop-shadow-blur;
 
-        list := StandardListView {
-            width: parent.width;
-            height: parent.height;
-            text-color: root.text-color;
-            font-size: root.font-size;
-            selected-color: root.background-color;
-            selected-bg: self.text-color;
-            background: background-color;
-            model: entries;
-            current-item: current;
-            mouse-drag-pan-enabled: true;
+        VerticalLayout {
+            Rectangle {
+                visible: show-search;
+                height: show-search ? self.preferred-height : root.font-size / 3;
+                border-width: root.font-size / 20;
+                border-color: root.text-color;
+                border-radius: root.font-size / 3;
 
-            current-item-changed(current-item) => {
-                expanded = false;
-                picked(entries[current-item].text);
+                HorizontalLayout {
+                    Rectangle { width: root.font-size / 3; }
+                    search-box := LineEdit {
+                        input-type: search;
+                        font-size: root.font-size;
+                        text-color: root.text-color;
+                    }
+                    Rectangle { width: root.font-size / 3; }
+                }
+            }
+            list := StandardListView {
+                width: parent.width;
+                height: expanded ? full-height - root.font-size * 1.5 : 0px;
+                text-color: root.text-color;
+                font-size: root.font-size;
+                selected-color: root.background-color;
+                selected-bg: self.text-color;
+                background: background-color;
+                model: entries;
+                current-item: current;
+                mouse-drag-pan-enabled: true;
+
+                current-item-changed(current-item) => {
+                    expanded = false;
+                    picked(entries[current-item].text);
+                }
             }
         }
     }

@@ -30,6 +30,16 @@ export component Clock inherits Window {
     callback country_picked <=> country_picker.picked;
     callback school_picked <=> school_picker.picked;
 
+    callback search-country <=> country_picker.searched;
+    callback search-city <=> city_picker.searched;
+
+    public function show-country(item: int) {
+        country_picker.bring-into-view(item);
+    }
+    public function show-city(item: int) {
+        city_picker.bring-into-view(item);
+    }
+
     public function update-city(new-city: int) {
         city_picker.update-current(new-city);
     }
@@ -182,6 +192,7 @@ export component Clock inherits Window {
                 picker-drop-shadow-color: #000;
                 picker-drop-shadow-blur: 2 * border-radius;
                 visible: !(country_picker.expanded || city_picker.expanded);
+                show-search: false;
             }
             Text {
                 text: " for ";
