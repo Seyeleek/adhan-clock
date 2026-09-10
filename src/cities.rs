@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 use phf::{phf_ordered_map, OrderedMap};
 
 #[allow(clippy::approx_constant)]

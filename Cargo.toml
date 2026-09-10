@@ -1,8 +1,11 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
 [package]
 name = "adhan-clock"
 version = "3.7.0"
 edition = "2024"
 build = "build.rs"
+license = "GPL-3.0-only"
 
 [lib]
 crate-type = ["cdylib"]
