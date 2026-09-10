@@ -20,7 +20,7 @@ phf = { version = "0.14.0", features = ["macros"] }
 backtrace = "0.3.76"
 
 [patch.crates-io]
-i-slint-backend-android-activity = { path = "../../Downloads/slint/internal/backends/android-activity" }
+i-slint-backend-android-activity = { path = "./i-slint-backend-android-activity" }
 
 [build-dependencies]
 slint-build = "1.17.1"

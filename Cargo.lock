@@ -2112,7 +2112,7 @@ dependencies = [
  "android-activity 0.5.2",
  "android-activity 0.6.1",
  "android-build",
- "i-slint-common 1.17.1",
+ "i-slint-common",
  "i-slint-core",
  "i-slint-renderer-skia",
  "jni 0.22.4",
@@ -2132,7 +2132,7 @@ dependencies = [
  "drm",
  "gbm",
  "glutin",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core",
  "i-slint-renderer-femtovg",
  "i-slint-renderer-software",
@@ -2155,7 +2155,7 @@ dependencies = [
  "i-slint-backend-linuxkms",
  "i-slint-backend-testing",
  "i-slint-backend-winit",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core",
  "i-slint-core-macros",
  "i-slint-renderer-femtovg",
@@ -2168,7 +2168,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "521e901e3d47ab829c0ef500c63155776208707cd93259e6a7803ed627fa2786"
 dependencies = [
  "cfg_aliases",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core",
  "i-slint-renderer-software",
  "vtable",
@@ -2191,7 +2191,7 @@ dependencies = [
  "futures",
  "glutin",
  "glutin-winit",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core",
  "i-slint-core-macros",
  "i-slint-renderer-femtovg",
@@ -2224,10 +2224,6 @@ dependencies = [
 [[package]]
 name = "i-slint-common"
 version = "1.17.1"
-
-[[package]]
-name = "i-slint-common"
-version = "1.17.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "52e63f8ea55ba21e44567ae67d2b01a4f5d09bb1fab693b1e6c79d96bef9e456"
 dependencies = [
@@ -2252,7 +2248,7 @@ dependencies = [
  "by_address",
  "data-url",
  "derive_more",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "icu_normalizer",
  "image",
  "itertools 0.14.0",
@@ -2290,7 +2286,7 @@ dependencies = [
  "const-field-offset",
  "derive_more",
  "euclid",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core-macros",
  "icu_normalizer",
  "image",
@@ -2350,7 +2346,7 @@ dependencies = [
  "derive_more",
  "femtovg",
  "glow",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core",
  "i-slint-core-macros",
  "imgref",
@@ -2375,7 +2371,7 @@ dependencies = [
  "derive_more",
  "glow",
  "glutin",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core",
  "i-slint-core-macros",
  "lyon_path",
@@ -2408,7 +2404,7 @@ dependencies = [
  "clru",
  "derive_more",
  "euclid",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core",
  "integer-sqrt",
  "lyon_path",
@@ -5066,7 +5062,7 @@ dependencies = [
  "const-field-offset",
  "i-slint-backend-android-activity",
  "i-slint-backend-selector",
- "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "i-slint-common",
  "i-slint-core",
  "i-slint-core-macros",
  "i-slint-renderer-femtovg",
