@@ -42,21 +42,25 @@ pub fn main_window() -> Clock {
     let mut ran_before = RAN_BEFORE.lock().unwrap();
     if *ran_before {
         thread::spawn(|| log("INFO: Tried to run the app a second time."));
-        init_city_country();
-        let timings = TIMINGS.lock().unwrap();
-        let current_prayer = timings[5].0.clone();
-        let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
-        for time in timings.range(0..6) {
-            current_times[time.2] = time.clone();
-        }
-        drop(timings);
-        let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
-            prayer: x.0.clone().into(),
-            time: x.1.format("%I:%M").to_string().into(),
-            ampm: x.1.format("%p").to_string().into(),
-        }).collect();
-        app.invoke_update_prayer_times(prayer_times.as_slice().into());
-        app.invoke_update_current_prayer(current_prayer.into());
+        thread::spawn(|| {
+            init_city_country();
+            let timings = TIMINGS.lock().unwrap();
+            let current_prayer = timings[5].0.clone();
+            let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
+            for time in timings.range(0..6) {
+                current_times[time.2] = time.clone();
+            }
+            drop(timings);
+            let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
+                prayer: x.0.clone().into(),
+                time: x.1.format("%I:%M").to_string().into(),
+                ampm: x.1.format("%p").to_string().into(),
+            }).collect();
+            ensure_run_in_event_loop(move |app| {
+                app.invoke_update_prayer_times(prayer_times.as_slice().into());
+                app.invoke_update_current_prayer(current_prayer.into());
+            });
+        });
         return app;
     } else {
         thread::spawn(|| log("INFO: Started the application."));
