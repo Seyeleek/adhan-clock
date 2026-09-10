@@ -137,7 +137,7 @@ dependencies = [
 
 [[package]]
 name = "adhan-clock"
-version = "3.5.11"
+version = "3.5.12"
 dependencies = [
  "backtrace",
  "chrono",
@@ -1379,7 +1379,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -2108,13 +2108,11 @@ dependencies = [
 [[package]]
 name = "i-slint-backend-android-activity"
 version = "1.17.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9805bcdcbeea6626a0054347ee55d2424e0d5574b563472719d3fc7a11852242"
 dependencies = [
  "android-activity 0.5.2",
  "android-activity 0.6.1",
  "android-build",
- "i-slint-common",
+ "i-slint-common 1.17.1",
  "i-slint-core",
  "i-slint-renderer-skia",
  "jni 0.22.4",
@@ -2134,7 +2132,7 @@ dependencies = [
  "drm",
  "gbm",
  "glutin",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core",
  "i-slint-renderer-femtovg",
  "i-slint-renderer-software",
@@ -2157,7 +2155,7 @@ dependencies = [
  "i-slint-backend-linuxkms",
  "i-slint-backend-testing",
  "i-slint-backend-winit",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core",
  "i-slint-core-macros",
  "i-slint-renderer-femtovg",
@@ -2170,7 +2168,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "521e901e3d47ab829c0ef500c63155776208707cd93259e6a7803ed627fa2786"
 dependencies = [
  "cfg_aliases",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core",
  "i-slint-renderer-software",
  "vtable",
@@ -2193,7 +2191,7 @@ dependencies = [
  "futures",
  "glutin",
  "glutin-winit",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core",
  "i-slint-core-macros",
  "i-slint-renderer-femtovg",
@@ -2226,6 +2224,10 @@ dependencies = [
 [[package]]
 name = "i-slint-common"
 version = "1.17.1"
+
+[[package]]
+name = "i-slint-common"
+version = "1.17.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "52e63f8ea55ba21e44567ae67d2b01a4f5d09bb1fab693b1e6c79d96bef9e456"
 dependencies = [
@@ -2250,7 +2252,7 @@ dependencies = [
  "by_address",
  "data-url",
  "derive_more",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "icu_normalizer",
  "image",
  "itertools 0.14.0",
@@ -2288,7 +2290,7 @@ dependencies = [
  "const-field-offset",
  "derive_more",
  "euclid",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core-macros",
  "icu_normalizer",
  "image",
@@ -2348,7 +2350,7 @@ dependencies = [
  "derive_more",
  "femtovg",
  "glow",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core",
  "i-slint-core-macros",
  "imgref",
@@ -2373,7 +2375,7 @@ dependencies = [
  "derive_more",
  "glow",
  "glutin",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core",
  "i-slint-core-macros",
  "lyon_path",
@@ -2406,7 +2408,7 @@ dependencies = [
  "clru",
  "derive_more",
  "euclid",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core",
  "integer-sqrt",
  "lyon_path",
@@ -4756,7 +4758,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.12.1",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -5064,7 +5066,7 @@ dependencies = [
  "const-field-offset",
  "i-slint-backend-android-activity",
  "i-slint-backend-selector",
- "i-slint-common",
+ "i-slint-common 1.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "i-slint-core",
  "i-slint-core-macros",
  "i-slint-renderer-femtovg",
@@ -5498,7 +5500,7 @@ dependencies = [
  "getrandom 0.4.3",
  "once_cell",
  "rustix 1.1.4",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -6339,7 +6341,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.61.2",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
