@@ -150,7 +150,7 @@ export component Clock inherits Window {
             Text {
                 text: "Displaying times for ";
                 color: Palette.fg;
-                font-size: calc-px * 25;
+                font-size: min(root.height * 3%, root.width * 5%);
                 vertical-alignment: center;
             }
             city_picker := Picker {
@@ -158,7 +158,7 @@ export component Clock inherits Window {
                 full-height: root.height * 95% - root.height * 280% / 4;
                 full-width: root.width * 94% - self.x;
                 text-color: Palette.fg;
-                font-size: calc-px * 25;
+                font-size: min(root.height * 3%, root.width * 5%);
                 background-color: Palette.bg;
                 current: city;
                 entries: cities;
@@ -170,7 +170,7 @@ export component Clock inherits Window {
                 z: 1;
                 text: ", ";
                 color: Palette.fg;
-                font-size: calc-px * 25;
+                font-size: min(root.height * 3%, root.width * 5%);
                 vertical-alignment: center;
             }
             country_picker := Picker {
@@ -178,7 +178,7 @@ export component Clock inherits Window {
                 full-height: root.height * 95% - root.height * 280% / 4;
                 full-width: root.width * 94% - self.x;
                 text-color: Palette.fg;
-                font-size: calc-px * 25;
+                font-size: min(root.height * 3%, root.width * 5%);
                 background-color: Palette.bg;
                 current: country;
                 entries: countries;
