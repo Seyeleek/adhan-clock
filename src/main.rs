@@ -8,5 +8,6 @@ use slint::ComponentHandle;
 const FILE_PREFIX: &str = "";
 
 fn main() {
-    app_logic::main_window().run().unwrap();
+    let (window, _timer) = app_logic::main_window();
+    window.run().unwrap();
 }

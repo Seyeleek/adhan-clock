@@ -18,5 +18,6 @@ fn android_main(app: AndroidApp) {
         WMFlags::empty(),
     );
     slint::android::init(app).unwrap();
-    app_logic::main_window().run().unwrap();
+    let (window, _timer) = app_logic::main_window();
+    window.run().unwrap();
 }
