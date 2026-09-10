@@ -137,7 +137,7 @@ dependencies = [
 
 [[package]]
 name = "adhan-clock"
-version = "3.5.14"
+version = "3.5.16"
 dependencies = [
  "backtrace",
  "chrono",

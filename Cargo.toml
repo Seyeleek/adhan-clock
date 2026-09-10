@@ -1,6 +1,6 @@
 [package]
 name = "adhan-clock"
-version = "3.5.14"
+version = "3.5.16"
 edition = "2024"
 build = "build.rs"
 
@@ -32,7 +32,7 @@ resources = "resources/"
 
 [package.metadata.android.sdk]
 min_sdk_version = 28
-target_sdk_version = 28
+target_sdk_version = 35
 max_sdk_version = 35
 
 [[package.metadata.android.uses_permission]]
