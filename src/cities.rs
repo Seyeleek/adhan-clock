@@ -1,12 +1,12 @@
-use phf::{phf_map, Map};
+use phf::{phf_ordered_map, OrderedMap};
 
 #[allow(clippy::approx_constant)]
 /// This data was extracted from the SimpleMaps Basic World Cities Database,
 /// found at https://simplemaps.com/data/world-cities. Changes were made (e.g.
 /// all instances of Israel were replaced with Palestine). The original dataset
 /// was licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/.
-pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map! {
-    "Afghanistan" => phf_map! {
+pub static CITIES: OrderedMap<&str, OrderedMap<&str, &str>> = phf_ordered_map! {
+    "Afghanistan" => phf_ordered_map! {
         "Aibak" => "latitude=36.2534&longitude=68.0394",
         "Andkhoy" => "latitude=36.95&longitude=65.1167",
         "Aqchah" => "latitude=36.9214&longitude=66.1926",
@@ -81,7 +81,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zaranj" => "latitude=30.96&longitude=61.86",
         "Zarghun Shahr" => "latitude=32.8473&longitude=68.4457",
     },
-    "Albania" => phf_map! {
+    "Albania" => phf_ordered_map! {
         "Bajram Curri" => "latitude=42.3582&longitude=20.076",
         "Belsh" => "latitude=40.9833&longitude=19.8833",
         "Berat" => "latitude=40.7049&longitude=19.9497",
@@ -128,7 +128,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vore" => "latitude=41.3939&longitude=19.6544",
         "Xhafzotaj" => "latitude=41.35&longitude=19.55",
     },
-    "Algeria" => phf_map! {
+    "Algeria" => phf_ordered_map! {
         "'Ain Abessa" => "latitude=36.3&longitude=5.295",
         "'Ain Abid" => "latitude=36.2325&longitude=6.9442",
         "'Ain Arnat" => "latitude=36.1833&longitude=5.3167",
@@ -704,10 +704,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zoubiria" => "latitude=36.0667&longitude=2.9",
         "`Ain el Hadjel" => "latitude=35.6739&longitude=3.8817",
     },
-    "American Samoa" => phf_map! {
+    "American Samoa" => phf_ordered_map! {
         "Pago Pago" => "latitude=-14.274&longitude=-170.7046",
     },
-    "Andorra" => phf_map! {
+    "Andorra" => phf_ordered_map! {
         "Andorra la Vella" => "latitude=42.5&longitude=1.5",
         "Canillo" => "latitude=42.5664&longitude=1.6009",
         "Encamp" => "latitude=42.5361&longitude=1.5828",
@@ -717,7 +717,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Sant Julia de Loria" => "latitude=42.47&longitude=1.49",
         "Sant Pere" => "latitude=42.5833&longitude=1.65",
     },
-    "Angola" => phf_map! {
+    "Angola" => phf_ordered_map! {
         "Alto-Cuilo" => "latitude=-10.049&longitude=19.5155",
         "Ambiula" => "latitude=-7.4333&longitude=14.65",
         "Ambriz" => "latitude=-7.85&longitude=13.1167",
@@ -883,13 +883,13 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Xa Muteba" => "latitude=-9.5167&longitude=17.8167",
         "Xangongo" => "latitude=-16.7467&longitude=14.9747",
     },
-    "Anguilla" => phf_map! {
+    "Anguilla" => phf_ordered_map! {
         "The Valley" => "latitude=18.2208&longitude=-63.0517",
     },
-    "Antigua and Barbuda" => phf_map! {
+    "Antigua and Barbuda" => phf_ordered_map! {
         "Saint John's" => "latitude=17.1211&longitude=-61.8447",
     },
-    "Argentina" => phf_map! {
+    "Argentina" => phf_ordered_map! {
         "Abra Pampa" => "latitude=-22.7167&longitude=-65.7",
         "Acasusso" => "latitude=-34.475&longitude=-58.5008",
         "Adolfo Gonzales Chaves" => "latitude=-38.0333&longitude=-60.0833",
@@ -1481,7 +1481,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zapala" => "latitude=-38.9028&longitude=-70.065",
         "Zarate" => "latitude=-34.0833&longitude=-59.0333",
     },
-    "Armenia" => phf_map! {
+    "Armenia" => phf_ordered_map! {
         "Abovyan" => "latitude=40.2739&longitude=44.6256",
         "Akhuryan" => "latitude=40.781&longitude=43.9001",
         "Alaverdi" => "latitude=41.095&longitude=44.6558",
@@ -1518,11 +1518,11 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yeghvard" => "latitude=40.3167&longitude=44.4833",
         "Yerevan" => "latitude=40.1814&longitude=44.5144",
     },
-    "Aruba" => phf_map! {
+    "Aruba" => phf_ordered_map! {
         "Oranjestad" => "latitude=12.5186&longitude=-70.0358",
         "Tanki Leendert" => "latitude=12.5418&longitude=-70.022",
     },
-    "Australia" => phf_map! {
+    "Australia" => phf_ordered_map! {
         "Adelaide" => "latitude=-34.9275&longitude=138.6",
         "Adelaide River" => "latitude=-13.2381&longitude=131.1061",
         "Albany" => "latitude=-35.0228&longitude=117.8814",
@@ -1812,7 +1812,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Young" => "latitude=-34.3&longitude=148.3",
         "Yulara" => "latitude=-25.2406&longitude=130.9889",
     },
-    "Austria" => phf_map! {
+    "Austria" => phf_ordered_map! {
         "" => "latitude=47.9&longitude=13.1333",
         "Altmunster" => "latitude=47.9&longitude=13.7667",
         "Amstetten" => "latitude=48.1167&longitude=14.8667",
@@ -1925,7 +1925,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zell am See" => "latitude=47.3233&longitude=12.7981",
         "Zwettl" => "latitude=48.6033&longitude=15.1689",
     },
-    "Azerbaijan" => phf_map! {
+    "Azerbaijan" => phf_ordered_map! {
         "Agcabadi" => "latitude=40.0489&longitude=47.4502",
         "Agdam (Agdam)" => "latitude=39.9833&longitude=46.9167",
         "Agdam (Tovuz)" => "latitude=40.9066&longitude=45.554",
@@ -2064,14 +2064,14 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zig" => "latitude=40.3697&longitude=49.9825",
         "Zira" => "latitude=40.3636&longitude=50.2903",
     },
-    "Bahamas, The" => phf_map! {
+    "Bahamas, The" => phf_ordered_map! {
         "Cooper's Town" => "latitude=26.8686&longitude=-77.5081",
         "Freeport City" => "latitude=26.52&longitude=-78.66",
         "Lucaya" => "latitude=26.5333&longitude=-78.6667",
         "Nassau" => "latitude=25.0781&longitude=-77.3386",
         "West End" => "latitude=26.6867&longitude=-78.975",
     },
-    "Bahrain" => phf_map! {
+    "Bahrain" => phf_ordered_map! {
         "Ad Diraz" => "latitude=26.2186&longitude=50.4756",
         "Al Hamalah" => "latitude=26.1497&longitude=50.4653",
         "Al Malikiyah" => "latitude=26.1008&longitude=50.4878",
@@ -2083,7 +2083,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Manama" => "latitude=26.2167&longitude=50.5833",
         "Sitrah" => "latitude=26.1547&longitude=50.6206",
     },
-    "Bangladesh" => phf_map! {
+    "Bangladesh" => phf_ordered_map! {
         "Amtali" => "latitude=22.137&longitude=90.228",
         "Arankhola" => "latitude=24.661&longitude=90.0884",
         "Atharagachhia" => "latitude=22.2&longitude=90.35",
@@ -2215,12 +2215,12 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tangail" => "latitude=24.4&longitude=90.0",
         "Tungi" => "latitude=23.8833&longitude=90.4",
     },
-    "Barbados" => phf_map! {
+    "Barbados" => phf_ordered_map! {
         "Bridgetown" => "latitude=13.0975&longitude=-59.6167",
         "Cave Hill" => "latitude=13.3042&longitude=-59.5853",
         "Chancery Lane" => "latitude=13.0667&longitude=-59.5",
     },
-    "Belarus" => phf_map! {
+    "Belarus" => phf_ordered_map! {
         "Ashmyany" => "latitude=54.425&longitude=25.9375",
         "Asipovichy" => "latitude=53.3&longitude=28.6333",
         "Astravyets" => "latitude=54.6136&longitude=25.9553",
@@ -2313,7 +2313,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zhlobin" => "latitude=52.9&longitude=30.0333",
         "Zhytkavichy" => "latitude=52.2171&longitude=27.8547",
     },
-    "Belgium" => phf_map! {
+    "Belgium" => phf_ordered_map! {
         "Aalst" => "latitude=50.9383&longitude=4.0391",
         "Aarschot" => "latitude=50.9875&longitude=4.8333",
         "Aartselaar" => "latitude=51.134&longitude=4.3872",
@@ -2725,7 +2725,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zwevegem" => "latitude=50.8&longitude=3.3333",
         "Zwijndrecht" => "latitude=51.2167&longitude=4.3333",
     },
-    "Belize" => phf_map! {
+    "Belize" => phf_ordered_map! {
         "Belize City" => "latitude=17.4986&longitude=-88.1886",
         "Belmopan" => "latitude=17.25&longitude=-88.7675",
         "Corozal" => "latitude=18.4&longitude=-88.4",
@@ -2735,7 +2735,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "San Ignacio" => "latitude=17.1588&longitude=-89.0696",
         "San Pedro" => "latitude=17.9214&longitude=-87.9611",
     },
-    "Benin" => phf_map! {
+    "Benin" => phf_ordered_map! {
         "Abomey" => "latitude=7.1853&longitude=1.9914",
         "Abomey-Calavi" => "latitude=6.4486&longitude=2.3556",
         "Adakplame" => "latitude=7.4844&longitude=2.5783",
@@ -2953,10 +2953,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zoudjame" => "latitude=6.8167&longitude=1.8667",
         "Zougou-Pantrossi" => "latitude=10.7353&longitude=2.9711",
     },
-    "Bermuda" => phf_map! {
+    "Bermuda" => phf_ordered_map! {
         "Hamilton" => "latitude=32.295&longitude=-64.7831",
     },
-    "Bhutan" => phf_map! {
+    "Bhutan" => phf_ordered_map! {
         "Daga" => "latitude=27.1186&longitude=89.8667",
         "Gasa" => "latitude=27.9038&longitude=89.7276",
         "Geylegphug" => "latitude=26.8706&longitude=90.4856",
@@ -2980,7 +2980,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wangdue Phodrang" => "latitude=27.4667&longitude=89.9",
         "Zhemgang" => "latitude=27.2333&longitude=90.65",
     },
-    "Bolivia" => phf_map! {
+    "Bolivia" => phf_ordered_map! {
         "Achacachi" => "latitude=-16.0444&longitude=-68.685",
         "Achocalla" => "latitude=-16.5681&longitude=-68.1711",
         "Aiquile" => "latitude=-18.1667&longitude=-65.1667",
@@ -3108,12 +3108,12 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yapacani" => "latitude=-17.4017&longitude=-63.9098",
         "Zudanez" => "latitude=-19.1192&longitude=-64.7014",
     },
-    "Bonaire, Sint Eustatius, and Saba" => phf_map! {
+    "Bonaire, Sint Eustatius, and Saba" => phf_ordered_map! {
         "Kralendijk" => "latitude=12.1508&longitude=-68.2767",
         "Oranjestad" => "latitude=17.4833&longitude=-62.9833",
         "The Bottom" => "latitude=17.6261&longitude=-63.2492",
     },
-    "Bosnia and Herzegovina" => phf_map! {
+    "Bosnia and Herzegovina" => phf_ordered_map! {
         "Banja Luka" => "latitude=44.7725&longitude=17.1925",
         "Banovici" => "latitude=44.4089&longitude=18.5287",
         "Bihac" => "latitude=44.8147&longitude=15.8692",
@@ -3188,7 +3188,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zivinice" => "latitude=44.45&longitude=18.65",
         "Zvornik" => "latitude=44.3833&longitude=19.1",
     },
-    "Botswana" => phf_map! {
+    "Botswana" => phf_ordered_map! {
         "Bobonong" => "latitude=-21.9655&longitude=28.4363",
         "Francistown" => "latitude=-21.1736&longitude=27.5125",
         "Gabane" => "latitude=-24.6667&longitude=25.7822",
@@ -3227,7 +3227,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tsau" => "latitude=-20.1686&longitude=22.4558",
         "Tshabong" => "latitude=-26.02&longitude=22.4056",
     },
-    "Brazil" => phf_map! {
+    "Brazil" => phf_ordered_map! {
         "Abadiania" => "latitude=-16.2039&longitude=-48.7069",
         "Abaete" => "latitude=-19.1583&longitude=-45.4522",
         "Abaetetuba" => "latitude=-1.7178&longitude=-48.8828",
@@ -6218,7 +6218,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Xinguara" => "latitude=-7.095&longitude=-49.9458",
         "Xique-Xique" => "latitude=-10.8229&longitude=-42.7281",
     },
-    "Brunei" => phf_map! {
+    "Brunei" => phf_ordered_map! {
         "Bandar Seri Begawan" => "latitude=4.9167&longitude=114.9167",
         "Bangar" => "latitude=4.7086&longitude=115.0739",
         "Kampong Tunah Jambu" => "latitude=4.9957&longitude=115.0019",
@@ -6226,7 +6226,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Seria" => "latitude=4.6142&longitude=114.3303",
         "Tutong" => "latitude=4.8067&longitude=114.6592",
     },
-    "Bulgaria" => phf_map! {
+    "Bulgaria" => phf_ordered_map! {
         "Ardino" => "latitude=41.5833&longitude=25.1333",
         "Asenovgrad" => "latitude=42.0167&longitude=24.8667",
         "Avren" => "latitude=43.1139&longitude=27.6693",
@@ -6343,7 +6343,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vratsa" => "latitude=43.2121&longitude=23.5444",
         "Yambol" => "latitude=42.4833&longitude=26.5",
     },
-    "Burkina Faso" => phf_map! {
+    "Burkina Faso" => phf_ordered_map! {
         "Aribinda" => "latitude=14.229&longitude=-0.8634",
         "Banfora" => "latitude=10.6308&longitude=-4.7589",
         "Batie" => "latitude=9.8833&longitude=-2.9167",
@@ -6432,7 +6432,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ziniare" => "latitude=12.5833&longitude=-1.3",
         "Zorgo" => "latitude=12.25&longitude=-0.6167",
     },
-    "Burma" => phf_map! {
+    "Burma" => phf_ordered_map! {
         "Allanmyo" => "latitude=19.3733&longitude=95.213",
         "Amarapura" => "latitude=21.853&longitude=96.0954",
         "An" => "latitude=19.7833&longitude=94.0333",
@@ -6573,7 +6573,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zalun" => "latitude=17.477&longitude=95.553",
         "Zigon" => "latitude=18.3385&longitude=95.623",
     },
-    "Burundi" => phf_map! {
+    "Burundi" => phf_ordered_map! {
         "Bubanza" => "latitude=-3.0833&longitude=29.4",
         "Bujumbura" => "latitude=-3.3825&longitude=29.3611",
         "Cankuzo" => "latitude=-3.2194&longitude=30.5528",
@@ -6595,7 +6595,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ruyigi (Ruyigi)" => "latitude=-3.4667&longitude=30.25",
         "Zanandore" => "latitude=-3.25&longitude=30.1167",
     },
-    "Cabo Verde" => phf_map! {
+    "Cabo Verde" => phf_ordered_map! {
         "Assomada" => "latitude=15.0949&longitude=-23.6654",
         "Calheta de Sao Miguel" => "latitude=15.1875&longitude=-23.5917",
         "Cidade Velha" => "latitude=14.9167&longitude=-23.6042",
@@ -6622,7 +6622,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tarrafal (Tarrafal de Sao Nicolau)" => "latitude=16.5667&longitude=-24.3556",
         "Tarrafal (Tarrafal)" => "latitude=15.2787&longitude=-23.7516",
     },
-    "Cambodia" => phf_map! {
+    "Cambodia" => phf_ordered_map! {
         "Banlung" => "latitude=13.7467&longitude=107.0044",
         "Battambang" => "latitude=13.1028&longitude=103.1983",
         "Chbar Mon" => "latitude=11.4533&longitude=104.5208",
@@ -6657,7 +6657,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Takeo" => "latitude=10.9833&longitude=104.7833",
         "Tbeng Meanchey" => "latitude=13.8073&longitude=104.9805",
     },
-    "Cameroon" => phf_map! {
+    "Cameroon" => phf_ordered_map! {
         "Abong Mbang" => "latitude=3.9833&longitude=13.1667",
         "Aiyomojok" => "latitude=5.8167&longitude=8.9833",
         "Akom II" => "latitude=2.7833&longitude=10.5667",
@@ -6755,7 +6755,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yokadouma" => "latitude=3.5167&longitude=15.05",
         "Yoko" => "latitude=5.55&longitude=12.3167",
     },
-    "Canada" => phf_map! {
+    "Canada" => phf_ordered_map! {
         "Abbotsford" => "latitude=49.05&longitude=-122.3167",
         "Acton" => "latitude=43.6333&longitude=-80.0333",
         "Adjala-Tosorontio" => "latitude=44.1333&longitude=-79.9333",
@@ -7242,10 +7242,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yellowknife" => "latitude=62.4709&longitude=-114.4053",
         "Yorkton" => "latitude=51.2139&longitude=-102.4628",
     },
-    "Cayman Islands" => phf_map! {
+    "Cayman Islands" => phf_ordered_map! {
         "George Town" => "latitude=19.2964&longitude=-81.3817",
     },
-    "Central African Republic" => phf_map! {
+    "Central African Republic" => phf_ordered_map! {
         "Alindao" => "latitude=5.0333&longitude=21.2167",
         "Bakouma" => "latitude=5.5267&longitude=22.5856",
         "Bambari" => "latitude=5.7667&longitude=20.6833",
@@ -7291,7 +7291,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yaloke" => "latitude=5.3167&longitude=17.0833",
         "Zemio" => "latitude=5.0333&longitude=25.1333",
     },
-    "Chad" => phf_map! {
+    "Chad" => phf_ordered_map! {
         "Abeche" => "latitude=13.8331&longitude=20.8347",
         "Abou Deia" => "latitude=11.4514&longitude=19.28",
         "Ade" => "latitude=12.6669&longitude=21.9",
@@ -7349,7 +7349,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yao" => "latitude=12.8508&longitude=17.5608",
         "Zouar" => "latitude=20.45&longitude=16.5167",
     },
-    "Chile" => phf_map! {
+    "Chile" => phf_ordered_map! {
         "Alerce" => "latitude=-41.3969&longitude=-72.9037",
         "Algarrobo" => "latitude=-33.3693&longitude=-71.6681",
         "Alto Hospicio" => "latitude=-20.25&longitude=-70.1167",
@@ -7609,7 +7609,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yumbel" => "latitude=-37.1333&longitude=-72.5333",
         "Yungay" => "latitude=-37.1194&longitude=-72.0189",
     },
-    "China" => phf_map! {
+    "China" => phf_ordered_map! {
         "Aba" => "latitude=32.9039&longitude=101.6925",
         "Agan" => "latitude=35.9167&longitude=103.8471",
         "Aheqi" => "latitude=40.9372&longitude=78.4543",
@@ -9372,10 +9372,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zunhua" => "latitude=40.1881&longitude=117.9593",
         "Zunyi" => "latitude=27.705&longitude=106.9336",
     },
-    "Christmas Island" => phf_map! {
+    "Christmas Island" => phf_ordered_map! {
         "Flying Fish Cove" => "latitude=-10.4217&longitude=105.6781",
     },
-    "Colombia" => phf_map! {
+    "Colombia" => phf_ordered_map! {
         "Abejorral" => "latitude=5.7906&longitude=-75.4269",
         "Abrego" => "latitude=8.0806&longitude=-73.2205",
         "Acacias" => "latitude=3.9889&longitude=-73.7647",
@@ -10109,7 +10109,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zarzal" => "latitude=4.3942&longitude=-76.0703",
         "Zipaquira" => "latitude=5.0247&longitude=-74.0014",
     },
-    "Comoros" => phf_map! {
+    "Comoros" => phf_ordered_map! {
         "Adda-Doueni" => "latitude=-12.3&longitude=44.5",
         "Bazimini" => "latitude=-12.1792&longitude=44.4489",
         "Domoni" => "latitude=-12.2586&longitude=44.5303",
@@ -10124,7 +10124,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Sima" => "latitude=-12.1992&longitude=44.2742",
         "Tsimbeo" => "latitude=-12.2&longitude=44.4667",
     },
-    "Congo (Brazzaville)" => phf_map! {
+    "Congo (Brazzaville)" => phf_ordered_map! {
         "Betou" => "latitude=3.0594&longitude=18.5142",
         "Boloso" => "latitude=2.0333&longitude=15.2",
         "Bouansa" => "latitude=-4.2186&longitude=13.7617",
@@ -10160,7 +10160,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Souanke" => "latitude=2.0833&longitude=14.1333",
         "Tchibota" => "latitude=-4.1794&longitude=11.3731",
     },
-    "Congo (Kinshasa)" => phf_map! {
+    "Congo (Kinshasa)" => phf_ordered_map! {
         "Aketi" => "latitude=2.74&longitude=23.78",
         "Aru" => "latitude=2.8667&longitude=30.85",
         "Bafwasende" => "latitude=0.9972&longitude=27.1603",
@@ -10293,10 +10293,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yangambi" => "latitude=0.7675&longitude=24.4414",
         "Zongo" => "latitude=4.35&longitude=18.6",
     },
-    "Cook Islands" => phf_map! {
+    "Cook Islands" => phf_ordered_map! {
         "Avarua" => "latitude=-21.207&longitude=-159.771",
     },
-    "Costa Rica" => phf_map! {
+    "Costa Rica" => phf_ordered_map! {
         "Abangaritos" => "latitude=10.2838&longitude=-84.9614",
         "Aguas Zarcas" => "latitude=10.4223&longitude=-84.3554",
         "Alajuela" => "latitude=10.0165&longitude=-84.2139",
@@ -10424,7 +10424,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Venecia" => "latitude=10.3357&longitude=-84.2859",
         "Zapote" => "latitude=9.9203&longitude=-84.0592",
     },
-    "Côte d’Ivoire" => phf_map! {
+    "Côte d’Ivoire" => phf_ordered_map! {
         "Abengourou" => "latitude=6.7297&longitude=-3.4964",
         "Abidjan" => "latitude=5.3364&longitude=-4.0267",
         "Abobo" => "latitude=5.4189&longitude=-4.0206",
@@ -10504,7 +10504,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yopougon" => "latitude=5.3347&longitude=-4.07",
         "Zaliohouan" => "latitude=6.7833&longitude=-6.2333",
     },
-    "Croatia" => phf_map! {
+    "Croatia" => phf_ordered_map! {
         "Belisce" => "latitude=45.6825&longitude=18.4069",
         "Benkovac" => "latitude=44.0344&longitude=15.6128",
         "Bjelovar" => "latitude=45.8989&longitude=16.8422",
@@ -10583,7 +10583,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zapresic" => "latitude=45.85&longitude=15.8",
         "Zupanja" => "latitude=45.0667&longitude=18.7",
     },
-    "Cuba" => phf_map! {
+    "Cuba" => phf_ordered_map! {
         "Abreus" => "latitude=22.2806&longitude=-80.5678",
         "Agramonte" => "latitude=22.6761&longitude=-81.1156",
         "Aguada de Pasajeros" => "latitude=22.3847&longitude=-80.8461",
@@ -10751,10 +10751,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yaguajay" => "latitude=22.3303&longitude=-79.2369",
         "Yara" => "latitude=20.2767&longitude=-76.9469",
     },
-    "Curaçao" => phf_map! {
+    "Curaçao" => phf_ordered_map! {
         "Willemstad" => "latitude=12.108&longitude=-68.935",
     },
-    "Cyprus" => phf_map! {
+    "Cyprus" => phf_ordered_map! {
         "Agios Athanasios" => "latitude=34.7087&longitude=33.0504",
         "Aradippou" => "latitude=34.9478&longitude=33.5881",
         "Dali" => "latitude=35.024&longitude=33.4226",
@@ -10772,7 +10772,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Paralimni" => "latitude=35.0387&longitude=33.9862",
         "Ypsonas" => "latitude=34.6911&longitude=32.9551",
     },
-    "Czechia" => phf_map! {
+    "Czechia" => phf_ordered_map! {
         "As" => "latitude=50.224&longitude=12.1951",
         "Benesov" => "latitude=49.7817&longitude=14.687",
         "Beroun" => "latitude=49.9639&longitude=14.0721",
@@ -10939,7 +10939,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zlin" => "latitude=49.2331&longitude=17.6669",
         "Znojmo" => "latitude=48.8555&longitude=16.0488",
     },
-    "Denmark" => phf_map! {
+    "Denmark" => phf_ordered_map! {
         "Aabenraa" => "latitude=55.0447&longitude=9.4195",
         "Aalborg" => "latitude=57.05&longitude=9.9167",
         "Aarhus" => "latitude=56.1564&longitude=10.2097",
@@ -11023,7 +11023,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Viborg" => "latitude=56.45&longitude=9.4",
         "Vordingborg" => "latitude=55.0083&longitude=11.9103",
     },
-    "Djibouti" => phf_map! {
+    "Djibouti" => phf_ordered_map! {
         "Ali Sabieh" => "latitude=11.1558&longitude=42.7125",
         "Arta" => "latitude=11.5219&longitude=42.84",
         "Dikhil" => "latitude=11.1086&longitude=42.3667",
@@ -11031,10 +11031,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Obock" => "latitude=11.9667&longitude=43.2833",
         "Tadjourah" => "latitude=11.7833&longitude=42.8833",
     },
-    "Dominica" => phf_map! {
+    "Dominica" => phf_ordered_map! {
         "Roseau" => "latitude=15.3&longitude=-61.3833",
     },
-    "Dominican Republic" => phf_map! {
+    "Dominican Republic" => phf_ordered_map! {
         "Altamira" => "latitude=19.6667&longitude=-70.8333",
         "Arenoso" => "latitude=19.18&longitude=-69.85",
         "Azua" => "latitude=18.46&longitude=-70.74",
@@ -11184,7 +11184,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yasica Arriba" => "latitude=19.6333&longitude=-70.6",
         "Yayas de Viajama" => "latitude=18.6&longitude=-70.92",
     },
-    "Ecuador" => phf_map! {
+    "Ecuador" => phf_ordered_map! {
         "Alausi" => "latitude=-2.2033&longitude=-78.8471",
         "Ambato" => "latitude=-1.2422&longitude=-78.6289",
         "Atacames" => "latitude=0.8667&longitude=-79.8333",
@@ -11302,7 +11302,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zaruma" => "latitude=-3.6833&longitude=-79.6",
         "Zumbagua" => "latitude=-0.9616&longitude=-78.8975",
     },
-    "Egypt" => phf_map! {
+    "Egypt" => phf_ordered_map! {
         "Abjij" => "latitude=29.2861&longitude=30.8152",
         "Abnub" => "latitude=27.2667&longitude=31.15",
         "Abu Hummus" => "latitude=31.1006&longitude=30.3128",
@@ -11509,7 +11509,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zifta" => "latitude=30.7119&longitude=31.2394",
         "`Izbat al Burj" => "latitude=31.5031&longitude=31.8411",
     },
-    "El Salvador" => phf_map! {
+    "El Salvador" => phf_ordered_map! {
         "Acajutla" => "latitude=13.5898&longitude=-89.8298",
         "Aguilares" => "latitude=13.9583&longitude=-89.1871",
         "Ahuachapan" => "latitude=13.9234&longitude=-89.8463",
@@ -11671,7 +11671,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zacatecoluca" => "latitude=13.5073&longitude=-88.8702",
         "Zaragoza" => "latitude=13.5875&longitude=-89.2886",
     },
-    "Equatorial Guinea" => phf_map! {
+    "Equatorial Guinea" => phf_ordered_map! {
         "Aconibe" => "latitude=1.3&longitude=10.9333",
         "Anisoc" => "latitude=1.8656&longitude=10.7689",
         "Bata" => "latitude=1.865&longitude=9.77",
@@ -11689,7 +11689,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Santiago de Baney" => "latitude=3.7&longitude=8.9083",
         "Sevilla de Niefang" => "latitude=1.85&longitude=10.25",
     },
-    "Eritrea" => phf_map! {
+    "Eritrea" => phf_ordered_map! {
         "Adi Keyh" => "latitude=14.8333&longitude=39.3667",
         "Adi-Teklezan" => "latitude=15.5672&longitude=38.7786",
         "Ak'ordat" => "latitude=15.55&longitude=37.8833",
@@ -11709,7 +11709,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Omhajer" => "latitude=14.323&longitude=36.6532",
         "Teseney" => "latitude=15.11&longitude=36.6575",
     },
-    "Estonia" => phf_map! {
+    "Estonia" => phf_ordered_map! {
         "Haapsalu" => "latitude=58.9469&longitude=23.5369",
         "Jogeva" => "latitude=58.7461&longitude=26.3956",
         "Johvi" => "latitude=59.3575&longitude=27.4122",
@@ -11731,7 +11731,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Viljandi" => "latitude=58.3633&longitude=25.5956",
         "Voru" => "latitude=57.8486&longitude=26.9928",
     },
-    "Eswatini" => phf_map! {
+    "Eswatini" => phf_ordered_map! {
         "Hlatikulu" => "latitude=-26.9667&longitude=31.3167",
         "Lavumisa" => "latitude=-27.3167&longitude=31.9",
         "Lobamba" => "latitude=-26.4465&longitude=31.2064",
@@ -11741,7 +11741,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Piggs Peak" => "latitude=-25.9667&longitude=31.25",
         "Siteki" => "latitude=-26.45&longitude=31.95",
     },
-    "Ethiopia" => phf_map! {
+    "Ethiopia" => phf_ordered_map! {
         "Abiy Adi" => "latitude=13.6231&longitude=39.0017",
         "Abomsa" => "latitude=8.4833&longitude=39.8333",
         "Adami Tulu" => "latitude=7.8667&longitude=38.7",
@@ -11891,10 +11891,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yirga `Alem" => "latitude=6.75&longitude=38.4167",
         "`Alem T'ena" => "latitude=8.3&longitude=38.95",
     },
-    "Falkland Islands (Islas Malvinas)" => phf_map! {
+    "Falkland Islands (Islas Malvinas)" => phf_ordered_map! {
         "Stanley" => "latitude=-51.7&longitude=-57.85",
     },
-    "Faroe Islands" => phf_map! {
+    "Faroe Islands" => phf_ordered_map! {
         "Eidhi" => "latitude=62.2995&longitude=-7.0924",
         "Famjin" => "latitude=61.5264&longitude=-6.8769",
         "Fuglafjordhur" => "latitude=62.2448&longitude=-6.815",
@@ -11925,7 +11925,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vestmanna" => "latitude=62.1548&longitude=-7.169",
         "Vidhareidhi" => "latitude=62.36&longitude=-6.5313",
     },
-    "Fiji" => phf_map! {
+    "Fiji" => phf_ordered_map! {
         "Ba" => "latitude=-17.5333&longitude=177.6833",
         "Labasa" => "latitude=-16.4333&longitude=179.3667",
         "Lami" => "latitude=-18.1167&longitude=178.4167",
@@ -11936,7 +11936,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Sigatoka" => "latitude=-18.15&longitude=177.5",
         "Suva" => "latitude=-18.1333&longitude=178.4333",
     },
-    "Finland" => phf_map! {
+    "Finland" => phf_ordered_map! {
         "Aanekoski" => "latitude=62.6&longitude=25.725",
         "Alajarvi" => "latitude=63.0&longitude=23.8167",
         "Alavus" => "latitude=62.5861&longitude=23.6194",
@@ -12074,7 +12074,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ylivieska" => "latitude=64.0722&longitude=24.5375",
         "Ylojarvi" => "latitude=61.55&longitude=23.5833",
     },
-    "France" => phf_map! {
+    "France" => phf_ordered_map! {
         "Abbeville" => "latitude=50.1053&longitude=1.8353",
         "Acheres" => "latitude=48.9622&longitude=2.0686",
         "Agde" => "latitude=43.31&longitude=3.4753",
@@ -13263,7 +13263,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yvetot" => "latitude=49.6169&longitude=0.7531",
         "Yzeure" => "latitude=46.5658&longitude=3.3544",
     },
-    "French Guiana" => phf_map! {
+    "French Guiana" => phf_ordered_map! {
         "Cayenne" => "latitude=4.9386&longitude=-52.335",
         "Iracoubo" => "latitude=5.48&longitude=-53.2056",
         "Kourou" => "latitude=5.1583&longitude=-52.6428",
@@ -13272,10 +13272,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Saint-Laurent-du-Maroni" => "latitude=5.5039&longitude=-54.0289",
         "Sinnamary" => "latitude=5.3775&longitude=-52.9586",
     },
-    "French Polynesia" => phf_map! {
+    "French Polynesia" => phf_ordered_map! {
         "Papeete" => "latitude=-17.5397&longitude=-149.5689",
     },
-    "Gabon" => phf_map! {
+    "Gabon" => phf_ordered_map! {
         "Bifoun" => "latitude=-0.3333&longitude=10.3833",
         "Bitam" => "latitude=2.0833&longitude=11.4833",
         "Franceville" => "latitude=-1.6333&longitude=13.5833",
@@ -13299,7 +13299,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tchibanga" => "latitude=-2.9331&longitude=10.9831",
         "Tsogni" => "latitude=-2.8&longitude=10.1167",
     },
-    "Gambia, The" => phf_map! {
+    "Gambia, The" => phf_ordered_map! {
         "Bakau" => "latitude=13.4797&longitude=-16.6736",
         "Banjul" => "latitude=13.4531&longitude=-16.5775",
         "Bansang" => "latitude=13.4333&longitude=-14.6556",
@@ -13321,7 +13321,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Serekunda" => "latitude=13.445&longitude=-16.675",
         "Sukuta" => "latitude=13.4144&longitude=-16.7072",
     },
-    "Georgia" => phf_map! {
+    "Georgia" => phf_ordered_map! {
         "Akhaltsikhe" => "latitude=41.6389&longitude=42.9861",
         "Akhmeta" => "latitude=42.0344&longitude=45.2111",
         "Ambrolauri" => "latitude=42.5194&longitude=43.15",
@@ -13357,7 +13357,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zest'aponi" => "latitude=42.1083&longitude=43.0417",
         "Zugdidi" => "latitude=42.5081&longitude=41.8725",
     },
-    "Germany" => phf_map! {
+    "Germany" => phf_ordered_map! {
         "" => "latitude=51.8333&longitude=12.2333",
         "Aachen" => "latitude=50.7762&longitude=6.0838",
         "Aalen" => "latitude=48.8372&longitude=10.0936",
@@ -15138,7 +15138,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zwiesel" => "latitude=49.0167&longitude=13.2333",
         "Zwonitz" => "latitude=50.6303&longitude=12.8133",
     },
-    "Ghana" => phf_map! {
+    "Ghana" => phf_ordered_map! {
         "Aboso" => "latitude=5.3607&longitude=-1.9486",
         "Aburi" => "latitude=5.85&longitude=-0.1833",
         "Accra" => "latitude=5.556&longitude=-0.1969",
@@ -15233,10 +15233,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wulasi" => "latitude=8.6551&longitude=-0.0014",
         "Yendi" => "latitude=9.4427&longitude=-0.0099",
     },
-    "Gibraltar" => phf_map! {
+    "Gibraltar" => phf_ordered_map! {
         "Gibraltar" => "latitude=36.14&longitude=-5.35",
     },
-    "Greece" => phf_map! {
+    "Greece" => phf_ordered_map! {
         "Acharnes" => "latitude=38.0925&longitude=23.7425",
         "Agia Paraskevi" => "latitude=38.0053&longitude=23.8208",
         "Agia Varvara" => "latitude=37.9915&longitude=23.6596",
@@ -15432,7 +15432,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zefyri" => "latitude=38.0667&longitude=23.7167",
         "Zografos" => "latitude=37.9762&longitude=23.7638",
     },
-    "Greenland" => phf_map! {
+    "Greenland" => phf_ordered_map! {
         "Aasiaat" => "latitude=68.7097&longitude=-52.8694",
         "Godhavn" => "latitude=69.2472&longitude=-53.5333",
         "Ilulissat" => "latitude=69.2167&longitude=-51.1",
@@ -15456,21 +15456,21 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Upernavik" => "latitude=72.7839&longitude=-56.1506",
         "Uummannaq" => "latitude=70.6747&longitude=-52.1264",
     },
-    "Grenada" => phf_map! {
+    "Grenada" => phf_ordered_map! {
         "Saint David's" => "latitude=12.0628&longitude=-61.6606",
         "Saint George's" => "latitude=12.0525&longitude=-61.7531",
     },
-    "Guadeloupe" => phf_map! {
+    "Guadeloupe" => phf_ordered_map! {
         "Basse-Terre" => "latitude=15.9969&longitude=-61.7328",
         "Pointe-a-Pitre" => "latitude=16.2411&longitude=-61.5331",
         "Saint-Claude" => "latitude=16.0272&longitude=-61.6983",
         "Saint-Francois" => "latitude=16.2514&longitude=-61.2739",
     },
-    "Guam" => phf_map! {
+    "Guam" => phf_ordered_map! {
         "Hagta" => "latitude=13.4745&longitude=144.7504",
         "Maina" => "latitude=13.4692&longitude=144.7332",
     },
-    "Guatemala" => phf_map! {
+    "Guatemala" => phf_ordered_map! {
         "Acatenango" => "latitude=14.5544&longitude=-90.9439",
         "Agua Blanca" => "latitude=14.4833&longitude=-89.6494",
         "Aguacatan" => "latitude=15.3429&longitude=-91.312",
@@ -15793,11 +15793,11 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zunil" => "latitude=14.7836&longitude=-91.4844",
         "Zunilito" => "latitude=14.6167&longitude=-91.5167",
     },
-    "Guernsey" => phf_map! {
+    "Guernsey" => phf_ordered_map! {
         "Saint Peter Port" => "latitude=49.46&longitude=-2.5519",
         "Saint Sampson" => "latitude=49.4819&longitude=-2.5411",
     },
-    "Guinea" => phf_map! {
+    "Guinea" => phf_ordered_map! {
         "Beyla" => "latitude=8.6898&longitude=-8.6482",
         "Boffa" => "latitude=10.1667&longitude=-14.0333",
         "Boke" => "latitude=10.9314&longitude=-14.2892",
@@ -15834,7 +15834,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tougue" => "latitude=11.45&longitude=-11.6833",
         "Yomou" => "latitude=7.566&longitude=-9.2533",
     },
-    "Guinea-Bissau" => phf_map! {
+    "Guinea-Bissau" => phf_ordered_map! {
         "Bafata" => "latitude=12.1719&longitude=-14.6575",
         "Bambadinca" => "latitude=12.0333&longitude=-14.8667",
         "Bedanda" => "latitude=11.35&longitude=-15.1167",
@@ -15856,7 +15856,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tite" => "latitude=11.7833&longitude=-15.4",
         "Xitole" => "latitude=11.7333&longitude=-14.8167",
     },
-    "Guyana" => phf_map! {
+    "Guyana" => phf_ordered_map! {
         "Anna Regina" => "latitude=7.25&longitude=-58.5167",
         "Bartica" => "latitude=6.4&longitude=-58.6167",
         "Fort Wellington" => "latitude=6.4&longitude=-57.6",
@@ -15870,7 +15870,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Princetown" => "latitude=5.9049&longitude=-57.1391",
         "Vreed-en-Hoop" => "latitude=6.8&longitude=-58.1833",
     },
-    "Haiti" => phf_map! {
+    "Haiti" => phf_ordered_map! {
         "Acul du Nord" => "latitude=19.6833&longitude=-72.3167",
         "Anse Rouge" => "latitude=19.6333&longitude=-73.05",
         "Anse a Galets" => "latitude=18.8333&longitude=-72.8667",
@@ -16009,7 +16009,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Verrettes" => "latitude=19.05&longitude=-72.4667",
         "Ville Bonheur" => "latitude=18.8167&longitude=-72.2",
     },
-    "Honduras" => phf_map! {
+    "Honduras" => phf_ordered_map! {
         "Azacualpa (Santa Barbara)" => "latitude=14.7167&longitude=-88.1",
         "Bonito Oriental" => "latitude=15.7476&longitude=-85.7314",
         "Brus Laguna" => "latitude=15.7711&longitude=-84.5395",
@@ -16075,7 +16075,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yoro" => "latitude=15.1379&longitude=-87.1249",
         "Yuscaran" => "latitude=13.9444&longitude=-86.8526",
     },
-    "Hong Kong" => phf_map! {
+    "Hong Kong" => phf_ordered_map! {
         "Central District" => "latitude=22.2831&longitude=114.15",
         "Cheung Chau" => "latitude=22.2106&longitude=114.0289",
         "Choi Hung" => "latitude=22.335&longitude=114.207",
@@ -16100,7 +16100,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wan Tau Tong" => "latitude=22.4423&longitude=114.1672",
         "Wang Tau Hom" => "latitude=22.3408&longitude=114.187",
     },
-    "Hungary" => phf_map! {
+    "Hungary" => phf_ordered_map! {
         "Abony" => "latitude=47.1892&longitude=20.0053",
         "Ajka" => "latitude=47.1006&longitude=17.5522",
         "Albertirsa" => "latitude=47.24&longitude=19.6067",
@@ -16261,7 +16261,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Veszprem" => "latitude=47.1&longitude=17.9167",
         "Zalaegerszeg" => "latitude=46.8392&longitude=16.8511",
     },
-    "Iceland" => phf_map! {
+    "Iceland" => phf_ordered_map! {
         "Akureyri" => "latitude=65.6835&longitude=-18.0878",
         "Borgarnes" => "latitude=64.5431&longitude=-21.9125",
         "Egilsstadhir" => "latitude=65.2667&longitude=-14.4",
@@ -16275,7 +16275,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Saudharkrokur" => "latitude=65.7461&longitude=-19.6394",
         "Selfoss" => "latitude=63.9322&longitude=-21.0002",
     },
-    "India" => phf_map! {
+    "India" => phf_ordered_map! {
         "Abbigeri (Karnataka)" => "latitude=15.5862&longitude=75.7502",
         "Abdullahnagar" => "latitude=25.7683&longitude=87.5557",
         "Abhayapuri" => "latitude=26.3225&longitude=90.6853",
@@ -23244,7 +23244,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zunheboto" => "latitude=25.9667&longitude=94.5167",
         "Zuvvaladinne" => "latitude=14.808&longitude=80.0705",
     },
-    "Indonesia" => phf_map! {
+    "Indonesia" => phf_ordered_map! {
         "Adonara" => "latitude=-8.252&longitude=123.155",
         "Airmadidi" => "latitude=1.3989&longitude=124.9467",
         "Amahai" => "latitude=-3.3331&longitude=128.919",
@@ -23570,7 +23570,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wukisari" => "latitude=-7.6579&longitude=110.4438",
         "Yogyakarta" => "latitude=-7.8005&longitude=110.3913",
     },
-    "Iran" => phf_map! {
+    "Iran" => phf_ordered_map! {
         "Ab Pakhsh" => "latitude=29.3586&longitude=51.0742",
         "Abarkuh" => "latitude=31.1289&longitude=53.2822",
         "Abhar" => "latitude=36.1467&longitude=49.2181",
@@ -24083,7 +24083,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "`Aliabad-e Katul" => "latitude=36.9083&longitude=54.8689",
         "`Anbarabad" => "latitude=28.4758&longitude=57.8481",
     },
-    "Iraq" => phf_map! {
+    "Iraq" => phf_ordered_map! {
         "Abi al Khasib" => "latitude=30.4522&longitude=47.9858",
         "Abu Ghurayb" => "latitude=33.3131&longitude=44.1686",
         "Ad Dawr" => "latitude=34.4575&longitude=43.7989",
@@ -24201,7 +24201,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "`Aqrah" => "latitude=36.7597&longitude=43.8944",
         "`Aynkawah" => "latitude=36.2292&longitude=43.9936",
     },
-    "Ireland" => phf_map! {
+    "Ireland" => phf_ordered_map! {
         "An Cabhan" => "latitude=53.991&longitude=-7.3601",
         "Arklow" => "latitude=52.7941&longitude=-6.1649",
         "Ashtown" => "latitude=53.3754&longitude=-6.3326",
@@ -24280,11 +24280,11 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wicklow" => "latitude=52.9779&longitude=-6.033",
         "Youghal" => "latitude=51.9517&longitude=-7.8456",
     },
-    "Isle of Man" => phf_map! {
+    "Isle of Man" => phf_ordered_map! {
         "Douglas" => "latitude=54.15&longitude=-4.4775",
         "Onchan" => "latitude=54.1736&longitude=-4.4667",
     },
-    "Italy" => phf_map! {
+    "Italy" => phf_ordered_map! {
         "Abano Terme" => "latitude=45.3619&longitude=11.7924",
         "Abbiategrasso" => "latitude=45.4009&longitude=8.9185",
         "Acate" => "latitude=37.0253&longitude=14.4925",
@@ -25653,7 +25653,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zogno" => "latitude=45.7939&longitude=9.6656",
         "Zola Predosa" => "latitude=44.4883&longitude=11.2181",
     },
-    "Jamaica" => phf_map! {
+    "Jamaica" => phf_ordered_map! {
         "Black River" => "latitude=18.0256&longitude=-77.8508",
         "Bog Walk" => "latitude=18.1156&longitude=-77.0003",
         "Ewarton" => "latitude=18.1764&longitude=-77.0853",
@@ -25677,7 +25677,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Savanna-la-Mar" => "latitude=18.2167&longitude=-78.1333",
         "Spanish Town" => "latitude=17.9961&longitude=-76.9547",
     },
-    "Japan" => phf_map! {
+    "Japan" => phf_ordered_map! {
         "Abashiri" => "latitude=44.0206&longitude=144.2736",
         "Abiko" => "latitude=35.8642&longitude=140.0284",
         "Adachi" => "latitude=35.7749&longitude=139.8044",
@@ -27048,10 +27048,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zentsujicho" => "latitude=34.2285&longitude=133.7871",
         "Zushi" => "latitude=35.2956&longitude=139.5803",
     },
-    "Jersey" => phf_map! {
+    "Jersey" => phf_ordered_map! {
         "Saint Helier" => "latitude=49.1858&longitude=-2.11",
     },
-    "Jordan" => phf_map! {
+    "Jordan" => phf_ordered_map! {
         "Al Fuhays" => "latitude=32.0167&longitude=35.7667",
         "Al Hisn" => "latitude=32.487&longitude=35.88",
         "Al Jizah" => "latitude=31.7&longitude=35.95",
@@ -27089,7 +27089,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "`Ajlun" => "latitude=32.3325&longitude=35.7517",
         "`Ayn Janna" => "latitude=32.3351&longitude=35.7641",
     },
-    "Kazakhstan" => phf_map! {
+    "Kazakhstan" => phf_ordered_map! {
         "Abay (Almaty)" => "latitude=43.2106&longitude=76.7625",
         "Abay (Qaraghandy)" => "latitude=49.6311&longitude=72.8539",
         "Aksay" => "latitude=51.1678&longitude=52.995",
@@ -27256,7 +27256,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zhosaly" => "latitude=45.4889&longitude=64.09",
         "Zyryanovsk" => "latitude=49.7265&longitude=84.2732",
     },
-    "Kenya" => phf_map! {
+    "Kenya" => phf_ordered_map! {
         "Athi River" => "latitude=-1.45&longitude=36.9833",
         "Banane" => "latitude=0.5&longitude=38.67",
         "Baragoi" => "latitude=1.78&longitude=36.78",
@@ -27351,11 +27351,11 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wote" => "latitude=-1.7833&longitude=37.6333",
         "Wundanyi" => "latitude=-3.4&longitude=38.3667",
     },
-    "Kiribati" => phf_map! {
+    "Kiribati" => phf_ordered_map! {
         "Betio" => "latitude=1.3563&longitude=172.9316",
         "Tarawa" => "latitude=1.4333&longitude=173.0",
     },
-    "Korea, North" => phf_map! {
+    "Korea, North" => phf_ordered_map! {
         "Anju" => "latitude=39.6167&longitude=125.6667",
         "Ch'ongjin" => "latitude=41.7833&longitude=129.7833",
         "Changyon" => "latitude=38.2464&longitude=125.1081",
@@ -27389,7 +27389,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tanch'on" => "latitude=40.458&longitude=128.911",
         "Wonsan" => "latitude=39.1714&longitude=127.4335",
     },
-    "Korea, South" => phf_map! {
+    "Korea, South" => phf_ordered_map! {
         "An'gang" => "latitude=35.99&longitude=129.227",
         "Andong" => "latitude=36.5656&longitude=128.725",
         "Ansan" => "latitude=37.3236&longitude=126.8219",
@@ -27493,7 +27493,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yoju" => "latitude=37.2939&longitude=127.6383",
         "Yongju" => "latitude=36.8217&longitude=128.6308",
     },
-    "Kosovo" => phf_map! {
+    "Kosovo" => phf_ordered_map! {
         "Decan" => "latitude=42.5333&longitude=20.2833",
         "Dragash" => "latitude=42.0265&longitude=20.6533",
         "Dushanove" => "latitude=42.2347&longitude=20.7091",
@@ -27536,7 +27536,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zubin Potok" => "latitude=42.9167&longitude=20.6833",
         "Zvecan" => "latitude=42.91&longitude=20.84",
     },
-    "Kuwait" => phf_map! {
+    "Kuwait" => phf_ordered_map! {
         "Abu Hulayfah" => "latitude=29.1322&longitude=48.1261",
         "Al Ahmadi" => "latitude=29.0769&longitude=48.0839",
         "Al Jahra'" => "latitude=29.35&longitude=47.6833",
@@ -27544,7 +27544,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ar Riqqah" => "latitude=29.1489&longitude=48.1057",
         "Kuwait City" => "latitude=29.375&longitude=47.98",
     },
-    "Kyrgyzstan" => phf_map! {
+    "Kyrgyzstan" => phf_ordered_map! {
         "Ak-Suu" => "latitude=42.8&longitude=74.1",
         "Ala-Buka" => "latitude=41.3986&longitude=71.4875",
         "Alamedin" => "latitude=42.89&longitude=74.63",
@@ -27641,7 +27641,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vostochnyy" => "latitude=39.91&longitude=69.65",
         "Voyenno-Antonovka" => "latitude=42.8738&longitude=74.4406",
     },
-    "Laos" => phf_map! {
+    "Laos" => phf_ordered_map! {
         "Anouvong" => "latitude=18.8989&longitude=103.0919",
         "Attapu" => "latitude=14.8&longitude=106.8333",
         "Ban Houayxay" => "latitude=20.2764&longitude=100.4131",
@@ -27665,7 +27665,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Xekong" => "latitude=15.3503&longitude=106.7286",
         "Xiangkhoang" => "latitude=19.3333&longitude=103.3667",
     },
-    "Latvia" => phf_map! {
+    "Latvia" => phf_ordered_map! {
         "Adazi" => "latitude=57.0769&longitude=24.3236",
         "Aizkraukle" => "latitude=56.6008&longitude=25.255",
         "Aluksne" => "latitude=57.4239&longitude=27.0503",
@@ -27706,7 +27706,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Varaklani" => "latitude=56.6078&longitude=26.755",
         "Ventspils" => "latitude=57.3897&longitude=21.5644",
     },
-    "Lebanon" => phf_map! {
+    "Lebanon" => phf_ordered_map! {
         "Aaley" => "latitude=33.8053&longitude=35.6",
         "Aarsal" => "latitude=34.1794&longitude=36.4208",
         "Amioun" => "latitude=34.2994&longitude=35.8097",
@@ -27760,7 +27760,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zahle" => "latitude=33.8439&longitude=35.9072",
         "Zgharta" => "latitude=34.3997&longitude=35.8936",
     },
-    "Lesotho" => phf_map! {
+    "Lesotho" => phf_ordered_map! {
         "Butha-Buthe" => "latitude=-28.7667&longitude=28.2494",
         "Kueneng" => "latitude=-29.0161&longitude=27.9981",
         "Leribe" => "latitude=-28.8734&longitude=28.0416",
@@ -27790,7 +27790,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Teyateyaneng" => "latitude=-29.15&longitude=27.7333",
         "Thaba-Tseka" => "latitude=-29.522&longitude=28.6084",
     },
-    "Liberia" => phf_map! {
+    "Liberia" => phf_ordered_map! {
         "Barclayville" => "latitude=4.6797&longitude=-8.2339",
         "Bensonville" => "latitude=6.4456&longitude=-10.6097",
         "Bopolu" => "latitude=7.0667&longitude=-10.4875",
@@ -27819,7 +27819,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yeebo Town" => "latitude=5.4167&longitude=-7.5167",
         "Zwedru" => "latitude=6.0667&longitude=-8.1333",
     },
-    "Libya" => phf_map! {
+    "Libya" => phf_ordered_map! {
         "Ajdabiya" => "latitude=30.7556&longitude=20.2253",
         "Al Abraq" => "latitude=32.7867&longitude=21.9978",
         "Al Bardiyah" => "latitude=31.76&longitude=25.075",
@@ -27882,7 +27882,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zillah" => "latitude=28.5489&longitude=17.5511",
         "Zuwarah" => "latitude=32.9333&longitude=12.0833",
     },
-    "Liechtenstein" => phf_map! {
+    "Liechtenstein" => phf_ordered_map! {
         "Balzers" => "latitude=47.0667&longitude=9.5025",
         "Eschen" => "latitude=47.2&longitude=9.5167",
         "Gamprin" => "latitude=47.2199&longitude=9.5099",
@@ -27895,7 +27895,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Triesenberg" => "latitude=47.1167&longitude=9.5333",
         "Vaduz" => "latitude=47.1406&longitude=9.5222",
     },
-    "Lithuania" => phf_map! {
+    "Lithuania" => phf_ordered_map! {
         "Alytus" => "latitude=54.4&longitude=24.05",
         "Anyksciai" => "latitude=55.5344&longitude=25.1072",
         "Aukstieji Paneriai" => "latitude=54.6262&longitude=25.181",
@@ -27959,7 +27959,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Visaginas" => "latitude=55.6&longitude=26.4333",
         "Zarasai" => "latitude=55.7306&longitude=26.2472",
     },
-    "Luxembourg" => phf_map! {
+    "Luxembourg" => phf_ordered_map! {
         "Bertrange" => "latitude=49.6111&longitude=6.05",
         "Bettembourg" => "latitude=49.5167&longitude=6.1",
         "Capellen" => "latitude=49.6444&longitude=5.9897",
@@ -27980,10 +27980,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vianden" => "latitude=49.935&longitude=6.2089",
         "Wiltz" => "latitude=49.9689&longitude=5.9319",
     },
-    "Macau" => phf_map! {
+    "Macau" => phf_ordered_map! {
         "Macau" => "latitude=22.19&longitude=113.5381",
     },
-    "Madagascar" => phf_map! {
+    "Madagascar" => phf_ordered_map! {
         "Alakamisy" => "latitude=-20.2&longitude=47.3167",
         "Alakamisy Anativato" => "latitude=-19.8833&longitude=46.9",
         "Alakamisy Itenina" => "latitude=-21.644&longitude=47.161",
@@ -28790,7 +28790,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zazafotsy" => "latitude=-22.12&longitude=46.21",
         "Zoma-Bealoka" => "latitude=-18.51&longitude=47.3",
     },
-    "Malawi" => phf_map! {
+    "Malawi" => phf_ordered_map! {
         "Balaka" => "latitude=-14.9889&longitude=34.9591",
         "Blantyre" => "latitude=-15.7861&longitude=35.0058",
         "Chikwawa" => "latitude=-16.035&longitude=34.801",
@@ -28825,7 +28825,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Thyolo" => "latitude=-16.0667&longitude=35.1333",
         "Zomba" => "latitude=-15.386&longitude=35.3188",
     },
-    "Malaysia" => phf_map! {
+    "Malaysia" => phf_ordered_map! {
         "Alor Gajah" => "latitude=2.2667&longitude=102.15",
         "Alor Setar" => "latitude=6.1167&longitude=100.3667",
         "Ayer Itam" => "latitude=5.4&longitude=100.2833",
@@ -28923,7 +28923,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tuaran" => "latitude=6.1833&longitude=116.2333",
         "Tumpat" => "latitude=6.1978&longitude=102.1711",
     },
-    "Maldives" => phf_map! {
+    "Maldives" => phf_ordered_map! {
         "Dhihdhoo" => "latitude=6.8874&longitude=73.114",
         "Eydhafushi" => "latitude=5.1167&longitude=73.0333",
         "Felidhoo" => "latitude=3.4718&longitude=73.547",
@@ -28946,7 +28946,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Veymandoo" => "latitude=2.1833&longitude=73.1167",
         "Viligili" => "latitude=0.7569&longitude=73.4361",
     },
-    "Mali" => phf_map! {
+    "Mali" => phf_ordered_map! {
         "Aguelhok" => "latitude=19.4614&longitude=0.8589",
         "Aibongo" => "latitude=16.2381&longitude=-3.2842",
         "Alahina" => "latitude=15.2267&longitude=-8.7447",
@@ -29269,7 +29269,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zegoua" => "latitude=10.4519&longitude=-5.6511",
         "Zinzana" => "latitude=13.2506&longitude=-5.9678",
     },
-    "Malta" => phf_map! {
+    "Malta" => phf_ordered_map! {
         "Attard" => "latitude=35.9&longitude=14.45",
         "Balzan" => "latitude=35.8975&longitude=14.4533",
         "Birkirkara" => "latitude=35.9&longitude=14.4667",
@@ -29339,10 +29339,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zejtun" => "latitude=35.8556&longitude=14.5333",
         "Zurrieq" => "latitude=35.8292&longitude=14.4744",
     },
-    "Marshall Islands" => phf_map! {
+    "Marshall Islands" => phf_ordered_map! {
         "Majuro" => "latitude=7.0918&longitude=171.3802",
     },
-    "Martinique" => phf_map! {
+    "Martinique" => phf_ordered_map! {
         "Ducos" => "latitude=14.5758&longitude=-60.9758",
         "Fort-de-France" => "latitude=14.6&longitude=-61.0667",
         "Gros-Morne" => "latitude=14.7081&longitude=-61.0075",
@@ -29358,7 +29358,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Sainte-Marie" => "latitude=14.7814&longitude=-60.9936",
         "Schoelcher" => "latitude=14.6161&longitude=-61.1014",
     },
-    "Mauritania" => phf_map! {
+    "Mauritania" => phf_ordered_map! {
         "Aioun" => "latitude=16.663&longitude=-9.6032",
         "Akjoujt" => "latitude=19.744&longitude=-14.3848",
         "Aleg" => "latitude=17.0517&longitude=-13.9153",
@@ -29386,7 +29386,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Timbedgha" => "latitude=16.2413&longitude=-8.1643",
         "Zouerate" => "latitude=22.7349&longitude=-12.4734",
     },
-    "Mauritius" => phf_map! {
+    "Mauritius" => phf_ordered_map! {
         "Baie du Tombeau" => "latitude=-20.1194&longitude=57.4914",
         "Bambous" => "latitude=-20.26&longitude=57.4148",
         "Bel Air" => "latitude=-20.2582&longitude=57.7545",
@@ -29407,7 +29407,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Surinam" => "latitude=-20.5097&longitude=57.5053",
         "Triolet" => "latitude=-20.0547&longitude=57.5453",
     },
-    "Mayotte" => phf_map! {
+    "Mayotte" => phf_ordered_map! {
         "Bandraboua" => "latitude=-12.7019&longitude=45.12",
         "Bandrele" => "latitude=-12.9089&longitude=45.1944",
         "Chirongui" => "latitude=-12.935&longitude=45.1508",
@@ -29420,7 +29420,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Trevani" => "latitude=-12.7344&longitude=45.1989",
         "Tsingoni" => "latitude=-12.7875&longitude=45.1028",
     },
-    "Mexico" => phf_map! {
+    "Mexico" => phf_ordered_map! {
         "Abasolo (Guanajuato)" => "latitude=20.4511&longitude=-101.5289",
         "Abasolo (Tamaulipas)" => "latitude=24.1167&longitude=-98.2833",
         "Acala" => "latitude=16.5517&longitude=-92.8075",
@@ -30502,14 +30502,14 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zumpango" => "latitude=19.7969&longitude=-99.0992",
         "Zumpango del Rio" => "latitude=17.6514&longitude=-99.5283",
     },
-    "Micronesia, Federated States of" => phf_map! {
+    "Micronesia, Federated States of" => phf_ordered_map! {
         "Colonia" => "latitude=9.5144&longitude=138.1292",
         "Kolonia" => "latitude=6.9639&longitude=158.2081",
         "Palikir" => "latitude=6.9178&longitude=158.185",
         "Tofol" => "latitude=5.3258&longitude=163.0086",
         "Weno" => "latitude=7.45&longitude=151.85",
     },
-    "Moldova" => phf_map! {
+    "Moldova" => phf_ordered_map! {
         "Anenii Noi" => "latitude=46.8817&longitude=29.2308",
         "Bacioi" => "latitude=46.9122&longitude=28.8839",
         "Balti" => "latitude=47.7617&longitude=27.9289",
@@ -30570,10 +30570,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ungheni" => "latitude=47.2042&longitude=27.7958",
         "Vulcanesti" => "latitude=45.6842&longitude=28.4028",
     },
-    "Monaco" => phf_map! {
+    "Monaco" => phf_ordered_map! {
         "Monaco" => "latitude=43.7311&longitude=7.42",
     },
-    "Mongolia" => phf_map! {
+    "Mongolia" => phf_ordered_map! {
         "Altay" => "latitude=46.3728&longitude=96.2572",
         "Arvayheer" => "latitude=46.2689&longitude=102.7575",
         "Baruun-Urt" => "latitude=46.6829&longitude=113.2786",
@@ -30604,7 +30604,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ulaangom" => "latitude=49.9754&longitude=92.0661",
         "Uliastay" => "latitude=47.7428&longitude=96.8433",
     },
-    "Montenegro" => phf_map! {
+    "Montenegro" => phf_ordered_map! {
         "Andrijevica" => "latitude=42.7339&longitude=19.7919",
         "Bar" => "latitude=42.1&longitude=19.1",
         "Berane" => "latitude=42.8473&longitude=19.8694",
@@ -30631,10 +30631,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ulcinj" => "latitude=41.9236&longitude=19.2056",
         "Zabljak" => "latitude=43.1583&longitude=19.1303",
     },
-    "Montserrat" => phf_map! {
+    "Montserrat" => phf_ordered_map! {
         "Brades" => "latitude=16.7928&longitude=-62.2106",
     },
-    "Morocco" => phf_map! {
+    "Morocco" => phf_ordered_map! {
         "'Ain Leuh" => "latitude=33.3044&longitude=-5.3399",
         "'Ali Ben Sliman" => "latitude=31.9543&longitude=-7.1738",
         "'Ayn Bni Mathar" => "latitude=34.0889&longitude=-2.0247",
@@ -31266,7 +31266,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zirara" => "latitude=34.2279&longitude=-5.7473",
         "Zoumi" => "latitude=34.8&longitude=-5.35",
     },
-    "Mozambique" => phf_map! {
+    "Mozambique" => phf_ordered_map! {
         "Ancuabe" => "latitude=-12.9833&longitude=39.85",
         "Antonio Enes" => "latitude=-16.2308&longitude=39.9105",
         "Beira" => "latitude=-19.8333&longitude=34.85",
@@ -31324,7 +31324,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zavora" => "latitude=-24.5167&longitude=35.2",
         "Zumbo" => "latitude=-15.6148&longitude=30.444",
     },
-    "Namibia" => phf_map! {
+    "Namibia" => phf_ordered_map! {
         "Bethanie" => "latitude=-26.5006&longitude=17.16",
         "Eenhana" => "latitude=-17.4797&longitude=16.3333",
         "Gobabis" => "latitude=-22.45&longitude=18.9667",
@@ -31362,10 +31362,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Walvisbaai" => "latitude=-22.9494&longitude=14.5069",
         "Windhoek" => "latitude=-22.57&longitude=17.0836",
     },
-    "Nauru" => phf_map! {
+    "Nauru" => phf_ordered_map! {
         "Yaren" => "latitude=-0.5477&longitude=166.9209",
     },
-    "Nepal" => phf_map! {
+    "Nepal" => phf_ordered_map! {
         "Amritpur" => "latitude=28.1167&longitude=81.6",
         "Baglung" => "latitude=28.2667&longitude=83.6",
         "Bandipur" => "latitude=27.9381&longitude=84.4069",
@@ -31442,7 +31442,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Udaypur Gadhi" => "latitude=26.9333&longitude=86.5167",
         "Walin" => "latitude=27.9889&longitude=83.7675",
     },
-    "Netherlands" => phf_map! {
+    "Netherlands" => phf_ordered_map! {
         "'s-Graveland" => "latitude=52.2442&longitude=5.1211",
         "'s-Gravendeel" => "latitude=51.7833&longitude=4.6167",
         "'s-Gravenzande" => "latitude=52.0019&longitude=4.1647",
@@ -31888,7 +31888,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zwijndrecht" => "latitude=51.824&longitude=4.6126",
         "Zwolle" => "latitude=52.5167&longitude=6.1",
     },
-    "New Caledonia" => phf_map! {
+    "New Caledonia" => phf_ordered_map! {
         "Dumbea" => "latitude=-22.15&longitude=166.45",
         "Kone" => "latitude=-21.0667&longitude=164.8667",
         "Mont-Dore" => "latitude=-22.2833&longitude=166.5833",
@@ -31896,7 +31896,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Paita" => "latitude=-22.1333&longitude=166.3667",
         "We" => "latitude=-20.9167&longitude=167.265",
     },
-    "New Zealand" => phf_map! {
+    "New Zealand" => phf_ordered_map! {
         "Ashton" => "latitude=-44.033&longitude=171.772",
         "Auckland" => "latitude=-36.8492&longitude=174.7653",
         "Blenheim" => "latitude=-41.5167&longitude=173.95",
@@ -31957,7 +31957,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Whanganui" => "latitude=-39.9325&longitude=175.0519",
         "Whangarei" => "latitude=-35.725&longitude=174.3236",
     },
-    "Nicaragua" => phf_map! {
+    "Nicaragua" => phf_ordered_map! {
         "Achuapa" => "latitude=13.0538&longitude=-86.5899",
         "Acoyapa" => "latitude=11.9704&longitude=-85.1719",
         "Altagracia" => "latitude=11.5669&longitude=-85.5787",
@@ -32079,7 +32079,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wiwili de Jinotega" => "latitude=13.62&longitude=-85.8182",
         "Yalaguina" => "latitude=13.4854&longitude=-86.4924",
     },
-    "Niger" => phf_map! {
+    "Niger" => phf_ordered_map! {
         "Agadez" => "latitude=16.9742&longitude=7.9865",
         "Arlit" => "latitude=18.7333&longitude=7.3833",
         "Ayorou" => "latitude=14.7328&longitude=0.9104",
@@ -32112,7 +32112,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tounfafi" => "latitude=14.0464&longitude=5.9812",
         "Zinder" => "latitude=13.8017&longitude=8.9854",
     },
-    "Nigeria" => phf_map! {
+    "Nigeria" => phf_ordered_map! {
         "Aba" => "latitude=5.1167&longitude=7.3667",
         "Abagana" => "latitude=6.1833&longitude=6.9833",
         "Abaji" => "latitude=8.4756&longitude=6.9433",
@@ -32281,13 +32281,13 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zaria" => "latitude=11.0667&longitude=7.7",
         "Zungeru" => "latitude=9.8&longitude=6.15",
     },
-    "Niue" => phf_map! {
+    "Niue" => phf_ordered_map! {
         "Alofi" => "latitude=-19.056&longitude=-169.921",
     },
-    "Norfolk Island" => phf_map! {
+    "Norfolk Island" => phf_ordered_map! {
         "Kingston" => "latitude=-29.05&longitude=167.9667",
     },
-    "North Macedonia" => phf_map! {
+    "North Macedonia" => phf_ordered_map! {
         "Aracinovo" => "latitude=42.0264&longitude=21.5617",
         "Belcista" => "latitude=41.3028&longitude=20.8303",
         "Berovo" => "latitude=41.7078&longitude=22.8564",
@@ -32361,10 +32361,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zelino" => "latitude=41.9794&longitude=21.0619",
         "Zrnovci" => "latitude=41.8542&longitude=22.4442",
     },
-    "Northern Mariana Islands" => phf_map! {
+    "Northern Mariana Islands" => phf_ordered_map! {
         "Capitol Hill" => "latitude=15.2137&longitude=145.7546",
     },
-    "Norway" => phf_map! {
+    "Norway" => phf_ordered_map! {
         "Alesund" => "latitude=62.4723&longitude=6.1549",
         "Alta" => "latitude=69.9686&longitude=23.2714",
         "Arendal" => "latitude=58.4617&longitude=8.7721",
@@ -32498,7 +32498,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Voss" => "latitude=60.7025&longitude=6.4231",
         "Vossevangen" => "latitude=60.6287&longitude=6.4147",
     },
-    "Oman" => phf_map! {
+    "Oman" => phf_ordered_map! {
         "Al Buraymi" => "latitude=24.2558&longitude=55.8025",
         "Al Madrah Sama'il" => "latitude=23.3103&longitude=57.9455",
         "Al Mazyunah" => "latitude=17.8486&longitude=52.62",
@@ -32531,7 +32531,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Taqah" => "latitude=17.0372&longitude=54.4036",
         "`Ibri" => "latitude=23.2325&longitude=56.4973",
     },
-    "Pakistan" => phf_map! {
+    "Pakistan" => phf_ordered_map! {
         "Abbottabad" => "latitude=34.15&longitude=73.2167",
         "Abdul Hakim" => "latitude=30.5522&longitude=72.1278",
         "Abdul Khel" => "latitude=32.3997&longitude=70.9136",
@@ -32852,12 +32852,12 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zhob" => "latitude=31.3417&longitude=69.4486",
         "Ziarat" => "latitude=30.3814&longitude=67.7258",
     },
-    "Palau" => phf_map! {
+    "Palau" => phf_ordered_map! {
         "Koror" => "latitude=7.3433&longitude=134.4804",
         "Melekeok" => "latitude=7.4933&longitude=134.6342",
         "Ngerulmud" => "latitude=7.5006&longitude=134.6242",
     },
-    "Palestine" => phf_map! {
+    "Palestine" => phf_ordered_map! {
         "Abu Dis" => "latitude=31.7625&longitude=35.2658",
         "Afula" => "latitude=32.6078&longitude=35.2897",
         "Arad" => "latitude=31.2603&longitude=35.2147",
@@ -32970,7 +32970,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "`Abasan al Kabirah" => "latitude=31.3233&longitude=34.3469",
         "`Akko" => "latitude=32.9261&longitude=35.0839",
     },
-    "Panama" => phf_map! {
+    "Panama" => phf_ordered_map! {
         "Aguadulce" => "latitude=8.24&longitude=-80.54",
         "Alcalde Diaz" => "latitude=9.12&longitude=-79.55",
         "Almirante" => "latitude=9.3&longitude=-82.4",
@@ -33009,7 +33009,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tocumen" => "latitude=9.08&longitude=-79.38",
         "Union Choco" => "latitude=8.0778&longitude=-77.5583",
     },
-    "Papua New Guinea" => phf_map! {
+    "Papua New Guinea" => phf_ordered_map! {
         "Alotau" => "latitude=-10.3167&longitude=150.4333",
         "Amau" => "latitude=-10.0279&longitude=148.5644",
         "Arawa" => "latitude=-6.225&longitude=155.5667",
@@ -33041,7 +33041,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wau" => "latitude=-7.3389&longitude=146.7167",
         "Wewak" => "latitude=-3.55&longitude=143.6333",
     },
-    "Paraguay" => phf_map! {
+    "Paraguay" => phf_ordered_map! {
         "Abai" => "latitude=-26.03&longitude=-55.94",
         "Acahay" => "latitude=-25.91&longitude=-57.11",
         "Alberdi" => "latitude=-26.185&longitude=-58.145",
@@ -33141,7 +33141,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ypane" => "latitude=-25.45&longitude=-57.53",
         "Ypejhu" => "latitude=-23.91&longitude=-55.46",
     },
-    "Peru" => phf_map! {
+    "Peru" => phf_ordered_map! {
         "Abancay" => "latitude=-13.6333&longitude=-72.8833",
         "Acobamba" => "latitude=-12.8408&longitude=-74.5706",
         "Andahuaylas" => "latitude=-13.6575&longitude=-73.3833",
@@ -33302,7 +33302,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yurimaguas" => "latitude=-5.9&longitude=-76.0833",
         "Zarumilla" => "latitude=-3.5014&longitude=-80.2722",
     },
-    "Philippines" => phf_map! {
+    "Philippines" => phf_ordered_map! {
         "Abas" => "latitude=17.5833&longitude=120.7833",
         "Aborlan" => "latitude=9.4386&longitude=118.5481",
         "Abra de Ilog" => "latitude=13.4437&longitude=120.7291",
@@ -34887,10 +34887,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zarraga" => "latitude=10.8167&longitude=122.6",
         "Zumarraga" => "latitude=11.639&longitude=124.841",
     },
-    "Pitcairn Islands" => phf_map! {
+    "Pitcairn Islands" => phf_ordered_map! {
         "Adamstown" => "latitude=-25.0667&longitude=-130.1",
     },
-    "Poland" => phf_map! {
+    "Poland" => phf_ordered_map! {
         "Aleksandrow Kujawski" => "latitude=52.8764&longitude=18.6933",
         "Aleksandrow Lodzki" => "latitude=51.8167&longitude=19.3",
         "Andrychow" => "latitude=49.8667&longitude=19.3333",
@@ -35356,7 +35356,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zyrardow" => "latitude=52.05&longitude=20.4333",
         "Zywiec" => "latitude=49.6833&longitude=19.2167",
     },
-    "Portugal" => phf_map! {
+    "Portugal" => phf_ordered_map! {
         "Abrantes" => "latitude=39.4667&longitude=-8.2",
         "Agualva" => "latitude=38.774&longitude=-9.2936",
         "Aguas Santas" => "latitude=41.2102&longitude=-8.5743",
@@ -35662,7 +35662,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vizela" => "latitude=41.3833&longitude=-8.3",
         "Vouzela" => "latitude=40.7231&longitude=-8.1122",
     },
-    "Puerto Rico" => phf_map! {
+    "Puerto Rico" => phf_ordered_map! {
         "Aguadilla" => "latitude=18.4382&longitude=-67.1537",
         "Aibonito" => "latitude=18.1398&longitude=-66.2659",
         "Arecibo" => "latitude=18.4491&longitude=-66.7387",
@@ -35700,7 +35700,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vega Baja" => "latitude=18.4406&longitude=-66.3997",
         "Yauco" => "latitude=18.0344&longitude=-66.8615",
     },
-    "Qatar" => phf_map! {
+    "Qatar" => phf_ordered_map! {
         "Al Jumayliyah" => "latitude=25.6197&longitude=51.09",
         "Al Khawr" => "latitude=25.6839&longitude=51.5058",
         "Al Wakrah" => "latitude=25.18&longitude=51.61",
@@ -35714,7 +35714,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Umm Qurun" => "latitude=25.25&longitude=51.3732",
         "Umm Salal `Ali" => "latitude=25.4697&longitude=51.3975",
     },
-    "Reunion" => phf_map! {
+    "Reunion" => phf_ordered_map! {
         "Bras-Panon" => "latitude=-20.9953&longitude=55.6761",
         "L'Etang-Sale les Hauts" => "latitude=-21.2661&longitude=55.3669",
         "La Possession" => "latitude=-20.9264&longitude=55.3358",
@@ -35733,7 +35733,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Sainte-Marie" => "latitude=-20.8969&longitude=55.5492",
         "Sainte-Suzanne" => "latitude=-20.9056&longitude=55.6072",
     },
-    "Romania" => phf_map! {
+    "Romania" => phf_ordered_map! {
         "Adjud" => "latitude=46.1&longitude=27.1797",
         "Afumati" => "latitude=44.5255&longitude=26.2496",
         "Aiud" => "latitude=46.3103&longitude=23.7167",
@@ -35970,7 +35970,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zarnesti" => "latitude=45.5725&longitude=25.3431",
         "Zimnicea" => "latitude=43.6539&longitude=25.365",
     },
-    "Russia" => phf_map! {
+    "Russia" => phf_ordered_map! {
         "Abakan" => "latitude=53.7167&longitude=91.4167",
         "Aban" => "latitude=56.6778&longitude=96.0611",
         "Abaza" => "latitude=52.65&longitude=90.0833",
@@ -37362,7 +37362,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zvezdnyy" => "latitude=70.9167&longitude=-179.6",
         "Zyryanka" => "latitude=65.7349&longitude=150.8943",
     },
-    "Rwanda" => phf_map! {
+    "Rwanda" => phf_ordered_map! {
         "Bugarama" => "latitude=-2.6975&longitude=29.0067",
         "Burega" => "latitude=-1.7312&longitude=30.0368",
         "Busogo" => "latitude=-1.5567&longitude=29.5392",
@@ -37404,35 +37404,35 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Shyorongi" => "latitude=-1.8539&longitude=29.9689",
         "Zaza" => "latitude=-2.1595&longitude=30.4056",
     },
-    "Saint Barthelemy" => phf_map! {
+    "Saint Barthelemy" => phf_ordered_map! {
         "Gustavia" => "latitude=17.8986&longitude=-62.8492",
     },
-    "Saint Helena, Ascension, and Tristan da Cunha" => phf_map! {
+    "Saint Helena, Ascension, and Tristan da Cunha" => phf_ordered_map! {
         "Edinburgh of the Seven Seas" => "latitude=-37.0675&longitude=-12.3105",
         "Georgetown" => "latitude=-7.9286&longitude=-14.4119",
         "Jamestown" => "latitude=-15.9251&longitude=-5.7179",
     },
-    "Saint Kitts and Nevis" => phf_map! {
+    "Saint Kitts and Nevis" => phf_ordered_map! {
         "Basseterre" => "latitude=17.2983&longitude=-62.7342",
     },
-    "Saint Lucia" => phf_map! {
+    "Saint Lucia" => phf_ordered_map! {
         "Bisee" => "latitude=14.0242&longitude=-60.9744",
         "Castries" => "latitude=14.0167&longitude=-60.9833",
         "Gros Islet" => "latitude=14.081&longitude=-60.953",
         "Micoud" => "latitude=13.819&longitude=-60.9",
         "Vieux Fort" => "latitude=13.728&longitude=-60.954",
     },
-    "Saint Martin" => phf_map! {
+    "Saint Martin" => phf_ordered_map! {
         "Marigot" => "latitude=18.0706&longitude=-63.0847",
     },
-    "Saint Pierre and Miquelon" => phf_map! {
+    "Saint Pierre and Miquelon" => phf_ordered_map! {
         "Saint-Pierre" => "latitude=46.7778&longitude=-56.1778",
     },
-    "Saint Vincent and the Grenadines" => phf_map! {
+    "Saint Vincent and the Grenadines" => phf_ordered_map! {
         "Calliaqua" => "latitude=13.1308&longitude=-61.1928",
         "Kingstown" => "latitude=13.1553&longitude=-61.2274",
     },
-    "Samoa" => phf_map! {
+    "Samoa" => phf_ordered_map! {
         "Afega" => "latitude=-13.8&longitude=-171.817",
         "Apia" => "latitude=-13.8333&longitude=-171.8333",
         "Asau" => "latitude=-13.5194&longitude=-172.6372",
@@ -37446,7 +37446,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Satupa`itea" => "latitude=-13.7659&longitude=-172.3269",
         "Vailoa" => "latitude=13.73&longitude=172.28",
     },
-    "San Marino" => phf_map! {
+    "San Marino" => phf_ordered_map! {
         "Acquaviva" => "latitude=43.95&longitude=12.4167",
         "Borgo Maggiore" => "latitude=43.9472&longitude=12.4497",
         "Chiesanuova" => "latitude=43.9045&longitude=12.4208",
@@ -37457,7 +37457,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "San Marino" => "latitude=43.932&longitude=12.4484",
         "Serravalle" => "latitude=43.9683&longitude=12.4811",
     },
-    "Sao Tome and Principe" => phf_map! {
+    "Sao Tome and Principe" => phf_ordered_map! {
         "Guadalupe" => "latitude=0.3667&longitude=6.6333",
         "Neves" => "latitude=0.3592&longitude=6.5517",
         "Santana" => "latitude=0.2531&longitude=6.7414",
@@ -37466,7 +37466,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Sao Tome" => "latitude=0.3375&longitude=6.7283",
         "Trindade" => "latitude=0.3&longitude=6.6667",
     },
-    "Saudi Arabia" => phf_map! {
+    "Saudi Arabia" => phf_ordered_map! {
         "Abha" => "latitude=18.2167&longitude=42.5",
         "Abqaiq" => "latitude=25.935&longitude=49.6661",
         "Ad Dammam" => "latitude=26.4333&longitude=50.1",
@@ -37574,7 +37574,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yanbu`" => "latitude=24.0883&longitude=38.0582",
         "`Unayzah" => "latitude=26.084&longitude=43.994",
     },
-    "Senegal" => phf_map! {
+    "Senegal" => phf_ordered_map! {
         "Bakel" => "latitude=14.9042&longitude=-12.4583",
         "Bala" => "latitude=14.0192&longitude=-13.1654",
         "Bambey" => "latitude=14.6965&longitude=-16.4583",
@@ -37653,7 +37653,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Velingara" => "latitude=13.1485&longitude=-14.1106",
         "Ziguinchor" => "latitude=12.5861&longitude=-16.2707",
     },
-    "Serbia" => phf_map! {
+    "Serbia" => phf_ordered_map! {
         "Ada" => "latitude=45.8014&longitude=20.1222",
         "Aleksandrovac" => "latitude=43.4553&longitude=21.0514",
         "Aleksinac" => "latitude=43.5383&longitude=21.7047",
@@ -37822,10 +37822,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zitorada" => "latitude=43.1833&longitude=21.7167",
         "Zrenjanin" => "latitude=45.3778&longitude=20.3861",
     },
-    "Seychelles" => phf_map! {
+    "Seychelles" => phf_ordered_map! {
         "Victoria" => "latitude=-4.6236&longitude=55.4544",
     },
-    "Sierra Leone" => phf_map! {
+    "Sierra Leone" => phf_ordered_map! {
         "Benguema" => "latitude=8.3215&longitude=-13.0724",
         "Binkolo" => "latitude=8.9522&longitude=-11.9803",
         "Bo" => "latitude=7.9564&longitude=-11.74",
@@ -37855,7 +37855,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tongoma" => "latitude=8.6598&longitude=-11.0588",
         "Yengema" => "latitude=8.7144&longitude=-11.1706",
     },
-    "Singapore" => phf_map! {
+    "Singapore" => phf_ordered_map! {
         "Bedok New Town" => "latitude=1.3236&longitude=103.9273",
         "Bukit Panjang New Town" => "latitude=1.3808&longitude=103.7625",
         "Choa Chu Kang New Town" => "latitude=1.3833&longitude=103.75",
@@ -37868,10 +37868,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Woodlands New Town" => "latitude=1.4363&longitude=103.7867",
         "Yishun New Town" => "latitude=1.43&longitude=103.835",
     },
-    "Sint Maarten" => phf_map! {
+    "Sint Maarten" => phf_ordered_map! {
         "Philipsburg" => "latitude=18.0242&longitude=-63.0433",
     },
-    "Slovakia" => phf_map! {
+    "Slovakia" => phf_ordered_map! {
         "Banovce nad Bebravou" => "latitude=48.7186&longitude=18.2581",
         "Banska Bystrica" => "latitude=48.7353&longitude=19.1453",
         "Banska Stiavnica" => "latitude=48.4586&longitude=18.8931",
@@ -37957,7 +37957,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zlate Moravce" => "latitude=48.3855&longitude=18.4006",
         "Zvolen" => "latitude=48.5783&longitude=19.1247",
     },
-    "Slovenia" => phf_map! {
+    "Slovenia" => phf_ordered_map! {
         "Ajdovscina" => "latitude=45.8884&longitude=13.9052",
         "Ankaran" => "latitude=45.5793&longitude=13.7379",
         "Apace" => "latitude=46.6967&longitude=15.9111",
@@ -38168,7 +38168,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zrece" => "latitude=46.3822&longitude=15.3792",
         "Zuzemberk" => "latitude=45.8339&longitude=14.9292",
     },
-    "Solomon Islands" => phf_map! {
+    "Solomon Islands" => phf_ordered_map! {
         "Auki" => "latitude=-8.7683&longitude=160.6969",
         "Buala" => "latitude=-8.1662&longitude=159.619",
         "Gizo" => "latitude=-8.1&longitude=156.85",
@@ -38179,7 +38179,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tigoa" => "latitude=-11.5583&longitude=160.0706",
         "Tulagi" => "latitude=-9.1031&longitude=160.1506",
     },
-    "Somalia" => phf_map! {
+    "Somalia" => phf_ordered_map! {
         "Afgooye" => "latitude=2.1167&longitude=45.1167",
         "Afmadow" => "latitude=0.5156&longitude=42.0733",
         "Aw Dheegle" => "latitude=1.9833&longitude=44.8",
@@ -38264,7 +38264,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Xudun" => "latitude=9.1548&longitude=47.4782",
         "Yufle" => "latitude=10.3758&longitude=47.1964",
     },
-    "South Africa" => phf_map! {
+    "South Africa" => phf_ordered_map! {
         "Acornhoek" => "latitude=-24.593&longitude=31.097",
         "Adelaide" => "latitude=-32.7&longitude=26.3",
         "Alberton" => "latitude=-26.2672&longitude=28.1219",
@@ -38564,13 +38564,13 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "eXobho" => "latitude=-30.1572&longitude=30.0647",
         "uMhlanga Rocks" => "latitude=-29.7253&longitude=31.0858",
     },
-    "South Georgia and South Sandwich Islands" => phf_map! {
+    "South Georgia and South Sandwich Islands" => phf_ordered_map! {
         "Grytviken" => "latitude=-54.2815&longitude=-36.508",
     },
-    "South Georgia And South Sandwich Islands" => phf_map! {
+    "South Georgia And South Sandwich Islands" => phf_ordered_map! {
         "King Edward Point" => "latitude=-54.2833&longitude=-36.5",
     },
-    "South Sudan" => phf_map! {
+    "South Sudan" => phf_ordered_map! {
         "Aweil" => "latitude=8.7667&longitude=27.4",
         "Bentiu" => "latitude=9.25&longitude=29.8",
         "Bor" => "latitude=6.2167&longitude=31.55",
@@ -38599,7 +38599,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yei" => "latitude=4.0944&longitude=30.6764",
         "Yirol" => "latitude=6.56&longitude=30.51",
     },
-    "Spain" => phf_map! {
+    "Spain" => phf_ordered_map! {
         "A Coruna" => "latitude=43.3739&longitude=-8.4",
         "Abaran" => "latitude=38.2031&longitude=-1.4003",
         "Abrera" => "latitude=41.5165&longitude=1.9024",
@@ -39432,7 +39432,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zumaia" => "latitude=43.2833&longitude=-2.25",
         "Zumarraga" => "latitude=43.0886&longitude=-2.3141",
     },
-    "Sri Lanka" => phf_map! {
+    "Sri Lanka" => phf_ordered_map! {
         "Abasingammedda" => "latitude=7.3167&longitude=80.6667",
         "Akurana" => "latitude=7.365&longitude=80.6172",
         "Anuradhapura" => "latitude=8.335&longitude=80.4108",
@@ -39494,7 +39494,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vavuniya" => "latitude=8.75&longitude=80.4833",
         "Weligama" => "latitude=5.975&longitude=80.4297",
     },
-    "Sudan" => phf_map! {
+    "Sudan" => phf_ordered_map! {
         "Abu Hamad" => "latitude=19.5375&longitude=33.3275",
         "Ad Dabbah" => "latitude=18.0502&longitude=30.9495",
         "Ad Diwem" => "latitude=14.0&longitude=32.3167",
@@ -39543,7 +39543,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wadi Halfa'" => "latitude=21.8&longitude=31.35",
         "Zalingei" => "latitude=12.9&longitude=23.4833",
     },
-    "Suriname" => phf_map! {
+    "Suriname" => phf_ordered_map! {
         "Albina" => "latitude=5.5&longitude=-54.05",
         "Brokopondo" => "latitude=5.0667&longitude=-54.9667",
         "Brownsweg" => "latitude=5.0164&longitude=-55.1669",
@@ -39559,10 +39559,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Paramaribo" => "latitude=5.8667&longitude=-55.1667",
         "Totness" => "latitude=5.8775&longitude=-56.3292",
     },
-    "Svalbard" => phf_map! {
+    "Svalbard" => phf_ordered_map! {
         "Longyearbyen" => "latitude=78.2167&longitude=15.6333",
     },
-    "Sweden" => phf_map! {
+    "Sweden" => phf_ordered_map! {
         "Ahus" => "latitude=55.9285&longitude=14.295",
         "Akersberga" => "latitude=59.4871&longitude=18.2861",
         "Alingsas" => "latitude=57.9301&longitude=12.5308",
@@ -39733,7 +39733,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Visby" => "latitude=57.629&longitude=18.3071",
         "Ystad" => "latitude=55.4346&longitude=13.8254",
     },
-    "Switzerland" => phf_map! {
+    "Switzerland" => phf_ordered_map! {
         "Aadorf" => "latitude=47.4939&longitude=8.8975",
         "Aarau" => "latitude=47.3923&longitude=8.0446",
         "Aarburg" => "latitude=47.3206&longitude=7.9014",
@@ -39950,7 +39950,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zug" => "latitude=47.1681&longitude=8.5169",
         "Zurich" => "latitude=47.3744&longitude=8.5411",
     },
-    "Syria" => phf_map! {
+    "Syria" => phf_ordered_map! {
         "Abu Hardub" => "latitude=34.845&longitude=40.6431",
         "Abu Khashab" => "latitude=35.9358&longitude=40.0367",
         "Ad Darbasiyah" => "latitude=37.0728&longitude=40.6519",
@@ -40130,7 +40130,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "`Ayn al `Arab" => "latitude=36.891&longitude=38.3536",
         "`Utaybah" => "latitude=33.4861&longitude=36.6011",
     },
-    "Taiwan" => phf_map! {
+    "Taiwan" => phf_ordered_map! {
         "Bade" => "latitude=24.9298&longitude=121.2837",
         "Banqiao" => "latitude=25.0143&longitude=121.4672",
         "Baoshan" => "latitude=24.7428&longitude=120.9991",
@@ -40298,7 +40298,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zhutang" => "latitude=23.8528&longitude=120.411",
         "Zhutian" => "latitude=22.589&longitude=120.53",
     },
-    "Tajikistan" => phf_map! {
+    "Tajikistan" => phf_ordered_map! {
         "Abdurahmoni Jomi" => "latitude=37.9458&longitude=68.8117",
         "Adrasmon" => "latitude=40.6456&longitude=69.9903",
         "Almasi" => "latitude=38.6833&longitude=68.6",
@@ -40413,7 +40413,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yovon" => "latitude=38.3117&longitude=69.0381",
         "Zargar" => "latitude=37.8&longitude=68.65",
     },
-    "Tanzania" => phf_map! {
+    "Tanzania" => phf_ordered_map! {
         "Arusha" => "latitude=-3.3667&longitude=36.6833",
         "Babati" => "latitude=-4.2117&longitude=35.7475",
         "Bagamoyo" => "latitude=-6.4333&longitude=38.9",
@@ -40518,7 +40518,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Wete" => "latitude=-5.0567&longitude=39.7281",
         "Zanzibar" => "latitude=-6.1667&longitude=39.2",
     },
-    "Thailand" => phf_map! {
+    "Thailand" => phf_ordered_map! {
         "Akat Amnuai" => "latitude=17.5898&longitude=103.9859",
         "Amnat Charoen" => "latitude=15.8758&longitude=104.6223",
         "Ang Thong" => "latitude=14.5926&longitude=100.4574",
@@ -40924,7 +40924,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yang Talat" => "latitude=16.3997&longitude=103.3678",
         "Yasothon" => "latitude=15.7972&longitude=104.1431",
     },
-    "Timor-Leste" => phf_map! {
+    "Timor-Leste" => phf_ordered_map! {
         "Aileu" => "latitude=-8.7281&longitude=125.5664",
         "Ainaro" => "latitude=-8.9833&longitude=125.5",
         "Atauro" => "latitude=-8.2667&longitude=125.6014",
@@ -40940,7 +40940,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Suai" => "latitude=-9.3129&longitude=125.2565",
         "Viqueque" => "latitude=-8.85&longitude=126.3667",
     },
-    "Togo" => phf_map! {
+    "Togo" => phf_ordered_map! {
         "Afanyangan" => "latitude=6.218&longitude=1.4478",
         "Aneho" => "latitude=6.2289&longitude=1.5931",
         "Anie" => "latitude=7.7611&longitude=1.1917",
@@ -40964,11 +40964,11 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tchamba" => "latitude=9.0333&longitude=1.4167",
         "Tsevie" => "latitude=6.4333&longitude=1.2167",
     },
-    "Tonga" => phf_map! {
+    "Tonga" => phf_ordered_map! {
         "Neiafu" => "latitude=-18.6508&longitude=-173.9831",
         "Nuku`alofa" => "latitude=-21.1343&longitude=-175.2018",
     },
-    "Trinidad and Tobago" => phf_map! {
+    "Trinidad and Tobago" => phf_ordered_map! {
         "Aranguez" => "latitude=10.6472&longitude=-61.4461",
         "Arima" => "latitude=10.625&longitude=-61.2792",
         "Arouca" => "latitude=10.6333&longitude=-61.3333",
@@ -41001,7 +41001,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Tunapuna" => "latitude=10.6333&longitude=-61.3833",
         "Valencia" => "latitude=10.65&longitude=-61.2",
     },
-    "Tunisia" => phf_map! {
+    "Tunisia" => phf_ordered_map! {
         "Agareb" => "latitude=34.7414&longitude=10.528",
         "Aine Draham" => "latitude=36.7833&longitude=8.7",
         "Ajim" => "latitude=33.7249&longitude=10.7486",
@@ -41153,7 +41153,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zarzis" => "latitude=33.5&longitude=11.1167",
         "Zriba-Village" => "latitude=36.3558&longitude=10.206",
     },
-    "Turkey" => phf_map! {
+    "Turkey" => phf_ordered_map! {
         "Acarlar" => "latitude=37.8244&longitude=27.7467",
         "Acipayam" => "latitude=37.4289&longitude=29.3494",
         "Adalar" => "latitude=40.8578&longitude=29.12",
@@ -41875,7 +41875,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zile" => "latitude=40.3&longitude=35.8833",
         "Zonguldak" => "latitude=41.4567&longitude=31.7867",
     },
-    "Turkmenistan" => phf_map! {
+    "Turkmenistan" => phf_ordered_map! {
         "Abadan" => "latitude=38.0541&longitude=58.1972",
         "Akdepe" => "latitude=42.05&longitude=59.4",
         "Anew" => "latitude=37.9&longitude=58.5",
@@ -41918,16 +41918,16 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Turkmenbasy" => "latitude=40.0167&longitude=52.9667",
         "Yoloten" => "latitude=37.3014&longitude=62.3586",
     },
-    "Turks and Caicos Islands" => phf_map! {
+    "Turks and Caicos Islands" => phf_ordered_map! {
         "Grand Turk" => "latitude=21.4603&longitude=-71.1414",
     },
-    "Tuvalu" => phf_map! {
+    "Tuvalu" => phf_ordered_map! {
         "Funafuti" => "latitude=-8.5048&longitude=179.1174",
     },
-    "U.S. Virgin Islands" => phf_map! {
+    "U.S. Virgin Islands" => phf_ordered_map! {
         "Charlotte Amalie" => "latitude=18.342&longitude=-64.9331",
     },
-    "Uganda" => phf_map! {
+    "Uganda" => phf_ordered_map! {
         "Abim" => "latitude=2.735&longitude=33.6681",
         "Adjumani" => "latitude=3.3844&longitude=31.7819",
         "Aduku" => "latitude=2.01&longitude=32.72",
@@ -42118,7 +42118,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yumbe" => "latitude=3.465&longitude=31.245",
         "Zombo" => "latitude=2.515&longitude=30.9017",
     },
-    "Ukraine" => phf_map! {
+    "Ukraine" => phf_ordered_map! {
         "Alchevsk" => "latitude=48.4672&longitude=38.7983",
         "Alushta" => "latitude=44.6672&longitude=34.3978",
         "Amvrosiivka" => "latitude=47.7958&longitude=38.4801",
@@ -42609,7 +42609,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zvenyhorodka" => "latitude=49.0833&longitude=30.9667",
         "Zymohiria" => "latitude=48.5833&longitude=38.9333",
     },
-    "United Arab Emirates" => phf_map! {
+    "United Arab Emirates" => phf_ordered_map! {
         "Abu Dhabi" => "latitude=24.4511&longitude=54.3969",
         "Al Fujayrah" => "latitude=25.1222&longitude=56.3344",
         "Al Jazirah al Hamra'" => "latitude=25.7089&longitude=55.7972",
@@ -42623,7 +42623,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Umm al Qaywayn" => "latitude=25.5598&longitude=55.5572",
         "`Ajman" => "latitude=25.3994&longitude=55.4797",
     },
-    "United Kingdom" => phf_map! {
+    "United Kingdom" => phf_ordered_map! {
         "Abbots Langley" => "latitude=51.701&longitude=-0.416",
         "Aberaman" => "latitude=51.7008&longitude=-3.4267",
         "Aberbargoed" => "latitude=51.6968&longitude=-3.224",
@@ -44085,7 +44085,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "York" => "latitude=53.96&longitude=-1.08",
         "Ystrad Mynach" => "latitude=51.6419&longitude=-3.2405",
     },
-    "United States" => phf_map! {
+    "United States" => phf_ordered_map! {
         "Abbeville" => "latitude=29.9751&longitude=-92.1265",
         "Aberdeen (Maryland)" => "latitude=39.5151&longitude=-76.1733",
         "Aberdeen (New Jersey)" => "latitude=40.4165&longitude=-74.2249",
@@ -49454,7 +49454,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zion" => "latitude=42.4603&longitude=-87.8511",
         "Zionsville" => "latitude=39.9897&longitude=-86.3182",
     },
-    "Uruguay" => phf_map! {
+    "Uruguay" => phf_ordered_map! {
         "Aigua" => "latitude=-34.2033&longitude=-54.7644",
         "Artigas" => "latitude=-30.4076&longitude=-56.4721",
         "Baltasar Brum" => "latitude=-30.7198&longitude=-57.3285",
@@ -49516,7 +49516,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Vergara" => "latitude=-32.95&longitude=-53.9333",
         "Young" => "latitude=-32.7009&longitude=-57.6323",
     },
-    "Uzbekistan" => phf_map! {
+    "Uzbekistan" => phf_ordered_map! {
         "Andijon (Andijon)" => "latitude=40.6444&longitude=72.3639",
         "Angor" => "latitude=37.4639&longitude=67.15",
         "Angren" => "latitude=41.0167&longitude=70.1333",
@@ -49708,7 +49708,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Ziyodin Shaharchasi" => "latitude=40.0342&longitude=65.6547",
         "Zomin Shaharchasi" => "latitude=39.9631&longitude=68.3939",
     },
-    "Vanuatu" => phf_map! {
+    "Vanuatu" => phf_ordered_map! {
         "Isangel" => "latitude=-19.55&longitude=169.2667",
         "Lakatoro" => "latitude=-16.1069&longitude=167.4208",
         "Luganville" => "latitude=-15.5128&longitude=167.1735",
@@ -49716,10 +49716,10 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Saratamata" => "latitude=-15.2875&longitude=167.9903",
         "Sola" => "latitude=-13.88&longitude=167.55",
     },
-    "Vatican City" => phf_map! {
+    "Vatican City" => phf_ordered_map! {
         "Vatican City" => "latitude=41.904&longitude=12.453",
     },
-    "Venezuela" => phf_map! {
+    "Venezuela" => phf_ordered_map! {
         "Acarigua" => "latitude=9.5597&longitude=-69.2019",
         "Achaguas" => "latitude=7.7828&longitude=-68.2269",
         "Adicora" => "latitude=11.9417&longitude=-69.8083",
@@ -49907,7 +49907,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Yaritagua" => "latitude=10.0753&longitude=-69.1283",
         "Zaraza" => "latitude=9.3394&longitude=-65.3167",
     },
-    "Vietnam" => phf_map! {
+    "Vietnam" => phf_ordered_map! {
         "A Yun Pa" => "latitude=13.3939&longitude=108.4408",
         "An Chau" => "latitude=21.3158&longitude=106.8472",
         "An Khe" => "latitude=13.9531&longitude=108.6569",
@@ -50191,14 +50191,14 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Xuyen Moc" => "latitude=10.5606&longitude=107.4247",
         "Yen Bai" => "latitude=21.7325&longitude=104.9064",
     },
-    "Virgin Islands, British" => phf_map! {
+    "Virgin Islands, British" => phf_ordered_map! {
         "Road Town" => "latitude=18.4333&longitude=-64.6167",
     },
-    "Wallis and Futuna" => phf_map! {
+    "Wallis and Futuna" => phf_ordered_map! {
         "Leava" => "latitude=-14.2961&longitude=-178.1585",
         "Mata-Utu" => "latitude=-13.2827&longitude=-176.1737",
     },
-    "Yemen" => phf_map! {
+    "Yemen" => phf_ordered_map! {
         "Ad Dabyah" => "latitude=13.6967&longitude=44.7308",
         "Ad Dali`" => "latitude=13.6957&longitude=44.7314",
         "Ad Dis" => "latitude=14.91&longitude=49.992",
@@ -50255,7 +50255,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Zinjibar" => "latitude=13.1283&longitude=45.3803",
         "`Amran" => "latitude=15.6594&longitude=43.9439",
     },
-    "Zambia" => phf_map! {
+    "Zambia" => phf_ordered_map! {
         "Bwana Mkubwa" => "latitude=-12.9833&longitude=28.7",
         "Chambishi" => "latitude=-12.6325&longitude=28.0537",
         "Chiengi" => "latitude=-8.7737&longitude=29.0795",
@@ -50314,7 +50314,7 @@ pub static CITIES: Map<&'static str, Map<&'static str, &'static str>> = phf_map!
         "Solwezi" => "latitude=-12.1833&longitude=26.4",
         "Zambezi" => "latitude=-13.55&longitude=23.1167",
     },
-    "Zimbabwe" => phf_map! {
+    "Zimbabwe" => phf_ordered_map! {
         "Beitbridge" => "latitude=-22.2167&longitude=30.0",
         "Bindura" => "latitude=-17.3&longitude=31.3333",
         "Bulawayo" => "latitude=-20.1667&longitude=28.5667",
