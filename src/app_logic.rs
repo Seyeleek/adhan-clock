@@ -13,7 +13,7 @@ use chrono::{Local, DateTime, TimeDelta};
 use serde_json::Value;
 use reqwest::blocking;
 use rodio;
-use crate::cities::{CITIES, FILE_PREFIX};
+use crate::{FILE_PREFIX, cities::CITIES};
 use backtrace::Backtrace;
 
 slint::include_modules!();
