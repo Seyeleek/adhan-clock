@@ -10,6 +10,7 @@ use std::{
     panic,
 };
 use chrono::{Local, DateTime, TimeDelta};
+use cached::macros::cached;
 use serde_json::Value;
 use reqwest::blocking;
 use rodio;
@@ -233,6 +234,7 @@ pub fn main_window() -> Clock {
                 sink_handle.mixer(),
                 Cursor::new(sound),
             ).unwrap().sleep_until_end();
+            thread::sleep(SLEEP_TIME);
             ensure_run_in_event_loop(move |app| {
                 app.set_adhan_playing(false);
             });
@@ -248,6 +250,15 @@ pub fn main_window() -> Clock {
             });
         }
     });
+    thread::spawn(|| {
+        let pattern = format!("{}*[!-][!l][!m].json", FILE_PREFIX);
+        for file in glob::glob(pattern.as_str()).unwrap() {
+            let file = file.unwrap();
+            if let Ok(_) = fs::remove_file(&file) {
+                log(format!("INFO: Removed {}.", file.display()));
+            }
+        }
+    });
     return app;
 }
 
@@ -256,39 +267,40 @@ fn get_data() -> (String, String) {
     let this_years_data;
     let country = COUNTRY.lock().unwrap();
     let city = CITY.lock().unwrap();
-    if fs::exists(format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city)).unwrap() {
+    if fs::exists(get_fname(year, &country, &city)).unwrap() {
         this_years_data = fs::read_to_string(
-            format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city),
+            get_fname(year, &country, &city),
         ).unwrap();
     } else {
         this_years_data = blocking::get(&format!(
-            "https://api.aladhan.com/v1/calendar/{}?{}&method=2&school=1",
+            "https://api.aladhan.com/v1/calendar/{}?{}&school=1",
             year,
             CITIES[&country][&city],
         )).unwrap().text().unwrap();
-        fs::write(
-            format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city),
-            this_years_data.clone(),
-        ).unwrap();
+        fs::write(get_fname(year, &country, &city), this_years_data.clone())
+            .unwrap();
     }
     year += 1;
     let next_years_data;
-    if fs::exists(format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city)).unwrap() {
+    if fs::exists(get_fname(year, &country, &city)).unwrap() {
         next_years_data = fs::read_to_string(
-            format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city),
+            get_fname(year, &country, &city),
         ).unwrap();
     } else {
         next_years_data = blocking::get(&format!(
-            "https://api.aladhan.com/v1/calendar/{}?{}&method=2&school=1",
+            "https://api.aladhan.com/v1/calendar/{}?{}&school=1",
             year,
             CITIES[&country][&city],
         )).unwrap().text().unwrap();
-        fs::write(
-            format!("{}{}-{}-{}.json", FILE_PREFIX, year, country, city),
-            next_years_data.clone(),
-        ).unwrap();
+        fs::write(get_fname(year, &country, &city), next_years_data.clone())
+            .unwrap();
     }
     return (this_years_data, next_years_data);
+}
+
+#[cached]
+fn get_fname(year: u64, country: &String, city: &String) -> String {
+    return format!("{}{}-{}-{}-1-lm.json", FILE_PREFIX, year, country, city);
 }
 
 fn load_data() {
