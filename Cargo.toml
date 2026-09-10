@@ -49,5 +49,8 @@ name = "android.permission.WAKE_LOCK"
 label = "Adhan Clock"
 icon = "@drawable/icon"
 
+[package.metadata.android.application.activity]
+config_changes = "orientation|keyboardHidden|screenSize|keyboard"
+
 [package.metadata.android.signing.release]
 path = "/home/ruayfi/.android/debug.keystore"
