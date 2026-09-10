@@ -1,3 +1,4 @@
 /target
 /*.json
+!cities.json
 /log.txt
