@@ -62,7 +62,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             fs::write(format!("{}city.txt", file_prefix), (*city).clone()).unwrap();
             drop(city);
             let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
-            ensure_run_in_event_loop(app, move |app| {
+            ensure_run_in_event_loop(file_prefix, app, move |app| {
                 app.set_cities(cities.as_slice().into());
                 app.invoke_update_city(0);
             });
@@ -113,7 +113,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             ampm: x.1.format("%p").to_string().into(),
         }).collect();
         let app = weakapp.clone();
-        ensure_run_in_event_loop(app, move |app| {
+        ensure_run_in_event_loop(file_prefix, app, move |app| {
             app.set_prayer_times(prayer_times.as_slice().into());
             app.set_current_prayer(current_prayer.into());
         });
@@ -136,7 +136,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                ensure_run_in_event_loop(app, move |app| {
+                ensure_run_in_event_loop(file_prefix, app, move |app| {
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
                 });
@@ -152,7 +152,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             );
             let next_prayer = format!("{} in\n{}", next_prayer.0, time_left);
             let app = weakapp.clone();
-            ensure_run_in_event_loop(app, move |app| {
+            ensure_run_in_event_loop(file_prefix, app, move |app| {
                 app.set_next_prayer(next_prayer.into());
             });
             if timings[0] != current_times[timings[0].2] {
@@ -166,7 +166,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                ensure_run_in_event_loop(app, move |app| {
+                ensure_run_in_event_loop(file_prefix, app, move |app| {
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
                 });
@@ -185,7 +185,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                ensure_run_in_event_loop(app, move |app| {
+                ensure_run_in_event_loop(file_prefix, app, move |app| {
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
                     app.set_adhan_playing(true);
@@ -217,7 +217,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 Cursor::new(sound),
             ).unwrap().sleep_until_end();
             let app = weakapp.clone();
-            ensure_run_in_event_loop(app, move |app| {
+            ensure_run_in_event_loop(file_prefix, app, move |app| {
                 app.set_adhan_playing(false);
             });
             log(file_prefix, "INFO: Sound ended");
@@ -229,7 +229,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             srise_rx.recv().unwrap();
             thread::sleep(Duration::from_mins(15));
             let app = weakapp.clone();
-            ensure_run_in_event_loop(app, move |app| {
+            ensure_run_in_event_loop(file_prefix, app, move |app| {
                 app.set_adhan_playing(false);
             });
         }
@@ -380,12 +380,15 @@ fn init_city_country(weakapp: slint::Weak<Clock>) {
     app.set_countries(countries.as_slice().into());
 }
 
-fn ensure_run_in_event_loop<T, U>(app: slint::Weak<T>, func: U)
+fn ensure_run_in_event_loop<T, U>(file_prefix: &'static str, app: slint::Weak<T>, func: U)
 where T: slint::StrongHandle + 'static, U: FnOnce(T) + Send + Clone + 'static {
     loop {
         match app.upgrade_in_event_loop(func.clone()) {
             Ok(_) => return,
-            Err(_) => thread::sleep(SLEEP_TIME),
+            Err(e) => {
+                log(file_prefix, format!("ERROR: {:#?}", e));
+                thread::sleep(SLEEP_TIME);
+            },
         };
     }
 }
