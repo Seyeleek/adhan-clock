@@ -2,7 +2,7 @@ import { StandardListView } from "listview.slint";
 
 export component Picker inherits Rectangle {
     in-out property<bool> expanded: false;
-    in-out property<int> current: 0;
+    in property<int> current: 0;
     in property<color> text-color;
     in property<[StandardListViewItem]> entries;
     in property<length> full-height;
@@ -17,18 +17,18 @@ export component Picker inherits Rectangle {
     callback picked(string);
 
     public function update-current(current-item: int) {
-        list.set-current-item(current-item);
+        list.current-item = current-item;
     }
 
     Text {
-        text: entries[current].text;
+        text: entries[list.current-item].text;
         color: text-color;
         font-size: parent.font-size;
         
         TouchArea {
             clicked => {
                 expanded = true;
-                list.bring-into-view(current);
+                list.bring-into-view(list.current-item);
             }
         }
     }
@@ -56,9 +56,8 @@ export component Picker inherits Rectangle {
             mouse-drag-pan-enabled: true;
 
             current-item-changed(current-item) => {
-                current = current-item;
                 expanded = false;
-                picked(entries[current].text);
+                picked(entries[current-item].text);
             }
         }
     }
