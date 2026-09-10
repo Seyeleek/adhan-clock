@@ -1,0 +1,123 @@
+import "./ubuntu-condensed.ttf";
+
+global Palette {
+    in property<color> bg: #002b36;
+    in property<color> fg: #fdf6e3;
+}
+struct PrayerTime {
+    prayer: string,
+    time: string,
+    ampm: string,
+}
+export component Clock inherits Window {
+    in property<string> date;
+    in property<string> time;
+    in property<string> next-prayer;
+    in property<string> current-prayer;
+    in property<bool> adhan-playing: false;
+    in property<[PrayerTime]> prayer-times;
+    in property<length> calc-px: min(root.width / 1280, root.height / 600);
+    in property<length> border-radius: 10 * calc-px;
+
+    default-font-family: "Ubuntu Condensed";
+    title: "Adhan Clock";
+    icon: @image-url("../icon-2.png");
+    
+    Image {
+        source: @image-url("../bg.jpg");
+        width: parent.width;
+        height: parent.height;
+        image-fit: cover;
+    }
+    Rectangle {
+        width: root.width * 273% / 5;
+        height: root.height * 255% / 4;
+        x: root.width * 3%;
+        y: root.height * 5%;
+        background: Palette.bg;
+        border-radius: border-radius;
+        drop-shadow-color: #000;
+        drop-shadow-blur: 2 * border-radius;
+
+        VerticalLayout {
+            Rectangle {vertical-stretch: 1;}
+            Text {
+                text: time;
+                color: Palette.fg;
+                font-size: calc-px * 144;
+                horizontal-alignment: center;
+                vertical-stretch: 0;
+            }
+            Text {
+                text: date;
+                color: Palette.fg;
+                font-size: calc-px * 116;
+                horizontal-alignment: center;
+                vertical-stretch: 0;
+            }
+            Rectangle {vertical-stretch: 1;}
+        }
+    }
+    Rectangle {
+        width: root.width * 182% / 5;
+        height: root.height * 255% / 4;
+        x: root.width * 303% / 5;
+        y: root.height * 5%;
+        background: Palette.bg;
+        border-radius: border-radius;
+        drop-shadow-color: #000;
+        drop-shadow-blur: 2 * border-radius;
+
+        Text {
+            text: adhan-playing ? current-prayer + "\ntime" : next-prayer;
+            color: Palette.fg;
+            font-size: calc-px * 107;
+            horizontal-alignment: center;
+        }
+    }
+    for time[i] in prayer-times: Rectangle {
+        width: root.width * 79% / 6;
+        height: root.height * 85% / 4;
+        y: root.height * 295% / 4;
+        x: root.width * 3% + i * root.width * 97% / 6;
+        background: (time.prayer == current-prayer) ? Palette.fg : Palette.bg;
+        border-radius: border-radius;
+        drop-shadow-color: #0006;
+        drop-shadow-blur: 2 * border-radius;
+
+        VerticalLayout {
+            Rectangle {vertical-stretch: 1;}
+            HorizontalLayout {
+                vertical-stretch: 0;
+
+                Rectangle {horizontal-stretch: 1;}
+                Text {
+                    text: time.prayer;
+                    color: (time.prayer == current-prayer) ? Palette.bg : Palette.fg;
+                    font-size: calc-px * 25;
+                    horizontal-stretch: 0;
+                }
+                Rectangle {horizontal-stretch: 1;}
+            }
+            HorizontalLayout {
+                vertical-stretch: 0;
+
+                Rectangle {horizontal-stretch: 1;}
+                Text {
+                    text: time.time;
+                    color: (time.prayer == current-prayer) ? Palette.bg : Palette.fg;
+                    font-size: calc-px * 64;
+                    horizontal-stretch: 0;
+                }
+                Text {
+                    text: time.ampm;
+                    color: (time.prayer == current-prayer) ? Palette.bg : Palette.fg;
+                    font-size: calc-px * 25;
+                    horizontal-stretch: 0;
+                }
+                Rectangle {horizontal-stretch: 1;}
+            }
+            Rectangle {vertical-stretch: 1;}
+        }
+    }
+}

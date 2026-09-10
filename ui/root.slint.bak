@@ -1,0 +1,168 @@
+struct PrayerTime {
+    prayer: string,
+    time: string,
+}
+component TableRow inherits Rectangle {
+    in property<string> name;
+    in property<string> time;
+    in property<length> font-size;
+    in property<bool> pad-name;
+    in-out property<string> time-left;
+
+    VerticalLayout {
+        Rectangle {vertical-stretch: 1;}
+        HorizontalLayout {
+            vertical-stretch: 0;
+
+            Rectangle {horizontal-stretch: 1;}
+            if pad-name: Text {
+                horizontal-stretch: 0;
+                text: " " + name;
+                font-size: font-size;
+                width: 60 * font-size / 11;
+            }
+            if !pad-name: Text {
+                horizontal-stretch: 0;
+                text: name + " ";
+                font-size: font-size;
+            }
+            Text {
+                horizontal-stretch: 0;
+                text: time + " ";
+                font-size: font-size;
+            }
+            if (time-left != ""): Text {
+                horizontal-stretch: 0;
+                text: "in " + time-left;
+                width: 65 * font-size / 11;
+                font-size: font-size;
+            }
+            Rectangle {horizontal-stretch: 1;}
+        }
+        Rectangle {vertical-stretch: 1;}
+    }
+}
+export component Clock inherits Window {
+    in property<string> time;
+    in property<string> fajr;
+    in property<string> dhuhr;
+    in property<string> asr;
+    in property<string> maghrib;
+    in property<string> isha;
+    in property<string> time-left;
+    in-out property<length> font-size: 30px;
+    in property <[PrayerTime]> prayer-times;
+
+    callback font_size_change();
+
+    default-font-size: font-size;
+    
+    Image {
+        source: @image-url("../bg.jpg");
+        width: parent.width;
+        height: parent.height;
+        image-fit: cover;
+    }
+    VerticalLayout {
+        padding: 5 * font-size / 11;
+        spacing: 5 * font-size / 11;
+
+        HorizontalLayout {
+            spacing: 3 * font-size / 11;
+
+            Rectangle {horizontal-stretch: 1;}
+            Rectangle {
+                Rectangle {
+                    height: 16 * font-size / 11;
+                    border-radius: 5 * font-size / 11;
+                    background: button-left.pressed ? #bbb : #ddd;
+                    drop-shadow-color: #0002;
+                    drop-shadow-blur: 5 * font-size / 11;
+
+                    animate background {
+                        duration: 250ms;
+                    }
+
+                    Text {
+                        text: " Font + ";
+                    }
+                    button-left := TouchArea {
+                        clicked => {
+                            font-size = font-size + 1px;
+                            font_size_change();
+                        }
+                    }
+                }
+            }
+            Rectangle {horizontal-stretch: 1;}
+            Rectangle {
+                background: #fff;
+                drop-shadow-color: #0002;
+                drop-shadow-blur: 5 * font-size / 11;
+                border-radius: 2 * font-size / 11;
+
+                Text {
+                    text: " " + time + " ";
+                    horizontal-stretch: 0;
+                    font-size: 2 * font-size;
+                }
+            }
+            Rectangle {horizontal-stretch: 1;}
+            Rectangle {
+                Rectangle {
+                    height: 16 * font-size / 11;
+                    border-radius: 5 * font-size / 11;
+                    background: button-right.pressed ? #ccc : #eee;
+                    drop-shadow-color: #0002;
+                    drop-shadow-blur: 5 * font-size / 11;
+
+                    animate background {
+                        duration: 250ms;
+                    }
+
+                    Text {
+                        text: " Font - ";
+                    }
+                    button-right := TouchArea {
+                        clicked => {
+                            font-size = (font-size > 2px) ? font-size - 1px : font-size;
+                            font_size_change();
+                        }
+                    }
+                }
+            }
+            Rectangle {horizontal-stretch: 1;}
+        }
+        Rectangle {
+            Rectangle {
+                background: #fff;
+                drop-shadow-color: #0002;
+                drop-shadow-blur: 5 * font-size / 11;
+                border-radius: 2 * font-size / 11;
+                width: 285 * font-size / 11;
+                height: 2.5 * font-size;
+
+                Text {
+                    text: " Upcoming prayers: ";
+                    font-size: 1.7 * font-size;
+                }
+            }
+        }
+        for time[i] in prayer-times: Rectangle {
+            TableRow {
+                name: time.prayer + ":";
+                time: time.time;
+                time-left: (i == 0) ? time-left : "";
+                font-size: (i == 0) ? font-size * 1.5 : font-size;
+                background: #fefefe;
+                width: (i == 0) ? 285 * font-size / 11 : 140 * font-size / 11;
+                height: (i == 0) ? 30 * font-size / 11 : 25 * font-size / 11;
+                drop-shadow-color: #0002;
+                drop-shadow-blur: 5 * font-size / 11;
+                border-radius: 2 * font-size / 11;
+                pad-name: i != 0;
+            }
+        }
+    }
+
+}
