@@ -422,8 +422,9 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
         let result = Arc::new(Mutex::new(Some(())));
         let func = func.clone();
         let res_el = Arc::clone(&result);
+        let app = WEAKAPP.lock().unwrap().clone();
         slint::invoke_from_event_loop(move || {
-            let app = match WEAKAPP.lock().unwrap().upgrade() {
+            let app = match app.upgrade() {
                 Some(x) => x,
                 None => {
                     *res_el.lock().unwrap() = None;
