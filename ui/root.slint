@@ -158,12 +158,14 @@ export component Clock inherits Window {
         drop-shadow-color: #000;
         drop-shadow-blur: 2 * border-radius;
         HorizontalLayout {
+            out property<length> font-size: min(root.height * 3%, root.width * 3%);
+
             alignment: center;
 
             Text {
                 text: "Displaying ";
                 color: Palette.fg;
-                font-size: min(root.height * 3%, root.width * 5%);
+                font-size: parent.font-size;
                 vertical-alignment: center;
             }
             school_picker := Picker {
@@ -172,7 +174,7 @@ export component Clock inherits Window {
                 full-width: root.width * 60%;
                 picker-x: 0 - self.x + root.width * 17%;
                 text-color: Palette.fg;
-                font-size: min(root.height * 3%, root.width * 5%);
+                font-size: parent.font-size;
                 background-color: Palette.bg;
                 current: school == "Majority time" ? 0 : 1;
                 entries: [{text: "Majority time"}, {text: "Hanafi time"}];
@@ -184,7 +186,7 @@ export component Clock inherits Window {
             Text {
                 text: " for ";
                 color: Palette.fg;
-                font-size: min(root.height * 3%, root.width * 5%);
+                font-size: parent.font-size;
                 vertical-alignment: center;
             }
             city_picker := Picker {
@@ -193,7 +195,7 @@ export component Clock inherits Window {
                 full-width: root.width * 60%;
                 picker-x: 0 - self.x + root.width * 17%;
                 text-color: Palette.fg;
-                font-size: min(root.height * 3%, root.width * 5%);
+                font-size: parent.font-size;
                 background-color: Palette.bg;
                 current: city;
                 entries: cities;
@@ -206,7 +208,7 @@ export component Clock inherits Window {
                 z: 2;
                 text: ", ";
                 color: Palette.fg;
-                font-size: min(root.height * 3%, root.width * 5%);
+                font-size: parent.font-size;
                 vertical-alignment: center;
             }
             country_picker := Picker {
@@ -215,7 +217,7 @@ export component Clock inherits Window {
                 full-width: root.width * 60%;
                 picker-x: 0 - self.x + root.width * 17%;
                 text-color: Palette.fg;
-                font-size: min(root.height * 3%, root.width * 5%);
+                font-size: parent.font-size;
                 background-color: Palette.bg;
                 current: country;
                 entries: countries;
@@ -228,7 +230,7 @@ export component Clock inherits Window {
                 z: 2;
                 text: ".";
                 color: Palette.fg;
-                font-size: min(root.height * 3%, root.width * 5%);
+                font-size: parent.font-size;
                 vertical-alignment: center;
             }
         }
