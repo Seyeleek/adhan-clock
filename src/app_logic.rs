@@ -23,6 +23,8 @@ const SLEEP_TIME: Duration = Duration::from_millis(500);
 
 static LOG_LOCK: Mutex<()> = Mutex::new(());
 static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
+static COUNTRY: Mutex<&'static str> = Mutex::new("United States");
+static CITY: Mutex<&'static str> = Mutex::new("Dallas (Texas)");
 
 type Timing = (String, DateTime<Local>, usize);
 
@@ -192,31 +194,37 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
 fn get_data(file_prefix: &'static str) -> (String, String) {
     let mut year: u64 = format!("{}", Local::now().format("%Y")).parse().unwrap();
     let this_years_data;
-    if fs::exists(format!("{}{}.json", file_prefix, year)).unwrap() {
+    let country = COUNTRY.lock().unwrap();
+    let city = CITY.lock().unwrap();
+    if fs::exists(format!("{}{}-{}-{}.json", file_prefix, year, country, city)).unwrap() {
         this_years_data = fs::read_to_string(
-            format!("{}{}.json", file_prefix, year),
+            format!("{}{}-{}-{}.json", file_prefix, year, country, city),
         ).unwrap();
     } else {
         this_years_data = blocking::get(&format!(
-            "https://api.aladhan.com/v1/calendar/{year}?latitude=32.826708&longitude=-97.084055&method=2&school=1"
+            "https://api.aladhan.com/v1/calendar/{}?{}&method=2&school=1",
+            year,
+            CITIES[&country][&city],
         )).unwrap().text().unwrap();
         fs::write(
-            format!("{}{}.json", file_prefix, year),
+            format!("{}{}-{}-{}.json", file_prefix, year, country, city),
             this_years_data.clone(),
         ).unwrap();
     }
     year += 1;
     let next_years_data;
-    if fs::exists(format!("{}{}.json", file_prefix, year)).unwrap() {
+    if fs::exists(format!("{}{}-{}-{}.json", file_prefix, year, country, city)).unwrap() {
         next_years_data = fs::read_to_string(
-            format!("{}{}.json", file_prefix, year),
+            format!("{}{}-{}-{}.json", file_prefix, year, country, city),
         ).unwrap();
     } else {
         next_years_data = blocking::get(&format!(
-            "https://api.aladhan.com/v1/calendar/{year}?latitude=32.826708&longitude=-97.084055&method=2&school=1"
+            "https://api.aladhan.com/v1/calendar/{}?{}&method=2&school=1",
+            year,
+            CITIES[&country][&city],
         )).unwrap().text().unwrap();
         fs::write(
-            format!("{}{}.json", file_prefix, year),
+            format!("{}{}-{}-{}.json", file_prefix, year, country, city),
             next_years_data.clone(),
         ).unwrap();
     }
