@@ -1,6 +1,6 @@
 [package]
 name = "adhan-clock"
-version = "3.5.13"
+version = "3.5.14"
 edition = "2024"
 build = "build.rs"
 
@@ -27,7 +27,7 @@ slint-build = "1.17.1"
 
 [package.metadata.android]
 package = "com.example.adhan_clock"
-build_targets = ["aarch64-linux-android", "x86_64-linux-android"]
+build_targets = ["aarch64-linux-android"]
 resources = "resources/"
 
 [package.metadata.android.sdk]

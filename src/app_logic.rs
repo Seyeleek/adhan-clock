@@ -3,7 +3,7 @@ use std::{
     thread,
     time::Duration,
     fs::{OpenOptions, self},
-    sync::{mpsc, Mutex, Arc},
+    sync::{mpsc, Mutex, Arc, OnceLock},
     collections::VecDeque,
     io::{Cursor, Write},
     fmt::Display,
@@ -26,6 +26,7 @@ static LOG_LOCK: Mutex<()> = Mutex::new(());
 static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
 static COUNTRY: Mutex<String> = Mutex::new(String::new());
 static CITY: Mutex<String> = Mutex::new(String::new());
+static WEAKAPP: OnceLock<slint::Weak<Clock>> = OnceLock::new();
 
 type Timing = (String, DateTime<Local>, usize);
 
@@ -38,6 +39,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
     }));
     load_location(file_prefix);
     let app = Clock::new().unwrap();
+    let _ = WEAKAPP.set(app.as_weak());
     app.on_city_picked(move |new_city| {
         thread::spawn(move || {
             let mut city = CITY.lock().unwrap();
@@ -47,9 +49,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             load_data(file_prefix);
         });
     });
-    let weakapp = app.as_weak();
     app.on_country_picked(move |new_country| {
-        let app = weakapp.clone();
         thread::spawn(move || {
             let mut country = COUNTRY.lock().unwrap();
             *country = new_country.clone().into();
@@ -62,16 +62,14 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             fs::write(format!("{}city.txt", file_prefix), (*city).clone()).unwrap();
             drop(city);
             let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
-            ensure_run_in_event_loop(file_prefix, app, move |app| {
+            ensure_run_in_event_loop(file_prefix, move |app| {
                 app.set_cities(cities.as_slice().into());
                 app.invoke_update_city(0);
             });
             load_data(file_prefix);
         });
     });
-    let weakapp = app.as_weak();
-    init_city_country(weakapp);
-    let weakapp = app.as_weak();
+    init_city_country();
     let (time_tx, time_rx) = mpsc::channel();
     let (adhan_tx, adhan_rx) = mpsc::channel();
     let (srise_tx, srise_rx) = mpsc::channel();
@@ -90,14 +88,13 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             time_tx.send(current_time).unwrap();
             let time = current_time.format("%I:%M:%S %p").to_string();
             let date = current_time.format("%a %m-%d-%Y").to_string();
-            weakapp.upgrade_in_event_loop(move |app| {
+            WEAKAPP.get().unwrap().upgrade_in_event_loop(move |app| {
                 app.set_time(time.into());
                 app.set_date(date.into());
             }).unwrap();
             thread::sleep(SLEEP_TIME);
         }
     });
-    let weakapp = app.as_weak();
     thread::spawn(move || {
         load_data(file_prefix);
         let timings = TIMINGS.lock().unwrap();
@@ -112,8 +109,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             time: x.1.format("%I:%M").to_string().into(),
             ampm: x.1.format("%p").to_string().into(),
         }).collect();
-        let app = weakapp.clone();
-        ensure_run_in_event_loop(file_prefix, app, move |app| {
+        ensure_run_in_event_loop(file_prefix, move |app| {
             app.invoke_update_prayer_times(prayer_times.as_slice().into());
             app.invoke_update_current_prayer(current_prayer.into());
         });
@@ -135,8 +131,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     time: x.1.format("%I:%M").to_string().into(),
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
-                let app = weakapp.clone();
-                ensure_run_in_event_loop(file_prefix, app, move |app| {
+                ensure_run_in_event_loop(file_prefix, move |app| {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
                 });
@@ -151,8 +146,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 time_left.num_seconds() % 60,
             );
             let next_prayer = format!("{} in\n{}", next_prayer.0, time_left);
-            let app = weakapp.clone();
-            ensure_run_in_event_loop(file_prefix, app, move |app| {
+            ensure_run_in_event_loop(file_prefix, move |app| {
                 app.set_next_prayer(next_prayer.into());
             });
             if timings[0] != current_times[timings[0].2] {
@@ -165,8 +159,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     time: x.1.format("%I:%M").to_string().into(),
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
-                let app = weakapp.clone();
-                ensure_run_in_event_loop(file_prefix, app, move |app| {
+                ensure_run_in_event_loop(file_prefix, move |app| {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
                 });
@@ -184,8 +177,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     time: x.1.format("%I:%M").to_string().into(),
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
-                let app = weakapp.clone();
-                ensure_run_in_event_loop(file_prefix, app, move |app| {
+                ensure_run_in_event_loop(file_prefix, move |app| {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
                     app.set_adhan_playing(true);
@@ -198,7 +190,6 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             }
         }
     });
-    let weakapp = app.as_weak();
     thread::spawn(move || {
         loop {
             log(file_prefix, "INFO: Adhan loop advanced");
@@ -216,20 +207,17 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 sink_handle.mixer(),
                 Cursor::new(sound),
             ).unwrap().sleep_until_end();
-            let app = weakapp.clone();
-            ensure_run_in_event_loop(file_prefix, app, move |app| {
+            ensure_run_in_event_loop(file_prefix, move |app| {
                 app.set_adhan_playing(false);
             });
             log(file_prefix, "INFO: Sound ended");
         }
     });
-    let weakapp = app.as_weak();
     thread::spawn(move || {
         loop {
             srise_rx.recv().unwrap();
             thread::sleep(Duration::from_mins(15));
-            let app = weakapp.clone();
-            ensure_run_in_event_loop(file_prefix, app, move |app| {
+            ensure_run_in_event_loop(file_prefix, move |app| {
                 app.set_adhan_playing(false);
             });
         }
@@ -362,7 +350,7 @@ fn load_location(file_prefix: &'static str) {
     *city = city_data;
 }
 
-fn init_city_country(weakapp: slint::Weak<Clock>) {
+fn init_city_country() {
     let mut countries: Vec<_> = CITIES.keys().collect();
     countries.sort();
     let country = COUNTRY.lock().unwrap();
@@ -373,22 +361,21 @@ fn init_city_country(weakapp: slint::Weak<Clock>) {
     let city_pos = cities.binary_search(&&(*city).as_str()).unwrap();
     let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
     let countries: Vec<StandardListViewItem> = countries.iter().map(|&&x| x.into()).collect();
-    let app = weakapp.unwrap();
+    let app = WEAKAPP.get().unwrap().unwrap();
     app.set_city(city_pos as i32);
     app.set_country(country_pos as i32);
     app.set_cities(cities.as_slice().into());
     app.set_countries(countries.as_slice().into());
 }
 
-fn ensure_run_in_event_loop<T, U>(file_prefix: &'static str, app: slint::Weak<T>, func: U)
-where T: slint::StrongHandle + 'static, U: FnOnce(T) + Send + Clone + 'static {
+fn ensure_run_in_event_loop<F>(file_prefix: &'static str, func: F)
+where F: FnOnce(Clock) + Send + Clone + 'static {
+    let result = Arc::new(Mutex::new(Some(())));
     loop {
-        let result = Arc::new(Mutex::new(Some(())));
         let func = func.clone();
-        let app = app.clone();
         let res_el = Arc::clone(&result);
         slint::invoke_from_event_loop(move || {
-            let app = match app.upgrade() {
+            let app = match WEAKAPP.get().unwrap().upgrade() {
                 Some(x) => x,
                 None => {
                     *res_el.lock().unwrap() = None;
