@@ -263,8 +263,12 @@ fn load_data(file_prefix: &'static str) -> VecDeque<(String, DateTime<Local>, us
 }
 
 fn log(file_prefix: &'static str, message: impl Display) {
-    let mut file = OpenOptions::new().append(true).create(true).open(
+    let mut file;
+    match OpenOptions::new().append(true).create(true).open(
         format!("{}log.txt", file_prefix)
-    ).unwrap();
-    writeln!(file, "{}: {}", Local::now(), message).unwrap();
+    ) {
+        Ok(x) => file = x,
+        Err(_) => return,
+    };
+    let _ = writeln!(file, "{}: {}", Local::now(), message);
 }
