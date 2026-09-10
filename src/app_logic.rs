@@ -418,8 +418,8 @@ fn init_city_country() {
 
 fn ensure_run_in_event_loop<F>(func: F)
 where F: FnOnce(Clock) + Send + Clone + 'static {
+    let result = Arc::new(Mutex::new(Some(())));
     loop {
-        let result = Arc::new(Mutex::new(Some(())));
         let func = func.clone();
         let res_el = Arc::clone(&result);
         let app = WEAKAPP.lock().unwrap().clone();
