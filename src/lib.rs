@@ -6,7 +6,6 @@ use slint::{ComponentHandle,
         android_activity::WindowManagerFlags as WMFlags,
     },
 };
-use crate::app_logic::LogError;
 
 #[cfg(target_os = "android")]
 #[unsafe(no_mangle)]
@@ -16,6 +15,6 @@ fn android_main(app: AndroidApp) {
         WMFlags::empty(),
     );
     let file_prefix = "/storage/emulated/0/Android/data/com.example.adhan_clock/files/";
-    slint::android::init(app).unwrap_or_log(file_prefix);
-    app_logic::main_window(file_prefix).run().unwrap_or_log(file_prefix);
+    slint::android::init(app).unwrap();
+    app_logic::main_window(file_prefix).run().unwrap();
 }

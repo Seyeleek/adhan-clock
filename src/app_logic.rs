@@ -6,7 +6,8 @@ use std::{
     sync::{mpsc, Mutex},
     collections::VecDeque,
     io::{Cursor, Write},
-    fmt::{Display, Debug},
+    fmt::Display,
+    panic,
 };
 use chrono::{Local, DateTime, TimeDelta};
 use serde_json::Value;
@@ -22,23 +23,10 @@ const FIFTEEN_MINS: Duration = Duration::from_mins(15);
 
 static LOG_LOCK: Mutex<()> = Mutex::new(());
 
-pub trait LogError<T, E> {
-    fn unwrap_or_log(self, file_prefix: &'static str) -> T;
-}
-
-impl<T, E: Debug> LogError<T, E> for Result<T, E> {
-    fn unwrap_or_log(self, file_prefix: &'static str) -> T {
-        match self {
-            Ok(x) => return x,
-            Err(e) => {
-                log(file_prefix, format!("ERROR: {:?}", e));
-                panic!();
-            },
-        }
-    }
-}
-
 pub fn main_window(file_prefix: &'static str) -> Clock {
+    panic::set_hook(Box::new(move |panic_info| {
+        log(file_prefix, format!("ERROR: {panic_info}"));
+    }));
     let app = Clock::new().unwrap();
     let weakapp = app.as_weak();
     let (time_tx, time_rx) = mpsc::channel();
@@ -64,7 +52,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 let app = app.unwrap();
                 app.set_time(time.into());
                 app.set_date(date.into());
-            }).unwrap_or_log(file_prefix);
+            }).unwrap();
             thread::sleep(SLEEP_TIME);
         }
     });
@@ -86,7 +74,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             let app = app.unwrap();
             app.set_prayer_times(prayer_times.as_slice().into());
             app.set_current_prayer(current_prayer.into());
-        }).unwrap_or_log(file_prefix);
+        }).unwrap();
         let mut tz = Local::now().format("%z").to_string();
         loop {
             let time = time_rx.recv().unwrap();
@@ -107,7 +95,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     let app = app.unwrap();
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
-                }).unwrap_or_log(file_prefix);
+                }).unwrap();
                 tz = new_tz;
             }
             let next_prayer = &timings[0];
@@ -123,7 +111,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
                 app.set_next_prayer(next_prayer.into());
-            }).unwrap_or_log(file_prefix);
+            }).unwrap();
             if time >= timings[0].1 {
                 let adhan = timings.pop_front().unwrap().0;
                 log(file_prefix, format!("INFO: {} sent", adhan));
@@ -143,7 +131,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
                     app.set_adhan_playing(true);
-                }).unwrap_or_log(file_prefix);
+                }).unwrap();
                 if timings.len() <= 100 {
                     timings = load_data(file_prefix);
                 }
@@ -162,17 +150,17 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             }
             let sound = if adhan == "Fajr" {FAJR_ADHAN} else {ADHAN};
             let sink_handle = rodio::DeviceSinkBuilder::open_default_sink()
-                .unwrap_or_log(file_prefix);
+                .unwrap();
             log(file_prefix, "INFO: Sound started");
             rodio::play(
-                &sink_handle.mixer(),
+                sink_handle.mixer(),
                 Cursor::new(sound),
             ).unwrap().sleep_until_end();
             let app = weakapp.clone();
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
                 app.set_adhan_playing(false);
-            }).unwrap_or_log(file_prefix);
+            }).unwrap();
             log(file_prefix, "INFO: Sound ended");
         }
     });
@@ -185,7 +173,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
                 app.set_adhan_playing(false);
-            }).unwrap_or_log(file_prefix);
+            }).unwrap();
         }
     });
     return app;
