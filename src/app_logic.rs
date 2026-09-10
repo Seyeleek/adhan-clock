@@ -20,7 +20,6 @@ slint::include_modules!();
 const ADHAN: &[u8] = include_bytes!("../adhan.ogg").as_slice();
 const FAJR_ADHAN: &[u8] = include_bytes!("../fajr-adhan.ogg").as_slice();
 const SLEEP_TIME: Duration = Duration::from_millis(500);
-const FIFTEEN_MINS: Duration = Duration::from_mins(15);
 
 static LOG_LOCK: Mutex<()> = Mutex::new(());
 static TIMINGS: Mutex<VecDeque<Timing>> = Mutex::new(VecDeque::new());
@@ -179,7 +178,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
     thread::spawn(move || {
         loop {
             srise_rx.recv().unwrap();
-            thread::sleep(FIFTEEN_MINS);
+            thread::sleep(Duration::mins(15));
             let app = weakapp.clone();
             slint::invoke_from_event_loop(move || {
                 let app = app.unwrap();
