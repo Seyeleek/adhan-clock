@@ -21,6 +21,22 @@ const FAJR_ADHAN: &[u8] = include_bytes!("../fajr-adhan.ogg").as_slice();
 const SLEEP_TIME: Duration = Duration::from_millis(500);
 const FIFTEEN_MINS: Duration = Duration::from_mins(15);
 
+trait LogError<T: Display, E> {
+    fn unwrap_or_log(self, file_prefix: &'static str) -> T;
+}
+
+impl LogError for Result<T, E> {
+    fn unwrap_or_log(self, file_prefix: &'static str) -> T {
+        match self {
+            Ok(x) => return x,
+            Err(e) => {
+                log(file_prefix, e);
+                panic!();
+            },
+        }
+    }
+}
+
 pub fn main_window(file_prefix: &'static str) -> Clock {
     let app = Clock::new().unwrap();
     let weakapp = app.as_weak();
