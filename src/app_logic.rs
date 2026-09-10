@@ -21,7 +21,7 @@ const FAJR_ADHAN: &[u8] = include_bytes!("../fajr-adhan.ogg").as_slice();
 const SLEEP_TIME: Duration = Duration::from_millis(500);
 const FIFTEEN_MINS: Duration = Duration::from_mins(15);
 
-trait LogError<T, E> {
+pub trait LogError<T, E> {
     fn unwrap_or_log(self, file_prefix: &'static str) -> T;
 }
 

@@ -1,11 +1,12 @@
+mod app_logic;
+
 use slint::{ComponentHandle,
     android::{
         AndroidApp,
         android_activity::WindowManagerFlags as WMFlags,
     },
 };
-
-mod app_logic;
+use crate::app_logic::LogError;
 
 #[cfg(target_os = "android")]
 #[unsafe(no_mangle)]
@@ -14,8 +15,7 @@ fn android_main(app: AndroidApp) {
         WMFlags::KEEP_SCREEN_ON,
         WMFlags::empty(),
     );
-    slint::android::init(app).unwrap();
-    app_logic::main_window(
-        "/storage/emulated/0/Android/data/com.example.adhan_clock/files/"
-    ).run().unwrap();
+    let file_prefix = "/storage/emulated/0/Android/data/com.example.adhan_clock/files/";
+    slint::android::init(app).unwrap_or_log(file_prefix);
+    app_logic::main_window(file_prefix).run().unwrap_or_log(file_prefix);
 }
