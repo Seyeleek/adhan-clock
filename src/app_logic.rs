@@ -28,6 +28,7 @@ static COUNTRY: Mutex<String> = Mutex::new(String::new());
 static CITY: Mutex<String> = Mutex::new(String::new());
 static WEAKAPP: LazyLock<Mutex<slint::Weak<Clock>>> = LazyLock::new(|| Mutex::new(Default::default()));
 static RAN_BEFORE: Mutex<bool> = Mutex::new(false);
+static DATA_LOCK: Mutex<u32> = Mutex::new(0);
 
 type Timing = (String, DateTime<Local>, usize);
 
@@ -291,6 +292,10 @@ fn get_data() -> (String, String) {
 }
 
 fn load_data() {
+    let mut data_lock = DATA_LOCK.lock().unwrap();
+    *data_lock += 1;
+    let data_id = (*data_lock).clone();
+    drop(data_lock);
     let today = Local::now();
     let tz = today.format("%z").to_string();
     let (this_year, next_year) = get_data();
@@ -335,9 +340,12 @@ fn load_data() {
     while parsed_data[0].1 < today {
         parsed_data.pop_front();
     }
-    let mut timings = TIMINGS.lock().unwrap();
-    timings.clear();
-    timings.extend(parsed_data);
+    let data_lock = DATA_LOCK.lock().unwrap();
+    if *data_lock == data_id {
+        let mut timings = TIMINGS.lock().unwrap();
+        timings.clear();
+        timings.extend(parsed_data);
+    }
 }
 
 fn log(message: impl Display) {
