@@ -1,10 +1,9 @@
-use slint::{language::StandardListViewItem, Timer, TimerMode};
+use slint::language::StandardListViewItem;
 use std::{
     thread,
     time::Duration,
     fs::{OpenOptions, self},
     sync::{mpsc, Mutex, Arc, LazyLock},
-    cell::Cell,
     collections::VecDeque,
     io::{Cursor, Write},
     fmt::Display,
@@ -29,13 +28,9 @@ static COUNTRY: Mutex<String> = Mutex::new(String::new());
 static CITY: Mutex<String> = Mutex::new(String::new());
 static WEAKAPP: LazyLock<Mutex<slint::Weak<Clock>>> = LazyLock::new(|| Mutex::new(Default::default()));
 
-thread_local! {
-    static MAIN_THREAD: Cell<thread::ThreadId> = thread::current().id().into();
-}
-
 type Timing = (String, DateTime<Local>, usize);
 
-pub fn main_window() -> (Clock, Timer) {
+pub fn main_window() -> Clock {
     panic::set_hook(Box::new(move |panic_info| {
         log(
             format!("ERROR: {}\n{:#?}", panic_info, Backtrace::new()),
@@ -224,16 +219,7 @@ pub fn main_window() -> (Clock, Timer) {
             });
         }
     });
-    let app_clone = app.clone_strong();
-    let timer = Timer::default();
-    timer.start(TimerMode::Repeated, Duration::from_millis(600), move || {
-        let current_id = thread::current().id();
-        if MAIN_THREAD.replace(current_id) != current_id {
-            *WEAKAPP.lock().unwrap() = app_clone.as_weak();
-            thread::spawn(|| log("INFO: Replaced WEAKAPP."));
-        }
-    });
-    return (app, timer);
+    return app;
 }
 
 fn get_data() -> (String, String) {
@@ -400,7 +386,7 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
             Some(_) => return,
             None => {
                 thread::sleep(SLEEP_TIME);
-                log(format!("INFO: Graphical update failed, retrying."));
+                log("INFO: Graphical update failed, retrying.");
             },
         }
     }
