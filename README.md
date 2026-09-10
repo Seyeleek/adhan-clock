@@ -2,7 +2,7 @@
 
 This app is an adhan clock designed primarily to run on an Android tablet.
 However, it is cross-platform and should run on Android, Linux, Windows, MacOS,
-and iOS (only the first three are tested).
+and iOS (only the first three are tested and iOS will need hacking).
 
 This app is hacked together and was only designed for my personal use. No
 guarantees are made.
