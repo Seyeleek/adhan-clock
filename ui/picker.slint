@@ -27,7 +27,7 @@ export component Picker inherits Rectangle {
             }
         }
     }
-    list-rec := Rectangle {
+    Rectangle {
         height: expanded ? full-height : 0px;
         width: expanded ? full-width : 0px;
         x: 0;
@@ -47,6 +47,7 @@ export component Picker inherits Rectangle {
             background: background-color;
             model: entries;
             current-item: current;
+            mouse-drag-pan-enabled: true;
 
             current-item-changed(current-item) => {
                 current = current-item;

@@ -8,7 +8,7 @@ export component ListView inherits ScrollView {
     @children
     accessible-role: list;
     accessible-orientation: Orientation.vertical;
-    vertical-scrollbar-policy: always-off;
+    vertical-scrollbar-policy: as-needed;
     horizontal-scrollbar-policy: always-off;
 }
 
@@ -78,7 +78,7 @@ component StandardListViewBase inherits ListView {
         }
     }
 
-    protected function focus-up() {
+    public function focus-up() {
         root.set-focus-item(root.focus-item - 1);
     }
 
@@ -94,7 +94,7 @@ component StandardListViewBase inherits ListView {
         root.set-focus-item(0);
     }
 
-    protected function focus-down() {
+    public function focus-down() {
         root.set-focus-item(root.focus-item + 1);
     }
 
