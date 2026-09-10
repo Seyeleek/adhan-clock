@@ -62,8 +62,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             fs::write(format!("{}city.txt", file_prefix), (*city).clone()).unwrap();
             drop(city);
             let cities: Vec<StandardListViewItem> = cities.iter().map(|&&x| x.into()).collect();
-            slint::invoke_from_event_loop(move || {
-                let app = app.unwrap();
+            app.upgrade_in_event_loop(move |app| {
                 app.set_cities(cities.as_slice().into());
                 app.set_city(0);
             }).unwrap();
@@ -91,9 +90,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             time_tx.send(current_time).unwrap();
             let time = current_time.format("%I:%M:%S %p").to_string();
             let date = current_time.format("%a %m-%d-%Y").to_string();
-            let app = weakapp.clone();
-            slint::invoke_from_event_loop(move || {
-                let app = app.unwrap();
+            weakapp.upgrade_in_event_loop(move |app| {
                 app.set_time(time.into());
                 app.set_date(date.into());
             }).unwrap();
@@ -116,8 +113,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             ampm: x.1.format("%p").to_string().into(),
         }).collect();
         let app = weakapp.clone();
-        slint::invoke_from_event_loop(move || {
-            let app = app.unwrap();
+            app.upgrade_in_event_loop(move |app| {
             app.set_prayer_times(prayer_times.as_slice().into());
             app.set_current_prayer(current_prayer.into());
         }).unwrap();
@@ -140,8 +136,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                slint::invoke_from_event_loop(move || {
-                    let app = app.unwrap();
+                app.upgrade_in_event_loop(move |app| {
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
                 }).unwrap();
@@ -157,8 +152,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             );
             let next_prayer = format!("{} in\n{}", next_prayer.0, time_left);
             let app = weakapp.clone();
-            slint::invoke_from_event_loop(move || {
-                let app = app.unwrap();
+            app.upgrade_in_event_loop(move |app| {
                 app.set_next_prayer(next_prayer.into());
             }).unwrap();
             if timings[0] != current_times[timings[0].2] {
@@ -172,8 +166,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                slint::invoke_from_event_loop(move || {
-                    let app = app.unwrap();
+                app.upgrade_in_event_loop(move |app| {
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
                 }).unwrap();
@@ -192,8 +185,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                     ampm: x.1.format("%p").to_string().into(),
                 }).collect();
                 let app = weakapp.clone();
-                slint::invoke_from_event_loop(move || {
-                    let app = app.unwrap();
+                app.upgrade_in_event_loop(move |app| {
                     app.set_prayer_times(prayer_times.as_slice().into());
                     app.set_current_prayer(current_prayer.into());
                     app.set_adhan_playing(true);
@@ -225,8 +217,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 Cursor::new(sound),
             ).unwrap().sleep_until_end();
             let app = weakapp.clone();
-            slint::invoke_from_event_loop(move || {
-                let app = app.unwrap();
+            app.upgrade_in_event_loop(move |app| {
                 app.set_adhan_playing(false);
             }).unwrap();
             log(file_prefix, "INFO: Sound ended");
@@ -238,8 +229,7 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
             srise_rx.recv().unwrap();
             thread::sleep(Duration::from_mins(15));
             let app = weakapp.clone();
-            slint::invoke_from_event_loop(move || {
-                let app = app.unwrap();
+            app.upgrade_in_event_loop(move |app| {
                 app.set_adhan_playing(false);
             }).unwrap();
         }

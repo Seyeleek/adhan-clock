@@ -12,6 +12,7 @@ export component Picker inherits Rectangle {
     in property<length> picker-border-radius;
     in property<length> picker-drop-shadow-blur;
     in property<color> picker-drop-shadow-color;
+    in property<length> picker-x;
 
     callback picked(string);
 
@@ -28,10 +29,11 @@ export component Picker inherits Rectangle {
         }
     }
     Rectangle {
+        z: 4;
         height: expanded ? full-height : 0px;
         width: expanded ? full-width : 0px;
-        x: 0;
         y: 0;
+        x: picker-x;
         background: background-color;
         border-radius: root.picker-border-radius;
         drop-shadow-color: root.picker-drop-shadow-color;

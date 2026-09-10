@@ -154,9 +154,9 @@ export component Clock inherits Window {
                 vertical-alignment: center;
             }
             city_picker := Picker {
-                z: 3;
                 full-height: root.height * 95% - root.height * 280% / 4;
-                full-width: root.width * 94% - self.x;
+                full-width: root.width * 60%;
+                picker-x: 0 - self.x + root.width * 30% - self.width * 2;
                 text-color: Palette.fg;
                 font-size: min(root.height * 3%, root.width * 5%);
                 background-color: Palette.bg;
@@ -165,18 +165,19 @@ export component Clock inherits Window {
                 picker-border-radius: border-radius;
                 picker-drop-shadow-color: #000;
                 picker-drop-shadow-blur: 2 * border-radius;
+                visible: !country_picker.expanded;
             }
             Text {
-                z: 1;
                 text: ", ";
                 color: Palette.fg;
                 font-size: min(root.height * 3%, root.width * 5%);
                 vertical-alignment: center;
+                visible: !(city_picker.expanded || country_picker.expanded);
             }
             country_picker := Picker {
-                z: 2;
                 full-height: root.height * 95% - root.height * 280% / 4;
-                full-width: root.width * 94% - self.x;
+                full-width: root.width * 60%;
+                picker-x: 0 - self.x + root.width * 30% - self.width;
                 text-color: Palette.fg;
                 font-size: min(root.height * 3%, root.width * 5%);
                 background-color: Palette.bg;
@@ -185,6 +186,7 @@ export component Clock inherits Window {
                 picker-border-radius: border-radius;
                 picker-drop-shadow-color: #000;
                 picker-drop-shadow-blur: 2 * border-radius;
+                visible: !city_picker.expanded;
             }
         }
     }
