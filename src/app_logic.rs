@@ -31,7 +31,7 @@ impl<T, E: Debug> LogError<T, E> for Result<T, E> {
         match self {
             Ok(x) => return x,
             Err(e) => {
-                log(file_prefix, format!("Tried to unwrap an 'Err' value: {:?}", e));
+                log(file_prefix, format!("ERROR: {:?}", e));
                 panic!();
             },
         }
@@ -161,13 +161,8 @@ pub fn main_window(file_prefix: &'static str) -> Clock {
                 continue;
             }
             let sound = if adhan == "Fajr" {FAJR_ADHAN} else {ADHAN};
-            let sink_handle = match rodio::DeviceSinkBuilder::open_default_sink() {
-                Ok(x) => x,
-                Err(e) => {
-                    log(file_prefix, format!("ERROR: {:?}", e));
-                    panic!();
-                }
-            };
+            let sink_handle = rodio::DeviceSinkBuilder::open_default_sink()
+                .unwrap_or_log(file_prefix);
             log(file_prefix, "INFO: Sound started");
             rodio::play(
                 &sink_handle.mixer(),
