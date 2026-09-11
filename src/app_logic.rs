@@ -450,10 +450,14 @@ fn ensure_run_in_event_loop<F>(func: F)
 where F: FnOnce(Clock) + Send + Clone + 'static {
     let result = Arc::new(Mutex::new(Some(())));
     loop {
+        log("INFO: Started graphical update loop.");
         let func = func.clone();
+        log("INFO: Cloned the function.");
         let res_el = Arc::clone(&result);
+        log("INFO: Cloned the Arc<Mutex> containing whether or not the update failed.");
         slint::invoke_from_event_loop(move || {
             let app = WEAKAPP.read().unwrap().clone();
+            log("INFO: Obtained a copy of the weakapp.");
             let app = match app.upgrade() {
                 Some(x) => x,
                 None => {
@@ -461,10 +465,15 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
                     return;
                 }
             };
+            log("INFO: Successfully upgraded the weakapp.");
             func(app);
+            log("INFO: Successfully ran the function.");
         }).unwrap();
         match *result.lock().unwrap() {
-            Some(_) => return,
+            Some(_) => {
+                log("INFO: Successfully updated the app.");
+                return;
+            },
             None => {
                 thread::sleep(SLEEP_TIME);
                 thread::spawn(|| log("INFO: Graphical update failed, retrying."));
