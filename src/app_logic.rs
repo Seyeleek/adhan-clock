@@ -420,7 +420,7 @@ fn load_location_school() {
         if fs::exists(&file).unwrap() {
             match fs::read_to_string(&file) {
                 Ok(x) => value = x,
-                Err(e) => log(format!("Could not read {} file because of {:#?}", item.0, e)),
+                Err(e) => log(format!("Could not read the {} file because of {:#?}", item.0, e)),
             }
         }
         *item.2.lock().unwrap() = value;
