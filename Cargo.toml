@@ -12,6 +12,7 @@ crate-type = ["cdylib"]
 
 [[bin]]
 name = "adhan-clock"
+path = "src/main.rs"
 
 [dependencies]
 chrono = "0.4.44"
