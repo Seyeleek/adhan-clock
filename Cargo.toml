@@ -21,3 +21,29 @@ backtrace = "0.3.76"
 
 [build-dependencies]
 slint-build = "1.17.1"
+
+[package.metadata.android]
+package = "com.example.adhan_clock"
+build_targets = ["aarch64-linux-android"]
+resources = "resources/"
+
+[package.metadata.android.sdk]
+min_sdk_version = 26
+target_sdk_version = 30
+max_sdk_version = 33
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.INTERNET"
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.ACCESS_NETWORK_STATE"
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.WAKE_LOCK"
+
+[package.metadata.android.application]
+label = "Adhan Clock"
+icon = "@drawable/icon"
+
+[package.metadata.android.signing.release]
+path = "/home/ruayfi/.android/debug.keystore"
