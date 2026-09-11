@@ -78,7 +78,7 @@ pub fn main_window() -> Clock {
             ensure_run_in_event_loop(move |app| {
                 app.set_cities(cities.as_slice().into());
                 app.invoke_update_city(0);
-            });
+            }, false);
             load_data();
         });
     });
@@ -120,7 +120,7 @@ pub fn main_window() -> Clock {
             ensure_run_in_event_loop(move |app| {
                 app.invoke_update_prayer_times(prayer_times.as_slice().into());
                 app.invoke_update_current_prayer(current_prayer.into());
-            });
+            }, false);
         });
         app.set_school((*SCHOOL.lock().unwrap()).clone().into());
         return app;
@@ -169,7 +169,7 @@ pub fn main_window() -> Clock {
         ensure_run_in_event_loop(move |app| {
             app.invoke_update_prayer_times(prayer_times.as_slice().into());
             app.invoke_update_current_prayer(current_prayer.into());
-        });
+        }, false);
         let mut tz = Local::now().format("%z").to_string();
         loop {
             let time = time_rx.recv().unwrap();
@@ -191,7 +191,7 @@ pub fn main_window() -> Clock {
                 ensure_run_in_event_loop(move |app| {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
-                });
+                }, false);
                 tz = new_tz;
             }
             let next_prayer = &timings[0];
@@ -209,7 +209,7 @@ pub fn main_window() -> Clock {
                 app.set_next_prayer(next_prayer.into());
                 app.set_time(time_fmt.into());
                 app.set_date(date.into());
-            });
+            }, false);
             if update_rx.try_recv().is_ok() {
                 let current_prayer = timings[5].0.clone();
                 for time in timings.range(0..6) {
@@ -223,7 +223,7 @@ pub fn main_window() -> Clock {
                 ensure_run_in_event_loop(move |app| {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
-                });
+                }, false);
                 log("INFO: Updated because new data was loaded.");
             }
             if time >= timings[0].1 {
@@ -243,7 +243,7 @@ pub fn main_window() -> Clock {
                     app.invoke_update_prayer_times(prayer_times.as_slice().into());
                     app.invoke_update_current_prayer(current_prayer.into());
                     app.set_adhan_playing(true);
-                });
+                }, false);
                 if timings.len() <= 100 {
                     drop(timings);
                     load_data();
@@ -271,7 +271,7 @@ pub fn main_window() -> Clock {
             ).unwrap().sleep_until_end();
             ensure_run_in_event_loop(move |app| {
                 app.set_adhan_playing(false);
-            });
+            }, true);
             log("INFO: Sound ended");
         }
     });
@@ -281,7 +281,7 @@ pub fn main_window() -> Clock {
             thread::sleep(Duration::from_mins(15));
             ensure_run_in_event_loop(move |app| {
                 app.set_adhan_playing(false);
-            });
+            }, false);
         }
     });
     if SAFELY_PRUNE {
@@ -443,21 +443,29 @@ fn init_city_country() {
         app.set_country(country_pos as i32);
         app.set_cities(cities.as_slice().into());
         app.set_countries(countries.as_slice().into());
-    });
+    }, false);
 }
 
-fn ensure_run_in_event_loop<F>(func: F)
+fn ensure_run_in_event_loop<F>(func: F, should_log: bool)
 where F: FnOnce(Clock) + Send + Clone + 'static {
     let result = Arc::new(Mutex::new(Some(())));
     loop {
-        log("INFO: Started graphical update loop.");
+        if should_log {
+            log("INFO: Started graphical update loop.");
+        }
         let func = func.clone();
-        log("INFO: Cloned the function.");
+        if should_log {
+            log("INFO: Cloned the function.");
+        }
         let res_el = Arc::clone(&result);
-        log("INFO: Cloned the Arc<Mutex> containing whether or not the update failed.");
+        if should_log {
+            log("INFO: Cloned the Arc<Mutex> containing whether or not the update failed.");
+        }
         slint::invoke_from_event_loop(move || {
             let app = WEAKAPP.read().unwrap().clone();
-            log("INFO: Obtained a copy of the weakapp.");
+            if should_log {
+                log("INFO: Obtained a copy of the weakapp.");
+            }
             let app = match app.upgrade() {
                 Some(x) => x,
                 None => {
@@ -465,18 +473,26 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
                     return;
                 }
             };
-            log("INFO: Successfully upgraded the weakapp.");
+            if should_log {
+                log("INFO: Successfully upgraded the weakapp.");
+            }
             func(app);
-            log("INFO: Successfully ran the function.");
+            if should_log {
+                log("INFO: Successfully ran the function.");
+            }
         }).unwrap();
         match *result.lock().unwrap() {
             Some(_) => {
-                log("INFO: Successfully updated the app.");
+                if should_log {
+                    log("INFO: Successfully updated the app.");
+                }
                 return;
             },
             None => {
                 thread::sleep(SLEEP_TIME);
-                thread::spawn(|| log("INFO: Graphical update failed, retrying."));
+                if should_log {
+                    log("INFO: Graphical update failed, retrying.");
+                }
             },
         }
     }
