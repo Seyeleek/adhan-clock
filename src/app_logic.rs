@@ -5,7 +5,7 @@ use std::{
     thread,
     time::Duration,
     fs::{OpenOptions, self},
-    sync::{mpsc, Mutex, Arc, LazyLock, OnceLock},
+    sync::{mpsc, Mutex, Arc, LazyLock, OnceLock, RwLock},
     collections::VecDeque,
     io::{Cursor, Write},
     fmt::Display,
@@ -30,7 +30,7 @@ static COUNTRIES: LazyLock<Vec<String>> = LazyLock::new(|| CITIES.keys().map(|x|
 static CITY: Mutex<String> = Mutex::new(String::new());
 static COUNTRY_CITIES: Mutex<Vec<String>> = Mutex::new(Vec::new());
 static SCHOOL: Mutex<String> = Mutex::new(String::new());
-static WEAKAPP: LazyLock<Mutex<slint::Weak<Clock>>> = LazyLock::new(|| Mutex::new(Default::default()));
+static WEAKAPP: LazyLock<RwLock<slint::Weak<Clock>>> = LazyLock::new(|| RwLock::new(Default::default()));
 static RAN_BEFORE: Mutex<bool> = Mutex::new(false);
 static DATA_LOCK: Mutex<u32> = Mutex::new(0);
 static UPDATE_TX: OnceLock<mpsc::Sender<()>> = OnceLock::new();
@@ -44,7 +44,7 @@ pub fn main_window() -> Clock {
         );
     }));
     let app = Clock::new().unwrap();
-    *WEAKAPP.lock().unwrap() = app.as_weak();
+    *WEAKAPP.write().unwrap() = app.as_weak();
     app.on_city_picked(move |new_city| {
         thread::spawn(move || {
             *CITY.lock().unwrap() = new_city.clone().into();
@@ -452,8 +452,8 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
     loop {
         let func = func.clone();
         let res_el = Arc::clone(&result);
-        let app = WEAKAPP.lock().unwrap().clone();
         slint::invoke_from_event_loop(move || {
+            let app = WEAKAPP.read().unwrap().clone();
             let app = match app.upgrade() {
                 Some(x) => x,
                 None => {
