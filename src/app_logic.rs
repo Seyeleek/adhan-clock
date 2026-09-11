@@ -69,7 +69,7 @@ pub fn main_window() -> Clock {
             let cities = CITIES[&country].keys();
             drop(country);
             *COUNTRY_CITIES.lock().unwrap() = cities.clone().map(|x| x.to_lowercase()).collect();
-            let cities: Vec<_> = cities.map(|&x| x).collect();
+            let cities: Vec<_> = cities.copied().collect();
             let mut city = CITY.lock().unwrap();
             *city = (*cities[0]).into();
             fs::write(format!("{}city.txt", FILE_PREFIX), (*city).clone()).unwrap();
@@ -84,7 +84,7 @@ pub fn main_window() -> Clock {
     });
     let weakapp = app.as_weak();
     app.on_search_country(move |country_name| {
-        if country_name == "" { return; }
+        if country_name.is_empty() { return; }
         let pos = match COUNTRIES.binary_search(&country_name.to_lowercase()) {
             Ok(x) => x as i32,
             Err(x) => x as i32,
@@ -93,7 +93,7 @@ pub fn main_window() -> Clock {
     });
     let weakapp = app.as_weak();
     app.on_search_city(move |city_name| {
-        if city_name == "" { return; }
+        if city_name.is_empty() { return; }
         let pos = match COUNTRY_CITIES.lock().unwrap().binary_search(&city_name.to_lowercase()) {
             Ok(x) => x as i32,
             Err(x) => x as i32,
@@ -328,7 +328,7 @@ fn get_year_data(year: i32, country: &String, city: &String, school: i32) -> Str
         let tmp = blocking::get(&format!(
             "https://api.aladhan.com/v1/calendar/{}?{}&school={}",
             year,
-            CITIES[&country][&city],
+            CITIES[country][city],
             school,
         )).unwrap().text().unwrap();
         fs::write(&file, tmp.clone()).unwrap();
@@ -423,17 +423,17 @@ fn load_location_school() {
                 Err(e) => log(format!("Could not read {} file because of {:#?}", item.0, e)),
             }
         }
-        *item.2.lock().unwrap() = value.into();
+        *item.2.lock().unwrap() = value;
     }
 }
 
 fn init_city_country() {
-    let countries: Vec<_> = CITIES.keys().map(|&x| x).collect();
+    let countries: Vec<_> = CITIES.keys().copied().collect();
     let country = COUNTRY.lock().unwrap();
     let country_pos = countries.binary_search(&country.as_str()).unwrap();
     let cities = CITIES[&*country].keys();
     *COUNTRY_CITIES.lock().unwrap() = cities.clone().map(|x| x.to_lowercase()).collect();
-    let cities: Vec<_> = cities.map(|&x| x).collect();
+    let cities: Vec<_> = cities.copied().collect();
     let city = CITY.lock().unwrap();
     let city_pos = cities.binary_search(&city.as_str()).unwrap();
     let cities: Vec<StandardListViewItem> = cities.iter().map(|&x| x.into()).collect();
