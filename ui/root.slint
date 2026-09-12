@@ -219,10 +219,11 @@ export component Clock inherits Window {
                 picker-drop-shadow-color: #000;
                 picker-drop-shadow-blur: 2 * border-radius;
                 visible: !(country_picker.expanded || school_picker.expanded);
+                suffix: ",";
             }
             Text {
                 z: 2;
-                text: ", ";
+                text: " ";
                 color: Palette.fg;
                 font-size: parent.font-size;
                 vertical-alignment: center;
@@ -242,13 +243,7 @@ export component Clock inherits Window {
                 picker-drop-shadow-color: #000;
                 picker-drop-shadow-blur: 2 * border-radius;
                 visible: !(city_picker.expanded || school_picker.expanded);
-            }
-            Text {
-                z: 2;
-                text: ".";
-                color: Palette.fg;
-                font-size: parent.font-size;
-                vertical-alignment: center;
+                suffix: ".";
             }
         }
     }

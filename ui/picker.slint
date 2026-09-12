@@ -17,6 +17,7 @@ export component Picker inherits Rectangle {
     in property<color> picker-drop-shadow-color;
     in property<length> picker-x;
     in property<bool> show-search: true;
+    in property<string> suffix;
 
     callback picked(string);
     callback searched <=> search-box.edited;
@@ -36,11 +37,22 @@ export component Picker inherits Rectangle {
         }
     }
 
-    Text {
-        text: entries[list.current-item].text;
-        color: text-color;
-        font-size: parent.font-size;
-        
+    Rectangle {
+        HorizontalLayout {
+            cross-axis-alignment: center;
+
+            Text {
+                text: entries[list.current-item].text + suffix + " ";
+                color: text-color;
+                font-size: root.font-size;
+            }
+            Image {
+                source: @image-url("pencil.svg");
+                width: root.font-size / 1.5;
+                colorize: #fdf6e3;
+                image-fit: contain;
+            }
+        }
         TouchArea {
             clicked => {
                 expanded = true;

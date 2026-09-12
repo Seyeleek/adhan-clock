@@ -56,6 +56,8 @@ The package will be `target/release/apk/adhan-clock.apk`.
 
 For a complete list of the Rust packages used, please see `Cargo.toml`.
 
+The color scheme is taken from [Solarized](https://ethanschoonover.com/solarized/).
+
 The adhan sounds are from here: <https://archive.org/details/Athan_Mawsoa_mp3>.
 They are number 16 (adhan.ogg) and number 22 (fajr-adhan.ogg).
 
@@ -69,3 +71,6 @@ copyright headers have been retained in all Slint code.
 
 `bg.jpg` and `resources/drawable/icon.png` are modifications of the following
 public-domain image: <https://commons.wikimedia.org/wiki/File:Detail_arabesque_Alhambra_Granada_Spain.jpg>.
+
+`ui/pencil.svg` is the following public-domain image:
+<https://commons.wikimedia.org/wiki/File:Pencil_edit_icon.svg>.
