@@ -5,7 +5,7 @@ use std::{
     thread,
     time::Duration,
     fs::{OpenOptions, self},
-    sync::{mpsc, Mutex, Arc, LazyLock, OnceLock, RwLock},
+    sync::{mpsc, Mutex, LazyLock, OnceLock, RwLock},
     collections::VecDeque,
     io::{Cursor, Write},
     fmt::Display,
@@ -104,7 +104,7 @@ pub fn main_window() -> Clock {
     if *ran_before {
         thread::spawn(|| log("INFO: Tried to run the app a second time."));
         thread::spawn(|| {
-            init_city_country();
+            init_city_country(false);
             let timings = TIMINGS.lock().unwrap();
             let current_prayer = timings[5].0.clone();
             let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
@@ -132,7 +132,7 @@ pub fn main_window() -> Clock {
     let _ = UPDATE_TX.set(update_tx);
     load_location_school();
     app.set_school((*SCHOOL.lock().unwrap()).clone().into());
-    init_city_country();
+    init_city_country(true);
     let (time_tx, time_rx) = mpsc::channel();
     let (adhan_tx, adhan_rx) = mpsc::channel();
     let (srise_tx, srise_rx) = mpsc::channel();
@@ -427,7 +427,7 @@ fn load_location_school() {
     }
 }
 
-fn init_city_country() {
+fn init_city_country(main_thread: bool) {
     let countries: Vec<_> = CITIES.keys().copied().collect();
     let country = COUNTRY.lock().unwrap();
     let country_pos = countries.binary_search(&country.as_str()).unwrap();
@@ -438,17 +438,23 @@ fn init_city_country() {
     let city_pos = cities.binary_search(&city.as_str()).unwrap();
     let cities: Vec<StandardListViewItem> = cities.iter().map(|&x| x.into()).collect();
     let countries: Vec<StandardListViewItem> = countries.iter().map(|&x| x.into()).collect();
-    ensure_run_in_event_loop(move |app| {
+    let func = move |app: Clock| {
         app.set_city(city_pos as i32);
         app.set_country(country_pos as i32);
         app.set_cities(cities.as_slice().into());
         app.set_countries(countries.as_slice().into());
-    }, false);
+    };
+    if main_thread {
+        let app = WEAKAPP.read().unwrap().clone();
+        func(app.unwrap());
+    } else {
+        ensure_run_in_event_loop(func, true);
+    }
 }
 
 fn ensure_run_in_event_loop<F>(func: F, should_log: bool)
 where F: FnOnce(Clock) + Send + Clone + 'static {
-    let result = Arc::new(Mutex::new(Some(())));
+    let (result_tx, result_rx) = mpsc::channel();
     loop {
         if should_log {
             log("INFO: Started graphical update loop.");
@@ -457,11 +463,14 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
         if should_log {
             log("INFO: Cloned the function.");
         }
-        let res_el = Arc::clone(&result);
+        let result_tx = result_tx.clone();
         if should_log {
-            log("INFO: Cloned the Arc<Mutex> containing whether or not the update failed.");
+            log("INFO: cloned the sender.");
         }
         slint::invoke_from_event_loop(move || {
+            if should_log {
+                log("INFO: Requested the weakapp.");
+            }
             let app = WEAKAPP.read().unwrap().clone();
             if should_log {
                 log("INFO: Obtained a copy of the weakapp.");
@@ -469,7 +478,10 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
             let app = match app.upgrade() {
                 Some(x) => x,
                 None => {
-                    *res_el.lock().unwrap() = None;
+                    result_tx.send(false).unwrap();
+                    if should_log {
+                        log("INFO: Notified the calling thread that the update failed.");
+                    }
                     return;
                 }
             };
@@ -480,20 +492,21 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
             if should_log {
                 log("INFO: Successfully ran the function.");
             }
+            result_tx.send(true).unwrap();
+            if should_log {
+                log("INFO: Notified the calling thread that the update succeeded.");
+            }
         }).unwrap();
-        match *result.lock().unwrap() {
-            Some(_) => {
-                if should_log {
-                    log("INFO: Successfully updated the app.");
-                }
-                return;
-            },
-            None => {
-                thread::sleep(SLEEP_TIME);
-                if should_log {
-                    log("INFO: Graphical update failed, retrying.");
-                }
-            },
+        if result_rx.recv().unwrap() {
+            if should_log {
+                log("INFO: Successfully updated the app.");
+            }
+            return;
+        } else {
+            thread::sleep(SLEEP_TIME);
+            if should_log {
+                log("INFO: Graphical update failed, retrying.");
+            }
         }
     }
 }
