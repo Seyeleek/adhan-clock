@@ -271,7 +271,7 @@ pub fn main_window() -> Clock {
             ).unwrap().sleep_until_end();
             ensure_run_in_event_loop(move |app| {
                 app.set_adhan_playing(false);
-            }, true);
+            }, false);
             log("INFO: Sound ended");
         }
     });
