@@ -20,14 +20,13 @@ export component Clock inherits Window {
     in-out property<string> current-prayer;
     in property<bool> adhan-playing: false;
     in-out property<[PrayerTime]> prayer-times;
-    in property<length> calc-px: min(root.width / 1280, root.interactive-height / 600);
+    in property<length> calc-px: min(root.width / 1280, root.height / 600);
     in property<length> border-radius: 10 * calc-px;
     in property<int> city;
     in property<[StandardListViewItem]> cities;
     in property<int> country;
     in property<[StandardListViewItem]> countries;
     in property<string> school;
-    in property<length> interactive-height: self.height - self.virtual-keyboard-size.height;
 
     callback city_picked <=> city_picker.picked;
     callback country_picked <=> country_picker.picked;
@@ -65,9 +64,9 @@ export component Clock inherits Window {
     }
     Rectangle {
         width: root.width * 273% / 5;
-        height: root.interactive-height * 245% / 4;
+        height: root.height * 245% / 4;
         x: root.width * 3%;
-        y: root.interactive-height * 5%;
+        y: root.height * 5%;
         background: Palette.bg;
         border-radius: border-radius;
         drop-shadow-color: #000;
@@ -94,9 +93,9 @@ export component Clock inherits Window {
     }
     Rectangle {
         width: root.width * 182% / 5;
-        height: root.interactive-height * 245% / 4;
+        height: root.height * 245% / 4;
         x: root.width * 303% / 5;
-        y: root.interactive-height * 5%;
+        y: root.height * 5%;
         background: Palette.bg;
         border-radius: border-radius;
         drop-shadow-color: #000;
@@ -111,8 +110,8 @@ export component Clock inherits Window {
     }
     for time[i] in prayer-times: Rectangle {
         width: root.width * 79% / 6;
-        height: root.interactive-height * 75% / 4;
-        y: root.interactive-height * 315% / 4;
+        height: root.height * 75% / 4;
+        y: root.height * 315% / 4;
         x: root.width * 3% + i * root.width * 97% / 6;
         background: (time.prayer == current-prayer) ? Palette.fg : Palette.bg;
         border-radius: border-radius;
@@ -163,15 +162,16 @@ export component Clock inherits Window {
     }
     Rectangle {
         width: root.width * 94%;
-        height: root.interactive-height * 5%;
+        height: root.height * 5%;
         x: root.width * 3%;
-        y: root.interactive-height * 280% / 4;
+        y: root.height * 280% / 4;
         background: Palette.bg;
         border-radius: border-radius;
         drop-shadow-color: #000;
         drop-shadow-blur: 2 * border-radius;
         HorizontalLayout {
-            out property<length> font-size: min(root.interactive-height * 3%, root.width * 3%);
+            out property<length> font-size: min(root.height * 3%, root.width * 3%);
+            out property<length> picker-y: 0 - root.virtual-keyboard-size.height;
 
             alignment: center;
 
@@ -182,8 +182,9 @@ export component Clock inherits Window {
                 vertical-alignment: center;
             }
             school_picker := Picker {
+                y: picker-y;
                 z: 3;
-                full-height: root.interactive-height * 115% / 4;
+                full-height: root.height * 115% / 4;
                 full-width: root.width * 60%;
                 picker-x: 0 - self.x + root.width * 17%;
                 text-color: Palette.fg;
@@ -204,8 +205,9 @@ export component Clock inherits Window {
                 vertical-alignment: center;
             }
             city_picker := Picker {
+                y: picker-y;
                 z: 3;
-                full-height: root.interactive-height * 115% / 4;
+                full-height: root.height * 115% / 4;
                 full-width: root.width * 60%;
                 picker-x: 0 - self.x + root.width * 17%;
                 text-color: Palette.fg;
@@ -226,8 +228,9 @@ export component Clock inherits Window {
                 vertical-alignment: center;
             }
             country_picker := Picker {
+                y: picker-y;
                 z: 3;
-                full-height: root.interactive-height * 115% / 4;
+                full-height: root.height * 115% / 4;
                 full-width: root.width * 60%;
                 picker-x: 0 - self.x + root.width * 17%;
                 text-color: Palette.fg;
