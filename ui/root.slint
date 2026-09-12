@@ -171,7 +171,6 @@ export component Clock inherits Window {
         drop-shadow-blur: 2 * border-radius;
         HorizontalLayout {
             out property<length> font-size: min(root.height * 3%, root.width * 3%);
-            out property<length> picker-y: 0 - root.virtual-keyboard-size.height;
 
             alignment: center;
 
@@ -182,7 +181,7 @@ export component Clock inherits Window {
                 vertical-alignment: center;
             }
             school_picker := Picker {
-                y: picker-y;
+                y: self.expanded ? 0 - root.virtual-keyboard-size.height : 0px;
                 z: 3;
                 full-height: root.height * 115% / 4;
                 full-width: root.width * 60%;
@@ -205,7 +204,7 @@ export component Clock inherits Window {
                 vertical-alignment: center;
             }
             city_picker := Picker {
-                y: picker-y;
+                y: self.expanded ? 0 - root.virtual-keyboard-size.height : 0px;
                 z: 3;
                 full-height: root.height * 115% / 4;
                 full-width: root.width * 60%;
@@ -229,7 +228,7 @@ export component Clock inherits Window {
                 vertical-alignment: center;
             }
             country_picker := Picker {
-                y: picker-y;
+                y: self.expanded ? 0 - root.virtual-keyboard-size.height : 0px;
                 z: 3;
                 full-height: root.height * 115% / 4;
                 full-width: root.width * 60%;
