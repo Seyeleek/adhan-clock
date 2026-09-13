@@ -456,57 +456,24 @@ fn ensure_run_in_event_loop<F>(func: F, should_log: bool)
 where F: FnOnce(Clock) + Send + Clone + 'static {
     let (result_tx, result_rx) = mpsc::channel();
     loop {
-        if should_log {
-            log("INFO: Started graphical update loop.");
-        }
         let func = func.clone();
-        if should_log {
-            log("INFO: Cloned the function.");
-        }
         let result_tx = result_tx.clone();
-        if should_log {
-            log("INFO: cloned the sender.");
-        }
         slint::invoke_from_event_loop(move || {
-            if should_log {
-                log("INFO: Requested the weakapp.");
-            }
             let app = WEAKAPP.read().unwrap().clone();
-            if should_log {
-                log("INFO: Obtained a copy of the weakapp.");
-            }
             let app = match app.upgrade() {
                 Some(x) => x,
                 None => {
                     result_tx.send(false).unwrap();
-                    if should_log {
-                        log("INFO: Notified the calling thread that the update failed.");
-                    }
                     return;
                 }
             };
-            if should_log {
-                log("INFO: Successfully upgraded the weakapp.");
-            }
             func(app);
-            if should_log {
-                log("INFO: Successfully ran the function.");
-            }
             result_tx.send(true).unwrap();
-            if should_log {
-                log("INFO: Notified the calling thread that the update succeeded.");
-            }
         }).unwrap();
         if result_rx.recv().unwrap() {
-            if should_log {
-                log("INFO: Successfully updated the app.");
-            }
             return;
         } else {
             thread::sleep(SLEEP_TIME);
-            if should_log {
-                log("INFO: Graphical update failed, retrying.");
-            }
         }
     }
 }
