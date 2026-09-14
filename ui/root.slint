@@ -21,13 +21,21 @@ export component Clock inherits Window {
     in property<string> school;
 
     in property<bool> adhan-playing: false;
+    out property<bool> portrait: self.width < self.height;
 
-    in-out property<[PrayerTime]> prayer-times;
+    in-out property<[PrayerTime]> prayer-times: [
+        {prayer: "Fajr", time: "00:00", ampm: "am"},
+        {prayer: "Sunrise", time: "00:00", ampm: "am"},
+        {prayer: "Dhuhr", time: "00:00", ampm: "am"},
+        {prayer: "Asr", time: "00:00", ampm: "am"},
+        {prayer: "Maghrib", time: "00:00", ampm: "am"},
+        {prayer: "Isha", time: "00:00", ampm: "am"},
+    ];
 
-    in property<length> calc-px: min(col-width / 41, row-height / 30);
+    in property<length> calc-px: portrait ? min(col-width / 24, row-height / 27) : min(col-width / 41, row-height / 15);
     in property<length> border-radius: 10 * calc-px;
     in property<length> col-width: self.width / 31;
-    in property<length> row-height: self.height / 20;
+    in property<length> row-height: self.height / 40;
 
     in property<int> city;
     in property<[StandardListViewItem]> cities;
@@ -69,10 +77,10 @@ export component Clock inherits Window {
         image-fit: cover;
     }
     Rectangle {
-        width: col-width * 17;
-        height: row-height * 11;
+        width: portrait ? col-width * 29 : col-width * 17;
+        height: portrait ? row-height * 13 : row-height * 23;
         x: col-width;
-        y: row-height;
+        y: portrait ? row-height : row-height * 2;
         background: Palette.bg;
         border-radius: border-radius;
         drop-shadow-color: #000;
@@ -98,10 +106,10 @@ export component Clock inherits Window {
         }
     }
     Rectangle {
-        width: col-width * 11;
-        height: row-height * 11;
-        x: col-width * 19;
-        y: row-height;
+        width: portrait ? col-width * 29 : col-width * 11;
+        height: portrait ? row-height * 11 : row-height * 23;
+        x: portrait ? col-width : col-width * 19;
+        y: portrait ? row-height * 15 : row-height * 2;
         background: Palette.bg;
         border-radius: border-radius;
         drop-shadow-color: #000;
@@ -115,10 +123,10 @@ export component Clock inherits Window {
         }
     }
     for time[i] in prayer-times: Rectangle {
-        width: col-width * 4;
-        height: row-height * 4;
-        y: row-height * 15;
-        x: col-width + i * col-width * 5;
+        width: portrait ? col-width * 9 : col-width * 4;
+        height: portrait ? row-height * 4 : row-height * 8;
+        y: portrait ? (i > 2 ? row-height * 35 : row-height * 30) : row-height * 30;
+        x: portrait ? col-width + mod(i, 3) * col-width * 10 : col-width + i * col-width * 5;
         background: (time.prayer == current-prayer) ? Palette.fg : Palette.bg;
         border-radius: border-radius;
         drop-shadow-color: #0006;
@@ -168,15 +176,15 @@ export component Clock inherits Window {
     }
     Rectangle {
         width: col-width * 29;
-        height: row-height;
+        height: portrait ? row-height * 2 : row-height * 3;
         x: col-width;
-        y: row-height * 13;
+        y: portrait ? row-height * 27 : row-height * 26;
         background: Palette.bg;
         border-radius: border-radius;
         drop-shadow-color: #000;
         drop-shadow-blur: 2 * border-radius;
         HorizontalLayout {
-            out property<length> font-size: min(row-height / 1.5, col-width / 1.05);
+            out property<length> font-size: min(row-height * 2, col-width * 0.95);
 
             alignment: center;
 
