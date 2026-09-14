@@ -23,14 +23,14 @@ export component Clock inherits Window {
     in property<bool> adhan-playing: false;
     out property<bool> portrait: self.width < self.height;
 
-    in-out property<[PrayerTime]> prayer-times: [
+    in-out property<[PrayerTime]> prayer-times/*: [
         {prayer: "Fajr", time: "00:00", ampm: "am"},
         {prayer: "Sunrise", time: "00:00", ampm: "am"},
         {prayer: "Dhuhr", time: "00:00", ampm: "am"},
         {prayer: "Asr", time: "00:00", ampm: "am"},
         {prayer: "Maghrib", time: "00:00", ampm: "am"},
         {prayer: "Isha", time: "00:00", ampm: "am"},
-    ];
+    ]*/;
 
     in property<length> calc-px: portrait ? min(col-width / 24, row-height / 27) : min(col-width / 41, row-height / 15);
     in property<length> border-radius: 10 * calc-px;
