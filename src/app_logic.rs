@@ -106,11 +106,8 @@ pub fn main_window() -> Clock {
         thread::spawn(|| {
             init_city_country(false);
             let timings = TIMINGS.lock().unwrap();
-            let current_prayer = timings[5].0.clone();
             let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
-            for time in timings.range(0..6) {
-                current_times[time.2] = time.clone();
-            }
+            let current_prayer = get_current_times(&timings, &mut current_times);
             drop(timings);
             let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
                 prayer: x.0.clone().into(),
@@ -155,11 +152,8 @@ pub fn main_window() -> Clock {
     thread::spawn(move || {
         load_data();
         let timings = TIMINGS.lock().unwrap();
-        let current_prayer = timings[5].0.clone();
         let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
-        for time in timings.range(0..6) {
-            current_times[time.2] = time.clone();
-        }
+        let current_prayer = get_current_times(&timings, &mut current_times);
         drop(timings);
         let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
             prayer: x.0.clone().into(),
@@ -179,10 +173,7 @@ pub fn main_window() -> Clock {
                 drop(timings);
                 load_data();
                 timings = TIMINGS.lock().unwrap();
-                let current_prayer = timings[5].0.clone();
-                for time in timings.range(0..6) {
-                    current_times[time.2] = time.clone();
-                }
+                let current_prayer = get_current_times(&timings, &mut current_times);
                 let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
                     prayer: x.0.clone().into(),
                     time: x.1.format("%I:%M").to_string().into(),
@@ -211,10 +202,7 @@ pub fn main_window() -> Clock {
                 app.set_date(date.into());
             });
             if update_rx.try_recv().is_ok() {
-                let current_prayer = timings[5].0.clone();
-                for time in timings.range(0..6) {
-                    current_times[time.2] = time.clone();
-                }
+                let current_prayer = get_current_times(&timings, &mut current_times);
                 let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
                     prayer: x.0.clone().into(),
                     time: x.1.format("%I:%M").to_string().into(),
@@ -227,13 +215,26 @@ pub fn main_window() -> Clock {
                 log("INFO: Updated because new data was loaded.");
             }
             if time >= timings[0].1 {
+                if (time - timings[0].1).num_minutes() > 1 {
+                    while timings[0].1 < time {
+                        timings.pop_front().unwrap();
+                    }
+                    let current_prayer = get_current_times(&timings, &mut current_times);
+                    let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
+                        prayer: x.0.clone().into(),
+                        time: x.1.format("%I:%M").to_string().into(),
+                        ampm: x.1.format("%p").to_string().into(),
+                    }).collect();
+                    ensure_run_in_event_loop(move |app| {
+                        app.invoke_update_prayer_times(prayer_times.as_slice().into());
+                        app.invoke_update_current_prayer(current_prayer.into());
+                    });
+                    continue;
+                }
                 let adhan = timings.pop_front().unwrap().0;
                 log(format!("INFO: {} sent", adhan));
                 adhan_tx.send(adhan).unwrap();
-                let current_prayer = timings[5].0.clone();
-                for time in timings.range(0..6) {
-                    current_times[time.2] = time.clone();
-                }
+                let current_prayer = get_current_times(&timings, &mut current_times);
                 let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
                     prayer: x.0.clone().into(),
                     time: x.1.format("%I:%M").to_string().into(),
@@ -450,6 +451,16 @@ fn init_city_country(main_thread: bool) {
     } else {
         ensure_run_in_event_loop(func);
     }
+}
+
+fn get_current_times(
+    timings: &VecDeque<Timing>,
+    current_times: &mut Vec<Timing>,
+) -> String {
+    for time in timings.range(0..6) {
+        current_times[time.2] = time.clone();
+    }
+    return timings[5].0.clone();
 }
 
 fn ensure_run_in_event_loop<F>(func: F)
