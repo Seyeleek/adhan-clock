@@ -66,6 +66,9 @@ target and then not document anything since the functions are private.
 
 ## Credits
 
+The adhan time data comes from the AlAdhan API: 
+<https://aladhan.com/prayer-times-api>.
+
 For a complete list of the Rust packages used, please see `Cargo.toml`.
 
 The color scheme is taken from [Solarized](https://ethanschoonover.com/solarized/).
