@@ -305,8 +305,9 @@ fn time_loop(time_tx: mpsc::Sender<DateTime<Local>>) {
     }
 }
 
-/// This function provides the data for the current and next year as [`Value`]s.
-fn get_data() -> (Value, Value) {
+/// This function provides the data for the current and next year as a vector of
+/// [`Value`]s.
+fn get_data() -> Vec<Value> {
     let year: i32 = format!("{}", Local::now().format("%Y")).parse().unwrap();
     let country = COUNTRY.lock().unwrap();
     let city = CITY.lock().unwrap();
@@ -315,16 +316,15 @@ fn get_data() -> (Value, Value) {
         "Hanafi time" => 1,
         _ => panic!("The school should be either Majority time or Hanafi time"),
     };
-    return (
-        get_year_data(year, &country, &city, school),
-        get_year_data(year + 1, &country, &city, school),
-    );
+    let mut data = get_year_data(year, &country, &city, school);
+    data.extend(get_year_data(year + 1, &country, &city, school));
+    return data;
 }
 
 /// This function, given the country, city, school of thought, and year, looks
 /// for the cached adhan data and downloads it if it is missing. It then returns
-/// the data as a [`Value`].
-fn get_year_data(year: i32, country: &String, city: &String, school: i32) -> Value {
+/// the data as a vector of [`Value`]s.
+fn get_year_data(year: i32, country: &String, city: &String, school: i32) -> Vec<Value> {
     let file = format!(
         "{}{}-{}-{}-{}-lm.json",
         FILE_PREFIX, year, country, city, school,
@@ -342,7 +342,15 @@ fn get_year_data(year: i32, country: &String, city: &String, school: i32) -> Val
         fs::write(&file, tmp.clone()).unwrap();
         tmp
     };
-    return serde_json::from_str::<Value>(&data).unwrap()["data"].take();
+    let mut ordered_data = Vec::new();
+    let mut data = serde_json::from_str::<Value>(&data).unwrap()["data"].take();
+    for month in 1..13 {
+        let Value::Array(month_data) = data[&month.to_string()].take() else {
+            panic!("The JSON format has changed!");
+        };
+        ordered_data.extend(month_data);
+    }
+    return ordered_data;
 }
 
 /// This function loads the adhan data into the [`TIMINGS`] static.
@@ -353,16 +361,7 @@ fn load_data() {
     drop(data_lock);
     let today = Local::now();
     let tz = today.format("%z").to_string();
-    let (this_year, next_year) = get_data();
-    let mut this_year_parsed = Vec::new();
-    let mut next_year_parsed = Vec::new();
-    for month in 1..13 {
-        let month = month.to_string();
-        this_year_parsed.extend(this_year[&month].as_array().unwrap());
-        next_year_parsed.extend(next_year[&month].as_array().unwrap());
-    }
-    this_year_parsed.extend(next_year_parsed);
-    let mut parsed_data: VecDeque<_> = this_year_parsed
+    let mut parsed_data: VecDeque<_> = get_data()
         .into_iter()
         .flat_map(|day| {
             let timings = day["timings"].as_object().unwrap();
