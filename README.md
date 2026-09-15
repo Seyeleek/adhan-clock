@@ -5,7 +5,7 @@ However, it is cross-platform and should run on Android, Linux, Windows, MacOS,
 and iOS (only the first three are tested and iOS will need hacking).
 
 This app is hacked together and was only designed for my personal use. No
-guarantees are made.
+guarantees are made. Please feel free to modify it to suit your needs.
 
 ## Building
 
@@ -51,6 +51,18 @@ cargo apk build --lib --release
 ```
 
 The package will be `target/release/apk/adhan-clock.apk`.
+
+## Developer Documentation
+
+The code has documentation comments that can be converted to HTML documentation
+by running the following:
+
+```shell
+cargo doc --bins --no-deps
+```
+
+If you leave out `--bins`, it will compile the documentation for the library
+target and then not document anything since the functions are private.
 
 ## Credits
 
