@@ -50,7 +50,7 @@ static CITY: Mutex<String> = Mutex::new(String::new());
 static COUNTRY_CITIES: Mutex<Vec<String>> = Mutex::new(Vec::new());
 /// This stores the school of thought as set by the user; it defaults to Hanafi
 /// time.
-static SCHOOL: Mutex<String> = Mutex::new(String::new());
+static MADHAB: Mutex<String> = Mutex::new(String::new());
 /// This stores a weak reference to the app window (see
 /// [`slint::Weak`](https://docs.rs/slint/latest/slint/struct.Weak.html)). It is
 /// in a Mutex because Android sometimes restarts the window, which then
@@ -86,10 +86,10 @@ pub fn main_window() -> Clock {
             load_data();
         });
     });
-    app.on_school_picked(move |new_school| {
+    app.on_madhab_picked(move |new_madhab| {
         thread::spawn(move || {
-            *SCHOOL.lock().unwrap() = new_school.clone().into();
-            fs::write(format!("{}school.txt", FILE_PREFIX), new_school).unwrap();
+            *MADHAB.lock().unwrap() = new_madhab.clone().into();
+            fs::write(format!("{}school.txt", FILE_PREFIX), new_madhab).unwrap();
             load_data();
         });
     });
@@ -149,7 +149,7 @@ pub fn main_window() -> Clock {
             let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
             handle_prayer_change(&timings, &mut current_times);
         });
-        app.set_school((*SCHOOL.lock().unwrap()).clone().into());
+        app.set_madhab((*MADHAB.lock().unwrap()).clone().into());
         return app;
     } else {
         thread::spawn(|| log("INFO: Started the application."));
@@ -157,8 +157,8 @@ pub fn main_window() -> Clock {
     }
     let (update_tx, update_rx) = mpsc::channel();
     let _ = UPDATE_TX.set(update_tx);
-    load_location_school();
-    app.set_school((*SCHOOL.lock().unwrap()).clone().into());
+    load_location_madhab();
+    app.set_madhab((*MADHAB.lock().unwrap()).clone().into());
     init_city_country(true);
     let (time_tx, time_rx) = mpsc::channel();
     let (adhan_tx, adhan_rx) = mpsc::channel();
@@ -311,30 +311,30 @@ fn get_data() -> Vec<Value> {
     let year: i32 = format!("{}", Local::now().format("%Y")).parse().unwrap();
     let country = COUNTRY.lock().unwrap();
     let city = CITY.lock().unwrap();
-    let school = match SCHOOL.lock().unwrap().as_str() {
+    let madhab = match MADHAB.lock().unwrap().as_str() {
         "Majority time" => 0,
         "Hanafi time" => 1,
-        _ => panic!("The school should be either Majority time or Hanafi time"),
+        _ => panic!("The madhab should be either Majority time or Hanafi time"),
     };
-    let mut data = get_year_data(year, &country, &city, school);
-    data.extend(get_year_data(year + 1, &country, &city, school));
+    let mut data = get_year_data(year, &country, &city, madhab);
+    data.extend(get_year_data(year + 1, &country, &city, madhab));
     return data;
 }
 
 /// This function, given the country, city, school of thought, and year, looks
 /// for the cached adhan data and downloads it if it is missing. It then returns
 /// the data as a vector of [`Value`]s.
-fn get_year_data(year: i32, country: &String, city: &String, school: i32) -> Vec<Value> {
+fn get_year_data(year: i32, country: &String, city: &String, madhab: i32) -> Vec<Value> {
     let file = format!(
         "{}{}-{}-{}-{}-lm.json",
-        FILE_PREFIX, year, country, city, school,
+        FILE_PREFIX, year, country, city, madhab,
     );
     let data = if fs::exists(&file).unwrap() {
         fs::read_to_string(&file).unwrap()
     } else {
         let tmp = blocking::get(&format!(
             "https://api.aladhan.com/v1/calendar/{}?{}&school={}",
-            year, CITIES[country][city], school,
+            year, CITIES[country][city], madhab,
         ))
         .unwrap()
         .text()
@@ -418,11 +418,11 @@ fn log(message: impl Display) {
 
 /// This function initializes the city, country, and school of thought, loading
 /// the data from files or just setting defaults.
-fn load_location_school() {
+fn load_location_madhab() {
     let to_load = [
         ("city", "Dallas (Texas)", &CITY),
         ("country", "United States", &COUNTRY),
-        ("school", "Hanafi time", &SCHOOL),
+        ("school", "Hanafi time", &MADHAB),
     ];
     for item in to_load {
         let file = format!("{}{}.txt", FILE_PREFIX, item.0);

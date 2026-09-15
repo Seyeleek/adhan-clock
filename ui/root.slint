@@ -18,7 +18,7 @@ export component Clock inherits Window {
     in property<string> time;
     in property<string> next-prayer;
     in-out property<string> current-prayer;
-    in property<string> school;
+    in property<string> madhab;
 
     in property<bool> adhan-playing: false;
     out property<bool> portrait: self.width < self.height;
@@ -44,7 +44,7 @@ export component Clock inherits Window {
 
     callback city_picked <=> city_picker.picked;
     callback country_picked <=> country_picker.picked;
-    callback school_picked <=> school_picker.picked;
+    callback madhab_picked <=> madhab_picker.picked;
 
     callback search-country <=> country_picker.searched;
     callback search-city <=> city_picker.searched;
@@ -171,7 +171,7 @@ export component Clock inherits Window {
         clicked => {
             city-picker.expanded = false;
             country-picker.expanded = false;
-            school-picker.expanded = false;
+            madhab-picker.expanded = false;
         }
     }
     Rectangle {
@@ -194,7 +194,7 @@ export component Clock inherits Window {
                 font-size: parent.font-size;
                 vertical-alignment: center;
             }
-            school_picker := Picker {
+            madhab_picker := Picker {
                 y: self.expanded ? 0 - root.virtual-keyboard-size.height : 0px;
                 z: 3;
                 full-height: root.height * 115% / 4;
@@ -203,7 +203,7 @@ export component Clock inherits Window {
                 text-color: Palette.fg;
                 font-size: parent.font-size;
                 background-color: Palette.bg;
-                current: school == "Majority time" ? 0 : 1;
+                current: madhab == "Majority time" ? 0 : 1;
                 entries: [{text: "Majority time"}, {text: "Hanafi time"}];
                 picker-border-radius: border-radius;
                 picker-drop-shadow-color: #000;
@@ -231,7 +231,7 @@ export component Clock inherits Window {
                 picker-border-radius: border-radius;
                 picker-drop-shadow-color: #000;
                 picker-drop-shadow-blur: 2 * border-radius;
-                visible: !(country_picker.expanded || school_picker.expanded);
+                visible: !(country_picker.expanded || madhab_picker.expanded);
                 suffix: ",";
             }
             Text {
@@ -255,7 +255,7 @@ export component Clock inherits Window {
                 picker-border-radius: border-radius;
                 picker-drop-shadow-color: #000;
                 picker-drop-shadow-blur: 2 * border-radius;
-                visible: !(city_picker.expanded || school_picker.expanded);
+                visible: !(city_picker.expanded || madhab_picker.expanded);
                 suffix: ".";
             }
         }
