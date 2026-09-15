@@ -14,7 +14,7 @@ use std::{
     fs::{self, OpenOptions},
     io::{Cursor, Write},
     panic,
-    sync::{Lazylock, Mutex, OnceLock, RwLock, mpsc},
+    sync::{LazyLock, Mutex, OnceLock, RwLock, mpsc},
     thread,
     time::Duration,
 };
