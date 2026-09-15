@@ -2,22 +2,22 @@
 
 //! This module contains the main application code.
 
-use slint::language::StandardListViewItem;
-use std::{
-    thread,
-    time::Duration,
-    fs::{OpenOptions, self},
-    sync::{mpsc, Mutex, LazyLock, OnceLock, RwLock},
-    collections::VecDeque,
-    io::{Cursor, Write},
-    fmt::Display,
-    panic,
-};
-use chrono::{Local, DateTime, TimeDelta};
-use serde_json::Value;
-use reqwest::blocking;
 use crate::{FILE_PREFIX, SAFELY_PRUNE, cities::CITIES};
 use backtrace::Backtrace;
+use chrono::{DateTime, Local, TimeDelta};
+use reqwest::blocking;
+use serde_json::Value;
+use slint::language::StandardListViewItem;
+use std::{
+    collections::VecDeque,
+    fmt::Display,
+    fs::{self, OpenOptions},
+    io::{Cursor, Write},
+    panic,
+    sync::{Lazylock, Mutex, OnceLock, RwLock, mpsc},
+    thread,
+    time::Duration,
+};
 
 slint::include_modules!();
 
@@ -39,7 +39,8 @@ static COUNTRY: Mutex<String> = Mutex::new(String::new());
 /// This is a list of the countries in the map, lowercased. Since this is
 /// constant, it is stored in a LazyLock instead of a Mutex. It is used for
 /// real-time searching through the data.
-static COUNTRIES: LazyLock<Vec<String>> = LazyLock::new(|| CITIES.keys().map(|x| x.to_lowercase()).collect());
+static COUNTRIES: LazyLock<Vec<String>> =
+    LazyLock::new(|| CITIES.keys().map(|x| x.to_lowercase()).collect());
 /// This contains the current country as set by the user; it defaults to Dallas
 /// (Texas).
 static CITY: Mutex<String> = Mutex::new(String::new());
@@ -54,7 +55,8 @@ static SCHOOL: Mutex<String> = Mutex::new(String::new());
 /// [`slint::Weak`](https://docs.rs/slint/latest/slint/struct.Weak.html)). It is
 /// in a Mutex because Android sometimes restarts the window, which then
 /// necessitates a new weak reference.
-static WEAKAPP: LazyLock<RwLock<slint::Weak<Clock>>> = LazyLock::new(|| RwLock::new(Default::default()));
+static WEAKAPP: LazyLock<RwLock<slint::Weak<Clock>>> =
+    LazyLock::new(|| RwLock::new(Default::default()));
 /// This stores whether or not Android has restarted the window. It is used to
 /// prevent restarting all the threads and reloading the data from scratch.
 static RAN_BEFORE: Mutex<bool> = Mutex::new(false);
@@ -73,9 +75,7 @@ type Timing = (String, DateTime<Local>, usize);
 /// This function initializes the main window and all the threads if necessary.
 pub fn main_window() -> Clock {
     panic::set_hook(Box::new(move |panic_info| {
-        log(
-            format!("ERROR: {}\n{:#?}", panic_info, Backtrace::new()),
-        );
+        log(format!("ERROR: {}\n{:#?}", panic_info, Backtrace::new()));
     }));
     let app = Clock::new().unwrap();
     *WEAKAPP.write().unwrap() = app.as_weak();
@@ -116,7 +116,9 @@ pub fn main_window() -> Clock {
     });
     let weakapp = app.as_weak();
     app.on_search_country(move |country_name| {
-        if country_name.is_empty() { return; }
+        if country_name.is_empty() {
+            return;
+        }
         let pos = match COUNTRIES.binary_search(&country_name.to_lowercase()) {
             Ok(x) => x as i32,
             Err(x) => x as i32,
@@ -125,8 +127,14 @@ pub fn main_window() -> Clock {
     });
     let weakapp = app.as_weak();
     app.on_search_city(move |city_name| {
-        if city_name.is_empty() { return; }
-        let pos = match COUNTRY_CITIES.lock().unwrap().binary_search(&city_name.to_lowercase()) {
+        if city_name.is_empty() {
+            return;
+        }
+        let pos = match COUNTRY_CITIES
+            .lock()
+            .unwrap()
+            .binary_search(&city_name.to_lowercase())
+        {
             Ok(x) => x as i32,
             Err(x) => x as i32,
         };
@@ -140,7 +148,6 @@ pub fn main_window() -> Clock {
             let timings = TIMINGS.lock().unwrap();
             let mut current_times: Vec<_> = timings.range(0..6).cloned().collect();
             handle_prayer_change(&timings, &mut current_times);
-            drop(timings);
         });
         app.set_school((*SCHOOL.lock().unwrap()).clone().into());
         return app;
@@ -200,14 +207,12 @@ fn adhan_loop(adhan_rx: mpsc::Receiver<String>, srise_tx: mpsc::Sender<()>) {
             srise_tx.send(()).unwrap();
             continue;
         }
-        let sound = if adhan == "Fajr" {FAJR_ADHAN} else {ADHAN};
-        let sink_handle = rodio::DeviceSinkBuilder::open_default_sink()
-            .unwrap();
+        let sound = if adhan == "Fajr" { FAJR_ADHAN } else { ADHAN };
+        let sink_handle = rodio::DeviceSinkBuilder::open_default_sink().unwrap();
         log("INFO: Sound started");
-        rodio::play(
-            sink_handle.mixer(),
-            Cursor::new(sound),
-        ).unwrap().sleep_until_end();
+        rodio::play(sink_handle.mixer(), Cursor::new(sound))
+            .unwrap()
+            .sleep_until_end();
         ensure_run_in_event_loop(move |app| {
             app.set_adhan_playing(false);
         });
@@ -288,9 +293,8 @@ fn time_loop(time_tx: mpsc::Sender<DateTime<Local>>) {
     let mut prev_time = Local::now();
     loop {
         let current_time = Local::now();
-        let current_time = current_time - TimeDelta::nanoseconds(
-            current_time.timestamp_subsec_nanos().into()
-        );
+        let nanos = current_time.timestamp_subsec_nanos();
+        let current_time = current_time - TimeDelta::nanoseconds(nanos.into());
         if current_time == prev_time {
             thread::sleep(SLEEP_TIME);
             continue;
@@ -323,21 +327,18 @@ fn get_data() -> (Value, Value) {
 fn get_year_data(year: i32, country: &String, city: &String, school: i32) -> Value {
     let file = format!(
         "{}{}-{}-{}-{}-lm.json",
-        FILE_PREFIX,
-        year,
-        country,
-        city,
-        school,
+        FILE_PREFIX, year, country, city, school,
     );
     let data = if fs::exists(&file).unwrap() {
         fs::read_to_string(&file).unwrap()
     } else {
         let tmp = blocking::get(&format!(
             "https://api.aladhan.com/v1/calendar/{}?{}&school={}",
-            year,
-            CITIES[country][city],
-            school,
-        )).unwrap().text().unwrap();
+            year, CITIES[country][city], school,
+        ))
+        .unwrap()
+        .text()
+        .unwrap();
         fs::write(&file, tmp.clone()).unwrap();
         tmp
     };
@@ -361,34 +362,32 @@ fn load_data() {
         next_year_parsed.extend(next_year[&month].as_array().unwrap());
     }
     this_year_parsed.extend(next_year_parsed);
-    let mut parsed_data: VecDeque<_> = this_year_parsed.into_iter().flat_map(|day| {
-        let timings = day["timings"].as_object().unwrap();
-        let mut out = Vec::new();
-        let prayers = [
-            "Fajr",
-            "Sunrise",
-            "Dhuhr",
-            "Asr",
-            "Maghrib",
-            "Isha",
-        ];
-        for (i, prayer) in prayers.iter().enumerate() {
-            out.push((
-                prayer.to_string(),
-                DateTime::parse_from_str(
-                    &format!(
-                        "{} {} {}",
-                        &timings[*prayer].to_string()[1..6],
-                        &day["date"]["readable"].to_string()[1..12],
-                        tz,
-                    ),
-                    "%H:%M %d %b %Y %z",
-                ).unwrap().into(),
-                i,
-            ));
-        }
-        return out;
-    }).collect();
+    let mut parsed_data: VecDeque<_> = this_year_parsed
+        .into_iter()
+        .flat_map(|day| {
+            let timings = day["timings"].as_object().unwrap();
+            let mut out = Vec::new();
+            let prayers = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+            for (i, prayer) in prayers.iter().enumerate() {
+                out.push((
+                    prayer.to_string(),
+                    DateTime::parse_from_str(
+                        &format!(
+                            "{} {} {}",
+                            &timings[*prayer].to_string()[1..6],
+                            &day["date"]["readable"].to_string()[1..12],
+                            tz,
+                        ),
+                        "%H:%M %d %b %Y %z",
+                    )
+                    .unwrap()
+                    .into(),
+                    i,
+                ));
+            }
+            return out;
+        })
+        .collect();
     while parsed_data[0].1 < today {
         parsed_data.pop_front();
     }
@@ -407,9 +406,11 @@ fn load_data() {
 fn log(message: impl Display) {
     let _lock = LOG_LOCK.lock();
     let mut file;
-    match OpenOptions::new().append(true).create(true).open(
-        format!("{}log.txt", FILE_PREFIX)
-    ) {
+    match OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open(format!("{}log.txt", FILE_PREFIX))
+    {
         Ok(x) => file = x,
         Err(_) => return,
     };
@@ -430,7 +431,10 @@ fn load_location_school() {
         if fs::exists(&file).unwrap() {
             match fs::read_to_string(&file) {
                 Ok(x) => value = x,
-                Err(e) => log(format!("Could not read the {} file because of {:#?}", item.0, e)),
+                Err(e) => log(format!(
+                    "Could not read the {} file because of {:#?}",
+                    item.0, e
+                )),
             }
         }
         *item.2.lock().unwrap() = value;
@@ -466,19 +470,19 @@ fn init_city_country(main_thread: bool) {
 
 /// This function is run whenever a change occurs in the list of prayer times
 /// that needs a graphical update.
-fn handle_prayer_change(
-    timings: &VecDeque<Timing>,
-    current_times: &mut [Timing],
-) {
+fn handle_prayer_change(timings: &VecDeque<Timing>, current_times: &mut [Timing]) {
     for time in timings.range(0..6) {
         current_times[time.2] = time.clone();
     }
     let current_prayer = timings[5].0.clone();
-    let prayer_times: Vec<_> = current_times.iter().map(|x| PrayerTime{
-        prayer: x.0.clone().into(),
-        time: x.1.format("%I:%M").to_string().into(),
-        ampm: x.1.format("%p").to_string().into(),
-    }).collect();
+    let prayer_times: Vec<_> = current_times
+        .iter()
+        .map(|x| PrayerTime {
+            prayer: x.0.clone().into(),
+            time: x.1.format("%I:%M").to_string().into(),
+            ampm: x.1.format("%p").to_string().into(),
+        })
+        .collect();
     ensure_run_in_event_loop(move |app| {
         app.invoke_update_prayer_times(prayer_times.as_slice().into());
         app.invoke_update_current_prayer(current_prayer.into());
@@ -488,7 +492,9 @@ fn handle_prayer_change(
 /// This function requests that the provided function be run in the event loop
 /// and blocks until it completes.
 fn ensure_run_in_event_loop<F>(func: F)
-where F: FnOnce(Clock) + Send + Clone + 'static {
+where
+    F: FnOnce(Clock) + Send + Clone + 'static,
+{
     let (result_tx, result_rx) = mpsc::channel();
     loop {
         let func = func.clone();
@@ -504,7 +510,8 @@ where F: FnOnce(Clock) + Send + Clone + 'static {
             };
             func(app);
             result_tx.send(true).unwrap();
-        }).unwrap();
+        })
+        .unwrap();
         if result_rx.recv().unwrap() {
             return;
         } else {

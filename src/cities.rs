@@ -3,7 +3,7 @@
 //! This module contains one auto-generated static that contains location data
 //! by country and city.
 
-use phf::{phf_ordered_map, OrderedMap};
+use phf::{OrderedMap, phf_ordered_map};
 
 #[allow(clippy::approx_constant)]
 /// This data was extracted from the SimpleMaps Basic World Cities Database,
