@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
+//! This module contains one auto-generated static that contains location data
+//! by country and city.
+
 use phf::{phf_ordered_map, OrderedMap};
 
 #[allow(clippy::approx_constant)]
 /// This data was extracted from the SimpleMaps Basic World Cities Database,
-/// found at https://simplemaps.com/data/world-cities. Changes were made (e.g.
+/// found at <https://simplemaps.com/data/world-cities>. Changes were made (e.g.
 /// all instances of Israel were replaced with Palestine). The original dataset
-/// was licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/.
+/// was licensed under CC BY 4.0: <https://creativecommons.org/licenses/by/4.0/>.
 pub static CITIES: OrderedMap<&str, OrderedMap<&str, &str>> = phf_ordered_map! {
     "Afghanistan" => phf_ordered_map! {
         "Aibak" => "latitude=36.2534&longitude=68.0394",
